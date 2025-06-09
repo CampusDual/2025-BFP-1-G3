@@ -7,16 +7,12 @@ import com.campusdual.bfp.model.dao.RoleDao;
 import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dao.UserRoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 @Lazy
@@ -31,39 +27,37 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRoleDao userRoleDao;
 
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userDao.findByLogin(username);
+        User user = userDao.findByLogin(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), Collections.emptyList());
+        return user;
     }
 
     public boolean existsByUsername(String username) {
-        User user = this.userDao.findByLogin(username);
-        return user != null;
+        return userDao.findByLogin(username) != null;
     }
 
     public void registerNewUser(String username, String password) {
+        // Crear usuario
         User user = new User();
         user.setLogin(username);
-        user.setName(username);
-        user.setPassword(this.passwordEncoder().encode(password));
-        User savedUser = this.userDao.saveAndFlush(user);
+        user.setPassword(passwordEncoder.encode(password));
+        user = userDao.save(user);
 
-        Role role = this.roleDao.findByRoleName("ROLE_USER");
-        if (role != null) {
+        // Asignar rol por defecto
+        Role defaultRole = roleDao.findByRoleName("role_user");
+        if (defaultRole != null) {
             UserRole userRole = new UserRole();
-            userRole.setUser(savedUser);
-            userRole.setRole(role);
-            this.userRoleDao.saveAndFlush(userRole);
+            userRole.setUser(user);
+            userRole.setRole(defaultRole);
+            userRoleDao.save(userRole);
         }
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

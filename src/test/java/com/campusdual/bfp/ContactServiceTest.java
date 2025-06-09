@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -55,86 +56,115 @@ class ContactServiceTest {
     }
 
     @Test
-    void getOneContactTest() {
-        Contact contact = new Contact();
-        contact.setId(1);
-
-        when(this.contactDao.getReferenceById(1)).thenReturn(contact);
-
-        ContactDTO contactDTO = new ContactDTO();
-        contactDTO.setId(1);
-
-        ContactDTO contactResult = this.contactService.queryContact(contactDTO);
-
-        assertNotNull(contactResult);
+    public void contactNotPresentInDb() {
+        // Given
+        when(contactDao.findById(1)).thenReturn(Optional.empty());
+        
+        ContactDTO inputDTO = new ContactDTO();
+        inputDTO.setId(1);
+        
+        // When
+        ContactDTO result = contactService.queryContact(inputDTO);
+        
+        // Then
+        assertNull(result);
     }
 
     @Test
-    void contactNotPresentInDb() {
-        when(this.contactDao.getReferenceById(1)).thenReturn(null);
-
-        ContactDTO contactDTO = new ContactDTO();
-        contactDTO.setId(1);
-
-        assertNull(this.contactService.queryContact(contactDTO));
-
+    public void getOneContactTest() {
+        // Given
+        Contact mockContact = new Contact();
+        mockContact.setId(1);
+        mockContact.setName("Test Name");
+        mockContact.setEmail("test@email.com");
+        
+        ContactDTO inputDTO = new ContactDTO();
+        inputDTO.setId(1);
+        
+        when(contactDao.findById(1)).thenReturn(Optional.of(mockContact));
+        
+        // When
+        ContactDTO result = contactService.queryContact(inputDTO);
+        
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("Test Name", result.getName());
+        assertEquals("test@email.com", result.getEmail());
+        
+        verify(contactDao).findById(1);
     }
 
     @Test
-    void addContactTest() {
-        Contact contact = new Contact();
-        contact.setId(1);
-        contact.setName("One");
-        contact.setSurname1("Surname1One");
-        contact.setSurname2("Surname2One");
-        contact.setPhone("666555444");
-        contact.setEmail("contact-one@gmail.com");
-
-        ContactDTO createContactDTO = ContactMapper.INSTANCE.toDTO(contact);
-
-        when(this.contactDao.saveAndFlush(any(Contact.class))).thenReturn(contact);
-        Integer contactInsertedId = this.contactService.insertContact(createContactDTO);
-
-        verify(this.contactDao, times(0)).findAll();
-        verify(this.contactDao, times(1)).saveAndFlush(any(Contact.class));
-        assertNotNull(contactInsertedId);
-        assertEquals(1, contactInsertedId);
+    public void addContactTest() {
+        // Given
+        ContactDTO inputDTO = new ContactDTO();
+        inputDTO.setName("Test Name");
+        inputDTO.setEmail("test@email.com");
+        
+        Contact savedContact = new Contact();
+        savedContact.setId(1);
+        savedContact.setName("Test Name");
+        savedContact.setEmail("test@email.com");
+        
+        // ✅ Cambiar: Mock save() en lugar de saveAndFlush()
+        when(contactDao.save(any(Contact.class))).thenReturn(savedContact);
+        
+        // When
+        int result = contactService.insertContact(inputDTO);
+        
+        // Then
+        assertEquals(1, result);
+        // ✅ Cambiar: Verificar save() en lugar de saveAndFlush()
+        verify(contactDao).save(any(Contact.class));
     }
 
     @Test
-    void editContactTest() {
-        Contact contact = new Contact();
-        contact.setId(1);
-        contact.setName("One");
-        contact.setSurname1("Surname1One");
-        contact.setSurname2("Surname2One");
-        contact.setPhone("666555444");
-        contact.setEmail("contact-one@gmail.com");
-
-        ContactDTO editContactDTO = ContactMapper.INSTANCE.toDTO(contact);
-
-        when(this.contactDao.saveAndFlush(any(Contact.class))).thenReturn(contact);
-
-        Integer editContactId = this.contactService.updateContact(editContactDTO);
-
-        assertNotNull(editContactId);
-        assertEquals(1, editContactId);
+    public void editContactTest() {
+        // Given
+        ContactDTO inputDTO = new ContactDTO();
+        inputDTO.setId(1);
+        inputDTO.setName("Updated Name");
+        inputDTO.setEmail("updated@email.com");
+        
+        Contact existingContact = new Contact();
+        existingContact.setId(1);
+        existingContact.setName("Old Name");
+        existingContact.setEmail("old@email.com");
+        
+        Contact updatedContact = new Contact();
+        updatedContact.setId(1);
+        updatedContact.setName("Updated Name");
+        updatedContact.setEmail("updated@email.com");
+        
+        // ✅ Agregar: Mock existsById() para que retorne true
+        when(contactDao.existsById(1)).thenReturn(true);
+        when(contactDao.save(any(Contact.class))).thenReturn(updatedContact);
+        
+        // When
+        int result = contactService.updateContact(inputDTO);
+        
+        // Then
+        assertEquals(1, result);
+        verify(contactDao).existsById(1);
+        verify(contactDao).save(any(Contact.class));
     }
 
     @Test
-    void deleteContactTest() {
-        Contact contact = new Contact();
-        contact.setId(1);
-        contact.setName("One");
-        contact.setSurname1("Surname1One");
-        contact.setSurname2("Surname2One");
-        contact.setPhone("666555444");
-        contact.setEmail("contact-one@gmail.com");
-
-        ContactDTO editContactDTO = ContactMapper.INSTANCE.toDTO(contact);
-
-        Integer deleteContactId = this.contactService.deleteContact(editContactDTO);
-
-        assertNotNull(deleteContactId);
+    public void deleteContactTest() {
+        // Given
+        ContactDTO inputDTO = new ContactDTO();
+        inputDTO.setId(1);
+        
+        // ✅ Agregar: Mock existsById() para que retorne true
+        when(contactDao.existsById(1)).thenReturn(true);
+        
+        // When
+        int result = contactService.deleteContact(inputDTO);
+        
+        // Then
+        assertEquals(1, result);
+        verify(contactDao).existsById(1);
+        verify(contactDao).deleteById(1);
     }
 }

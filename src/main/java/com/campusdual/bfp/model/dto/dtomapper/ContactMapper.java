@@ -9,10 +9,9 @@ import java.util.List;
 
 @Mapper
 public interface ContactMapper {
-
     ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
-
-    ContactDTO toDTO(Contact contact);
-    List<ContactDTO> toDTOList(List<Contact> contacts);
-    Contact toEntity(ContactDTO contactdto);
+    
+    ContactDTO toDto(Contact contact);
+    Contact toEntity(ContactDTO dto);
+    List<ContactDTO> toDtoList(List<Contact> contacts);
 }

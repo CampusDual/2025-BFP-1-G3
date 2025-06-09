@@ -4,14 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,7 +16,7 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
@@ -32,11 +25,11 @@ public class User implements UserDetails {
     @Column
     private String name;
 
-//    @Column
-//    private String surname1;
-//
-//    @Column
-//    private String surname2;
+    @Column
+    private String surname1;
+
+    @Column
+    private String surname2;
 
     @Column
     private String login;
@@ -44,76 +37,106 @@ public class User implements UserDetails {
     @Column
     private String password;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
 
-    public User(){ }
+    @OneToMany(mappedBy = "candidate", fetch = FetchType.LAZY)
+    private Set<JobApplication> applications = new HashSet<>();
+
+    public User() { }
+
     public User(int id, String nif, String name, String surname1, String surname2, String login, String password) {
         this.id = id;
         this.nif = nif;
         this.name = name;
-//        this.surname1 = surname1;
-//        this.surname2 = surname2;
+        this.surname1 = surname1;
+        this.surname2 = surname2;
         this.login = login;
         this.password = password;
     }
 
-    public int getId() {
-        return id;
+    // Getters y Setters
+    public int getId() { 
+        return id; 
+    }
+    
+    public void setId(int id) { 
+        this.id = id; 
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getNif() { 
+        return nif; 
+    }
+    
+    public void setNif(String nif) { 
+        this.nif = nif; 
     }
 
-    public String getNif() {
-        return nif;
+    public String getName() { 
+        return name; 
+    }
+    
+    public void setName(String name) { 
+        this.name = name; 
     }
 
-    public void setNif(String nif) {
-        this.nif = nif;
+    public String getSurname1() { 
+        return surname1; 
+    }
+    
+    public void setSurname1(String surname1) { 
+        this.surname1 = surname1; 
     }
 
-    public String getName() {
-        return name;
+    public String getSurname2() { 
+        return surname2; 
+    }
+    
+    public void setSurname2(String surname2) { 
+        this.surname2 = surname2; 
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getLogin() { 
+        return login; 
+    }
+    
+    public void setLogin(String login) { 
+        this.login = login; 
     }
 
-//    public String getSurname1() {
-//        return surname1;
-//    }
-//
-//    public void setSurname1(String surname1) {
-//        this.surname1 = surname1;
-//    }
-//
-//    public String getSurname2() {
-//        return surname2;
-//    }
-//
-//    public void setSurname2(String surname2) {
-//        this.surname2 = surname2;
-//    }
-
-    public String getLogin() {
-        return login;
+    public void setPassword(String password) { 
+        this.password = password; 
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public Company getCompany() { 
+        return company; 
+    }
+    
+    public void setCompany(Company company) { 
+        this.company = company; 
     }
 
-    public String getPassword() {
-        return password;
+    public Set<UserRole> getUserRoles() { 
+        return userRoles; 
+    }
+    
+    public void setUserRoles(Set<UserRole> userRoles) { 
+        this.userRoles = userRoles; 
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Set<JobApplication> getApplications() { 
+        return applications; 
+    }
+    
+    public void setApplications(Set<JobApplication> applications) { 
+        this.applications = applications; 
     }
 
+    // Implementación de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -124,8 +147,13 @@ public class User implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
-        return this.login;
+        return login;
     }
 
     @Override

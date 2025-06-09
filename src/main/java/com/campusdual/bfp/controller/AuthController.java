@@ -5,73 +5,88 @@ import com.campusdual.bfp.model.dto.SignupDTO;
 import com.campusdual.bfp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    
     @Autowired
     AuthenticationManager authenticationManager;
+    
     @Autowired
     UserService userService;
+    
     @Autowired
     PasswordEncoder encoder;
+    
     @Autowired
     JWTUtil jwtUtils;
 
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        if (authHeader == null || !authHeader.toLowerCase().startsWith("basic ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Header auth is missing.");
-        }
-
-        String base64Credentials = authHeader.substring("Basic ".length());
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-
-        final String[] values = credentials.split(":", 2);
-        if (values.length != 2) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Malformed auth header");
-        }
-
         try {
-            Authentication authentication = this.authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(values[0], values[1])
+            // Validar que el header tenga el formato correcto
+            if (authHeader == null || !authHeader.startsWith("Basic ")) {
+                return ResponseEntity.badRequest().body("Invalid authorization header format");
+            }
+
+            // Extraer credenciales del header Basic
+            String base64Credentials = authHeader.substring("Basic ".length()).trim();
+            String credentials = new String(Base64.getDecoder().decode(base64Credentials));
+            String[] values = credentials.split(":", 2);
+            
+            if (values.length != 2) {
+                return ResponseEntity.badRequest().body("Invalid credentials format");
+            }
+
+            String username = values[0];
+            String password = values[1];
+
+            // Autenticar
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = this.jwtUtils.generateJWTToken(userDetails.getUsername());
-
-            return ResponseEntity.ok(token);
-
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad credentials");
+            // Generar JWT
+            String jwt = jwtUtils.generateJWTToken(username);
+            return ResponseEntity.ok(jwt);
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Authentication failed: " + e.getMessage());
         }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupDTO request) {
-        if (this.userService.existsByUsername(request.getLogin())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
+        try {
+            // Validaciones
+            if (request.getLogin() == null || request.getLogin().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Username is required");
+            }
+            
+            if (request.getPassword() == null || request.getPassword().length() < 6) {
+                return ResponseEntity.badRequest().body("Password must be at least 6 characters");
+            }
+
+            // Verificar si el usuario ya existe
+            if (userService.existsByUsername(request.getLogin())) {
+                return ResponseEntity.badRequest().body("Username is already taken!");
+            }
+
+            // Registrar usuario
+            userService.registerNewUser(request.getLogin(), request.getPassword());
+            return ResponseEntity.ok("User registered successfully!");
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
         }
-
-        this.userService.registerNewUser(request.getLogin(), request.getPassword());
-        return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered.");
-
     }
 }
