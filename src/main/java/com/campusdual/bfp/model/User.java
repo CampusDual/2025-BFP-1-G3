@@ -32,11 +32,11 @@ public class User implements UserDetails {
     @Column
     private String name;
 
-    @Column
-    private String surname1;
-
-    @Column
-    private String surname2;
+//    @Column
+//    private String surname1;
+//
+//    @Column
+//    private String surname2;
 
     @Column
     private String login;
@@ -52,8 +52,8 @@ public class User implements UserDetails {
         this.id = id;
         this.nif = nif;
         this.name = name;
-        this.surname1 = surname1;
-        this.surname2 = surname2;
+//        this.surname1 = surname1;
+//        this.surname2 = surname2;
         this.login = login;
         this.password = password;
     }
@@ -82,21 +82,21 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public String getSurname1() {
-        return surname1;
-    }
-
-    public void setSurname1(String surname1) {
-        this.surname1 = surname1;
-    }
-
-    public String getSurname2() {
-        return surname2;
-    }
-
-    public void setSurname2(String surname2) {
-        this.surname2 = surname2;
-    }
+//    public String getSurname1() {
+//        return surname1;
+//    }
+//
+//    public void setSurname1(String surname1) {
+//        this.surname1 = surname1;
+//    }
+//
+//    public String getSurname2() {
+//        return surname2;
+//    }
+//
+//    public void setSurname2(String surname2) {
+//        this.surname2 = surname2;
+//    }
 
     public String getLogin() {
         return login;
