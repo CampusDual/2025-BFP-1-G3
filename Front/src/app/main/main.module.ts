@@ -10,7 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
 import { IndexComponent } from './index/index.component';
-import { PublicarOfertaComponent } from './publicar-oferta/publicar-oferta.component';
+import { PublishOfferComponent } from './publish-offer/publish-offer.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -20,7 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   declarations: [
     LoginComponent,
     IndexComponent,
-    PublicarOfertaComponent
+    PublishOfferComponent
   ],
   imports: [
     CommonModule,

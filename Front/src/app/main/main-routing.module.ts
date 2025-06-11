@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { IndexComponent } from './index/index.component';
-import { PublicarOfertaComponent } from './publicar-oferta/publicar-oferta.component';
+import { PublishOfferComponent } from './publish-offer/publish-offer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'index', component: IndexComponent },
-  { path: 'publicar', component: PublicarOfertaComponent} 
+  { path: 'publicar', component: PublishOfferComponent} 
 ];
 
 @NgModule({
