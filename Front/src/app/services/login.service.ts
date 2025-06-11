@@ -12,18 +12,20 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  login(user: string, password: string): Observable<{ token: string; empresa: string }> {
+  login(user: string, password: string): Observable<{ token: string; empresa: string; empresaId:string }> {
   const url = "http://localhost:30030/auth/signin";
   const headers = new HttpHeaders({
     'Authorization': "Basic " + btoa(user + ":" + password)
   });
 
-  return this.http.post<{ token: string; empresa: string }>(url, {}, { headers }).pipe(
+  return this.http.post<{ token: string; empresa: string; empresaId:string }>(url, {}, { headers }).pipe(
     tap(response => {
       sessionStorage.setItem('user', user);
       sessionStorage.setItem('password', password);
       sessionStorage.setItem('token', response.token);
       sessionStorage.setItem('empresa', response.empresa);
+      sessionStorage.setItem('empresa', response.empresa);
+      sessionStorage.setItem('empresaId', response.empresaId);
     }),
     catchError(e => {
       if (e.status === 401) {

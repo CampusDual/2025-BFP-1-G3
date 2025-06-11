@@ -69,9 +69,11 @@ public class AuthController {
 
             // Obtener el nombre de la empresa
             String nombreEmpresa = userService.getCompanyNameByUsername(userDetails.getUsername());
+            int idEmpresa =userService.getCompanyIdByUsername(userDetails.getUsername());
 
             response.put("token", token);
             response.put("empresa", nombreEmpresa);
+            response.put("empresaId", String.valueOf(idEmpresa));
 
             return ResponseEntity.ok(response);
 

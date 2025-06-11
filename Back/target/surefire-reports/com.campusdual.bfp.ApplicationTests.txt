@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.campusdual.bfp.ApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.026 s - in com.campusdual.bfp.ApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.66 s - in com.campusdual.bfp.ApplicationTests
