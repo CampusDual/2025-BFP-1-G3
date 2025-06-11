@@ -1,0 +1,38 @@
+<form color="primary">
+  <mat-card class="form-data">
+    <mat-card-header>
+      <mat-card-title>INICIAR SESION</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- USERNAME -->
+      <mat-form-field appearance="fill">
+        <mat-label>User name</mat-label>
+        <input matInput type="text" name="user" [(ngModel)]="user" />
+      </mat-form-field>
+
+      <!-- PASSWORD -->
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password" />
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <!-- ERROR MESSAGE -->
+      <div *ngIf="loginError" class="error-message">
+        {{ loginError }}
+      </div>
+
+      <!-- BOTÓN LOGIN -->
+      <button mat-raised-button color="primary" (click)="login(user, password)">
+        Login
+        <mat-icon>login</mat-icon>
+      </button>
+
+    </mat-card-content>
+  </mat-card>
+</form>
