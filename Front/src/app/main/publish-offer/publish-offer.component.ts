@@ -28,7 +28,7 @@ export class PublishOfferComponent {
         'Content-Type': 'application/json'
       });
 
-      this.http.post('http://localhost:30030/ofertas', datos, { headers }).subscribe({
+      this.http.post('http://localhost:30030/offers/add', datos, { headers }).subscribe({
         next: () => {
           this.publicada = true;
           this.ofertaForm.reset();
