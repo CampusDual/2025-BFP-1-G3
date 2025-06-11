@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ServicesService } from 'src/app/services/services.service';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class LoginComponent {
   password: string = '';
   loginError: string = '';
 
-  constructor(private loginService: ServicesService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) {}
 
   login(user: string, password: string) {
     console.log("Datos recogidos del formulario:", user, password);
