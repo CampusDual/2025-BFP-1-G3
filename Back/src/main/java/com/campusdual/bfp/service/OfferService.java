@@ -41,6 +41,9 @@ public class OfferService implements IOfferService {
     @Override
     public long insertOffer(OfferDTO offerDto) {
         Integer companyId = offerDto.getCompanyId();
+        if (companyId == null || !companyDao.existsById(companyId)) {
+            throw new IllegalArgumentException("Company with id " + companyId + " does not exist");
+        }
         Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
         offerDao.saveAndFlush(offer);
         return offer.getId();

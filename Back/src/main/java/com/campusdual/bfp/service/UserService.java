@@ -57,6 +57,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public Integer getCompanyIdByUsername(String username) {
+        User user = userDao.findByLogin(username);
+        if (user != null && user.getCompany() != null) {
+            return user.getCompany().getId();
+        } else {
+            return null;
+        }
+    }
+
     public void registerNewUser(String username, String password) {
         User user = new User();
         user.setLogin(username);
