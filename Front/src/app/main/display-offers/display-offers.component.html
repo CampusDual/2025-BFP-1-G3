@@ -10,7 +10,7 @@
     <mat-card class="offer-card" *ngFor="let offer of offers">
       <mat-card-header>
         <mat-card-title>{{offer.title}}</mat-card-title>
-        <!-- <mat-card-subtitle>ID: {{offer.id}} | Empresa: {{offer.companyId}}</mat-card-subtitle> -->
+        <mat-card-subtitle>Empresa: {{offer.companyName || 'Sin nombre'}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <p>{{offer.offerDescription}}</p>
