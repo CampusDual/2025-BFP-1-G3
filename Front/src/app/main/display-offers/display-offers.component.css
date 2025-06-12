@@ -20,7 +20,6 @@
 
 .welcome-message h3 {
   margin: 0;
-  
 }
 
 h3 {
@@ -38,50 +37,51 @@ h3 {
   display: flex;
   gap: 10px;
 }
- 
+
 .action-buttons-top-right {
   display: flex;
   justify-content: flex-end;
   margin: 16px 16px 0 0;
 }
- 
+
 .buttonadd {
   width: 2dvw;
   height: 2dvw;
   padding: 0.6%;
   border-radius: 100%;
 }
- 
+
 .offers-container {
   padding: 16px;
 }
- 
+
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(298px, 1fr));
   gap: 5dvw;
   margin: 2%;
 }
- 
+
 .offer-card {
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s, box-shadow 0.3s;
+  padding-bottom: 2.5%;
 }
- 
+
 .offer-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
- 
+
 mat-card-content {
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
- 
+
 .no-offers {
   display: flex;
   flex-direction: column;
@@ -90,23 +90,23 @@ mat-card-content {
   padding: 40px;
   color: #777;
 }
- 
+
 .no-offers mat-icon {
   font-size: 48px;
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
 }
- 
+
 button {
   display: flex;
-  width: 30%;
+  width: fit-content;
   padding: 2%;
   margin-left: 2.5%;
   margin-top: 2.5%;
   align-items: center;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 100;
   border-radius: 6px;
   background-color: #e61b15;
   color: white;
@@ -115,11 +115,11 @@ button {
   transition: background-color 0.3s ease;
   justify-content: center;
 }
- 
+
 button:hover {
   background-color: #333333;
 }
- 
+
 .mdc-card__actions {
   justify-content: space-around;
   margin-top: 5%;
@@ -129,8 +129,9 @@ button:hover {
   padding: 16px 16px 0;
   justify-content: center;
 }
- 
-mat-card-title, mat-card-subtitle {
+
+mat-card-title,
+mat-card-subtitle {
   display: flex;
   flex-direction: column;
   justify-content: center;
