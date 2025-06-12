@@ -12,21 +12,18 @@ import java.util.List;
 
 @Mapper
 public interface OfferMapper {
+    
     OfferMapper INSTANCE = Mappers.getMapper(OfferMapper.class);
-
-    @Mapping(source = "company", target = "companyId", qualifiedByName = "companyToCompanyId")
+    
+    @Mapping(source = "company.id", target = "companyId")
+    @Mapping(source = "company.name", target = "companyName")
     OfferDTO toDTO(Offer offer);
-
+    
     List<OfferDTO> toDTOList(List<Offer> offers);
-
+    
     @Mapping(source = "companyId", target = "company", qualifiedByName = "companyIdToCompany")
     Offer toEntity(OfferDTO offerDto);
-
-    @Named("companyToCompanyId")
-    default Integer companyToCompanyId(Company company) {
-        return company != null ? company.getId() : null;
-    }
-
+    
     @Named("companyIdToCompany")
     default Company companyIdToCompany(Integer companyId) {
         if (companyId == null) {
@@ -37,4 +34,3 @@ public interface OfferMapper {
         return company;
     }
 }
-
