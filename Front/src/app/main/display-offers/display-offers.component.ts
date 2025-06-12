@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Offer } from 'src/app/model/offer';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginService } from 'src/app/services/login.service';
+import { Offer } from 'src/app/model/offer';
 
 @Component({
   selector: 'app-display-offers',
@@ -11,15 +11,28 @@ import { LoginService } from 'src/app/services/login.service';
 })
 export class DisplayOffersComponent implements OnInit {
 
-  offers: Offer[] = [];    submitting: boolean = false;
-    successMessage: string = '';
-    errorMessage: string = '';
-    companyId: number | null = null;
+  offers: Offer[] = [];
+  submitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
+  companyId: number | null = null;
+  companyName: string = ''; // Nuevo campo para el nombre de la empresa
 
   constructor(private loginService: LoginService, private router:Router, private http:HttpClient) { }
 
   ngOnInit() {
     this.load();
+    this.loadCompanyName(); // Cargar el nombre de la empresa al inicializar
+  }
+
+  // Nuevo método para cargar el nombre de la empresa
+  loadCompanyName(): void {
+    this.companyName = sessionStorage.getItem('empresa') || '';
+  }
+
+  // Nuevo método para verificar si el usuario está logueado
+  isLoggedIn(): boolean {
+    return sessionStorage.getItem('token') !== null;
   }
 
   load(): void {
@@ -35,7 +48,6 @@ export class DisplayOffersComponent implements OnInit {
       },
       error => {
         console.error('Error al cargar ofertas:', error);
-        // Mostrar un mensaje al usuario
       }
     );
   }
@@ -71,6 +83,4 @@ export class DisplayOffersComponent implements OnInit {
       });
       return true;
   }
-
-
 }

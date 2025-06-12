@@ -23,7 +23,8 @@ export class LoginComponent {
     this.loginService.login(user, password).subscribe(
       response => {
         console.log("Respuesta del backend:", response);
-        this.router.navigate(['/main/index']);
+        // Cambiado para redirigir a ofertas en lugar de index
+        this.router.navigate(['/main/ofertas']);
       },
       error => {
         console.error("Error en login:", error);

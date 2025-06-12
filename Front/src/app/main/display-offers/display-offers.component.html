@@ -1,8 +1,13 @@
-<!-- Botón para añadir ofertas (reducido en ancho) -->
-<div class="action-buttons-top-right">
-  <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
-    <mat-icon >add</mat-icon>
-  </button>
+<!-- Fila superior con mensaje de bienvenida y botón -->
+<div class="top-row">
+  <div class="welcome-message" *ngIf="isLoggedIn()">
+    <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
+  </div>
+  <div class="action-buttons-top-right">
+    <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>
 
 <!-- Diseño de tarjetas -->
