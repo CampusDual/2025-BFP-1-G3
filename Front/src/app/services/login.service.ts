@@ -53,12 +53,10 @@ export class LoginService {
     );
   }
 
-  // Nuevo método para verificar si el usuario está autenticado
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
 
-  // Nuevo método para cerrar sesión
   logout(): void {
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('password');

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-publish-offer',
@@ -14,7 +15,7 @@ export class PublishOfferComponent implements OnInit {
   errorMessage: string = '';
   companyId: number | null = null;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private loginService: LoginService) {
     this.offerForm = this.fb.group({
       titulo: ['', Validators.required],
       descripcion: ['', Validators.required]
@@ -26,14 +27,14 @@ export class PublishOfferComponent implements OnInit {
   }
 
   loadUserProfile(): void {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
+    // const token = sessionStorage.getItem('token');
+    if (!this.loginService.isAuthenticated()) {
       this.errorMessage = 'No está logueado.';
       return;
     }
 
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
     this.http.get<{ companyId: number }>('http://localhost:30030/auth/profile', { headers })
@@ -60,8 +61,7 @@ export class PublishOfferComponent implements OnInit {
       return;
     }
 
-    const token = sessionStorage.getItem('token');
-    if (!token) {
+    if (!this.loginService.isAuthenticated()) {
       this.errorMessage = 'No está logueado.';
       return;
     }
@@ -76,7 +76,7 @@ export class PublishOfferComponent implements OnInit {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
     this.http.post('http://localhost:30030/offers/add', offerData, { headers })
       .subscribe({
