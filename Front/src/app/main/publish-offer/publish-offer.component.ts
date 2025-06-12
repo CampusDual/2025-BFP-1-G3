@@ -28,7 +28,7 @@ export class PublishOfferComponent implements OnInit {
   loadUserProfile(): void {
     const token = sessionStorage.getItem('token');
     if (!token) {
-      this.errorMessage = 'No se encontró token de autenticación.';
+      this.errorMessage = 'No está logueado.';
       return;
     }
 
@@ -56,13 +56,13 @@ export class PublishOfferComponent implements OnInit {
     }
 
     if (this.companyId === null) {
-      this.errorMessage = 'No se pudo obtener el ID de la empresa.';
+      // this.errorMessage = 'No se pudo obtener el ID de la empresa.';
       return;
     }
 
     const token = sessionStorage.getItem('token');
     if (!token) {
-      this.errorMessage = 'No se encontró token de autenticación.';
+      this.errorMessage = 'No está logueado.';
       return;
     }
 
