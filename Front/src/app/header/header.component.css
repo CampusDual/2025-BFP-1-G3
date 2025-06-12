@@ -9,3 +9,11 @@ mat-toolbar img {
   flex-grow: 1;
 }
 
+/* Estilos para los iconos de login/logout */
+.mat-menu-item .mat-icon[fonticon="logout"] {
+  color: #e61b15; /* Color para el ícono de logout */
+}
+
+.mat-menu-item .mat-icon[fonticon="login"] {
+  color: #3f51b5; /* Color para el ícono de login */
+}
