@@ -16,15 +16,17 @@ export class LoginService {
   constructor(private http: HttpClient) { }
 
   getOffers(): Observable<Offer[]> {
-    return this.http.get(this.urlEnpoint.concat("/getAll"), { headers: this.httpHeaders }).pipe(
-      map(response => {
-        let offers = response as Offer[];
-        return offers.map(offer => {
-          return offer;
-        });
-      })
-    );
-  }
+  return this.http.get<Offer[]>(this.urlEnpoint + "/getAll").pipe(
+    map(response => {
+      let offers = response as Offer[];
+      return offers;
+    }),
+    catchError(error => {
+      console.error('Error obteniendo ofertas:', error);
+      return throwError(() => error);
+    })
+  );
+}
 
   login(user: string, password: string): Observable<{ token: string; empresa: string }> {
     const url = "http://localhost:30030/auth/signin";
