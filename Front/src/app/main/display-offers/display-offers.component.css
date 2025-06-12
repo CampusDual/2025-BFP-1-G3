@@ -10,26 +10,11 @@
   margin: 16px 16px 0 0;
 }
 
-/* Botón básico */
 .buttonadd {
-  margin-right: 10px;
+  width:max-content;
+  padding: 0.6%;
+  border-radius: 100%;
 }
-
-/* NUEVAS REGLAS PARA REDUCIR EL TAMAÑO DEL BOTÓN */
-.buttonadd.mat-mini-fab {
-  width: 36px !important;
-  height: 36px !important;
-  line-height: 36px !important;
-  transform: scale(0.8);
-}
-
-.buttonadd .mat-icon {
-  font-size: 18px;
-  height: 18px;
-  width: 18px;
-  line-height: 18px;
-}
-/* FIN DE NUEVAS REGLAS */
 
 .offers-container {
   padding: 16px;
