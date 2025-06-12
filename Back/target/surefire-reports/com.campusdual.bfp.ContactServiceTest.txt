@@ -1,4 +1,63 @@
 -------------------------------------------------------------------------------
 Test set: com.campusdual.bfp.ContactServiceTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s - in com.campusdual.bfp.ContactServiceTest
+Tests run: 6, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 0.075 s <<< FAILURE! - in com.campusdual.bfp.ContactServiceTest
+getOneContactTest  Time elapsed: 0.015 s  <<< ERROR!
+java.lang.ExceptionInInitializerError
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+Caused by: java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+Caused by: java.lang.reflect.InvocationTargetException
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+Caused by: java.lang.Error: 
+Unresolved compilation problems: 
+	The import com.campusdual.bfp.model.Contact cannot be resolved
+	The import com.campusdual.bfp.model.dto.ContactDTO cannot be resolved
+	ContactMapper cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	Contact cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	The method toDTOList(List<Contact>) of type ContactMapperImpl must override or implement a supertype method
+	Contact cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	Contact cannot be resolved to a type
+	Contact cannot be resolved to a type
+	ContactDTO cannot be resolved to a type
+	Contact cannot be resolved to a type
+	Contact cannot be resolved to a type
+
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
+deleteContactTest  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class com.campusdual.bfp.model.dto.dtomapper.ContactMapper
+	at com.campusdual.bfp.ContactServiceTest.deleteContactTest(ContactServiceTest.java:134)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.lang.RuntimeException: java.lang.reflect.InvocationTargetException [in thread "main"]
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
+contactNotPresentInDb  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class com.campusdual.bfp.model.dto.dtomapper.ContactMapper
+	at com.campusdual.bfp.ContactServiceTest.contactNotPresentInDb(ContactServiceTest.java:79)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.lang.RuntimeException: java.lang.reflect.InvocationTargetException [in thread "main"]
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
+addContactTest  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class com.campusdual.bfp.model.dto.dtomapper.ContactMapper
+	at com.campusdual.bfp.ContactServiceTest.addContactTest(ContactServiceTest.java:93)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.lang.RuntimeException: java.lang.reflect.InvocationTargetException [in thread "main"]
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
+getAllContactsTest  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class com.campusdual.bfp.model.dto.dtomapper.ContactMapper
+	at com.campusdual.bfp.ContactServiceTest.getAllContactsTest(ContactServiceTest.java:51)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.lang.RuntimeException: java.lang.reflect.InvocationTargetException [in thread "main"]
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
+editContactTest  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoClassDefFoundError: Could not initialize class com.campusdual.bfp.model.dto.dtomapper.ContactMapper
+	at com.campusdual.bfp.ContactServiceTest.editContactTest(ContactServiceTest.java:114)
+Caused by: java.lang.ExceptionInInitializerError: Exception java.lang.RuntimeException: java.lang.reflect.InvocationTargetException [in thread "main"]
+	at com.campusdual.bfp.ContactServiceTest.getOneContactTest(ContactServiceTest.java:67)
+
