@@ -22,15 +22,13 @@ export class DisplayOffersComponent implements OnInit {
 
   ngOnInit() {
     this.load();
-    this.loadCompanyName(); // Cargar el nombre de la empresa al inicializar
+    this.loadCompanyName();
   }
 
-  // Nuevo método para cargar el nombre de la empresa
   loadCompanyName(): void {
     this.companyName = sessionStorage.getItem('empresa') || '';
   }
 
-  // Nuevo método para verificar si el usuario está logueado
   isLoggedIn(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
