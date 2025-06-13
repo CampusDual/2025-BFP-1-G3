@@ -14,6 +14,7 @@ import { PublishOfferComponent } from './publish-offer/publish-offer.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DisplayOffersComponent } from './display-offers/display-offers.component';
 import { MatTableModule } from '@angular/material/table';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 
@@ -35,7 +36,8 @@ import { MatTableModule } from '@angular/material/table';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    MatTableModule
+    MatTableModule,
+    MatSnackBarModule
   ]
 })
 export class MainModule { }

@@ -5,7 +5,7 @@
 }
 
 .content {
-  height: 100dvh;
   display: grid;
-  grid-template-rows: 64px minmax(auto,100%) 64px;
+  min-height: 100dvh;
+  grid-template-rows: auto 1fr auto;
 }

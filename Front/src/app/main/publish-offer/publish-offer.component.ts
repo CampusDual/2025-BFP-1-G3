@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginService } from 'src/app/services/login.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-publish-offer',
   templateUrl: './publish-offer.component.html',
   styleUrls: ['./publish-offer.component.css']
 })
+
+
 export class PublishOfferComponent implements OnInit {
   offerForm: FormGroup;
   submitting: boolean = false;
@@ -15,7 +19,10 @@ export class PublishOfferComponent implements OnInit {
   errorMessage: string = '';
   companyId: number | null = null;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private loginService: LoginService) {
+  constructor(private fb: FormBuilder, 
+    private http: HttpClient, private loginService: LoginService, 
+    private router: Router,
+    private snackBar: MatSnackBar) {
     this.offerForm = this.fb.group({
       titulo: ['', Validators.required],
       descripcion: ['', Validators.required]
@@ -81,12 +88,19 @@ export class PublishOfferComponent implements OnInit {
     this.http.post('http://localhost:30030/offers/add', offerData, { headers })
       .subscribe({
         next: (response) => {
+          this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
+            duration: 10000, 
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom', 
+            panelClass: ['snackbar-success'],
+          });
           this.successMessage = 'Oferta publicada con éxito.';
           this.offerForm.reset();
           this.submitting = false;
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
+          // setTimeout(() => {
+          //   this.successMessage = '';
+          // }, 2000);
+          this.router.navigate(['/main/ofertas']);
         },
         error: (error) => {
           this.errorMessage = 'Error al publicar la oferta.';
@@ -95,3 +109,5 @@ export class PublishOfferComponent implements OnInit {
       });
   }
 }
+
+
