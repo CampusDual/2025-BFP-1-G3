@@ -11,9 +11,15 @@
         <mat-icon>home</mat-icon>
         <span>Inicio</span>
       </button>
-      <button mat-menu-item [routerLink]="['/main/login']">
+      
+      <button *ngIf="!isLoggedIn()" mat-menu-item [routerLink]="['/main/login']">
         <mat-icon>login</mat-icon>
         <span>Login</span>
+      </button>
+      
+      <button *ngIf="isLoggedIn()" mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
       </button>
     </span>
   </mat-menu>

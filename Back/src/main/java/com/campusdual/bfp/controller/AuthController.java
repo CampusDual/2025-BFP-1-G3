@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -89,5 +90,23 @@ public class AuthController {
 
         userService.registerNewUser(request.getLogin(), request.getPassword());
         return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered.");
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<Map<String, Object>> getUserProfile(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = authentication.getName();
+        String companyName = userService.getCompanyNameByUsername(username);
+        Integer companyId = userService.getCompanyIdByUsername(username);
+
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("username", username);
+        profile.put("companyName", companyName);
+        profile.put("companyId", companyId);
+
+        return ResponseEntity.ok(profile);
     }
 }

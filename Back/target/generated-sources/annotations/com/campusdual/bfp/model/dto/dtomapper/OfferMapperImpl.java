@@ -1,5 +1,6 @@
 package com.campusdual.bfp.model.dto.dtomapper;
 
+import com.campusdual.bfp.model.Company;
 import com.campusdual.bfp.model.Offer;
 import com.campusdual.bfp.model.dto.OfferDTO;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-11T09:56:58+0200",
+    date = "2025-06-13T08:33:45+0200",
     comments = "version: 1.5.3.Final, compiler: Eclipse JDT (IDE) 3.42.0.v20250514-1000, environment: Java 22.0.2 (Oracle Corporation)"
 )
 public class OfferMapperImpl implements OfferMapper {
@@ -21,7 +22,8 @@ public class OfferMapperImpl implements OfferMapper {
 
         OfferDTO offerDTO = new OfferDTO();
 
-        offerDTO.setCompanyId( companyToCompanyId( offer.getCompany() ) );
+        offerDTO.setCompanyId( offerCompanyId( offer ) );
+        offerDTO.setCompanyName( offerCompanyName( offer ) );
         offerDTO.setId( offer.getId() );
         offerDTO.setOfferDescription( offer.getOfferDescription() );
         offerDTO.setTitle( offer.getTitle() );
@@ -57,5 +59,32 @@ public class OfferMapperImpl implements OfferMapper {
         offer.setTitle( offerDto.getTitle() );
 
         return offer;
+    }
+
+    private Integer offerCompanyId(Offer offer) {
+        if ( offer == null ) {
+            return null;
+        }
+        Company company = offer.getCompany();
+        if ( company == null ) {
+            return null;
+        }
+        int id = company.getId();
+        return id;
+    }
+
+    private String offerCompanyName(Offer offer) {
+        if ( offer == null ) {
+            return null;
+        }
+        Company company = offer.getCompany();
+        if ( company == null ) {
+            return null;
+        }
+        String name = company.getName();
+        if ( name == null ) {
+            return null;
+        }
+        return name;
     }
 }

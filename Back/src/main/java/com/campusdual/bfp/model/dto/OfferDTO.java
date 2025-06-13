@@ -1,22 +1,22 @@
 package com.campusdual.bfp.model.dto;
 
 public class OfferDTO {
+
     private Long id;
-
     private String title;
-
     private String offerDescription;
-
     private Integer companyId;
+    private String companyName;
 
     public OfferDTO() {
     }
 
-    public OfferDTO(Long id, String title, String offerDescription, Integer companyId) {
+    public OfferDTO(Long id, String title, String offerDescription, Integer companyId, String companyName) {
         this.id = id;
         this.title = title;
         this.offerDescription = offerDescription;
         this.companyId = companyId;
+        this.companyName = companyName;
     }
 
     public Long getId() {
@@ -49,5 +49,13 @@ public class OfferDTO {
 
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }

@@ -1,7 +1,7 @@
 <form color="primary">
   <mat-card class="form-data">
     <mat-card-header>
-      <mat-card-title>INICIAR SESION</mat-card-title>
+      <mat-card-title> <img src="assets/img/icono-cluster.png" alt=""> INICIAR SESION</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
@@ -16,7 +16,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Enter your password</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password" />
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+        <button id="buttonHide" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -28,7 +28,7 @@
       </div>
 
       <!-- BOTÓN LOGIN -->
-      <button mat-raised-button color="primary" (click)="login(user, password)">
+      <button mat-raised-button color="primary" id="buttonLogin" (click)="login(user, password)">
         Login
         <mat-icon>login</mat-icon>
       </button>

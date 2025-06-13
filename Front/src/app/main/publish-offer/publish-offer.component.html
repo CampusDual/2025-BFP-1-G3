@@ -1,14 +1,22 @@
 <div class="form-container">
-  <h2>Publicar Oferta</h2>
-  <form [formGroup]="ofertaForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="offerForm" (ngSubmit)="onSubmit()">
+    <h2>Publicar Oferta</h2>
 
-    <label for="titulo">Título del puesto</label>
-    <input id="titulo" type="text" formControlName="titulo" placeholder="Ej. Desarrollador Frontend" />
+    <mat-form-field appearance="fill">
+      <mat-label>Título del puesto</mat-label>
+      <input matInput id="titulo" type="text" formControlName="titulo" placeholder="Ej. Desarrollador Frontend" />
+      <mat-error *ngIf="offerForm.get('titulo')?.invalid && offerForm.get('titulo')?.touched">El título es obligatorio.</mat-error>
+    </mat-form-field>
 
-    <label for="descripcion">Descripción de la oferta</label>
-    <textarea id="descripcion" formControlName="descripcion" placeholder="Detalles del puesto"></textarea>
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción de la oferta</mat-label>
+      <textarea matInput id="descripcion" formControlName="descripcion" placeholder="Detalles del puesto" rows="5"></textarea>
+      <mat-error *ngIf="offerForm.get('descripcion')?.invalid && offerForm.get('descripcion')?.touched">La descripción es obligatoria.</mat-error>
+    </mat-form-field>
 
-    <button type="submit" class="btn-publicar">Publicar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">Publicar</button>
 
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
   </form>
 </div>

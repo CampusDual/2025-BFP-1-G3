@@ -43,6 +43,11 @@ public class UserService implements UserDetailsService {
 
     //CAMBIO: Implementar el métod. para obtener el nombre de la empresa
 
+    public boolean existsByUsername(String username) {
+        User user = this.userDao.findByLogin(username);
+        return user != null;
+    }
+
     public String getCompanyNameByUsername(String username) {
         User user = userDao.findByLogin(username);
         if (user != null && user.getCompany() != null) {
@@ -52,9 +57,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public boolean existsByUsername(String username) {
-        User user = this.userDao.findByLogin(username);
-        return user != null;
+    public Integer getCompanyIdByUsername(String username) {
+        User user = userDao.findByLogin(username);
+        if (user != null && user.getCompany() != null) {
+            return user.getCompany().getId();
+        } else {
+            return null;
+        }
     }
 
     public void registerNewUser(String username, String password) {

@@ -12,6 +12,9 @@ import { HttpClientModule } from '@angular/common/http'
 import { IndexComponent } from './index/index.component';
 import { PublishOfferComponent } from './publish-offer/publish-offer.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DisplayOffersComponent } from './display-offers/display-offers.component';
+import { MatTableModule } from '@angular/material/table';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 
@@ -20,7 +23,8 @@ import { ReactiveFormsModule } from '@angular/forms';
   declarations: [
     LoginComponent,
     IndexComponent,
-    PublishOfferComponent
+    PublishOfferComponent,
+    DisplayOffersComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +35,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatCardModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatSnackBarModule
   ]
 })
 export class MainModule { }

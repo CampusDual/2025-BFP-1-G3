@@ -3,7 +3,6 @@ package com.campusdual.bfp.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,7 +45,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**","/test/all", "/public/**").permitAll()
+                .antMatchers("/auth/**","/test/all", "/public/**", "/offers/getAll").permitAll()
 //                .antMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
