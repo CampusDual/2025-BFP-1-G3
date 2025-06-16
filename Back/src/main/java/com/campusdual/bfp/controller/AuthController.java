@@ -88,7 +88,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
 
-        userService.registerNewUser(request.getLogin(), request.getPassword());
+        //Pasamos el SignupDTO completo
+        userService.registerNewUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered.");
     }
 

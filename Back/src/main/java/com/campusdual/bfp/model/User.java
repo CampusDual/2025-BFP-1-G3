@@ -153,4 +153,17 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    //Añadidos para poder relacionar User con Candidate
+    @OneToOne
+    @JoinColumn(name = "id_candidate")
+    private Candidate candidate;
+
+    public Candidate getCandidate() {
+        return candidate;
+    }
+
+    public void setCandidate(Candidate candidate) {
+        this.candidate = candidate;
+    }
 }
