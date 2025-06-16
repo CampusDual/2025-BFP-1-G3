@@ -1,4 +1,7 @@
 package com.campusdual.bfp.model.dao;
 
-public interface CandidateDAO {
+import com.campusdual.bfp.model.Candidate;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CandidateDao extends JpaRepository<Candidate, Integer> {
 }
