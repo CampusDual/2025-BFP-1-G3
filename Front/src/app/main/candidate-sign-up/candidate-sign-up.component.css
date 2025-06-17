@@ -1,85 +1,112 @@
-form {
-  height: 100%;
-  display: grid;
-  place-content: center;
-}
-
-mat-card-title {
-  color: #f5f5f5;
-
+/* Center the form card on the page */
+:host {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 82dvh;
 }
 
+/* Style the mat-card container */
 .form-data {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: max-content;
-  width: auto;
-  align-items: center;
-  max-height: 50dvh;
-  /* padding: 1rem; */
+  max-width: 90%;
+  width: 600px;
+  padding: 24px 28px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-}
-.mat-mdc-card-header {
-  background-color: #333333;
-  width: 88.1%;
-  height: 100%;
-  margin-bottom: 10%;
-  border-radius: 6px 6px 0 0;
-  justify-content: center;
-  padding-bottom:0.5rem ;
-}
-.mat-mdc-card-content {
-  display: flex;
-  /* padding: 0 16px; */
-  flex-direction: column;
+/* Responsive layout: single column on narrow screens */
+@media (max-width: 480px) {
+  mat-card-content {
+    grid-template-columns: 1fr !important;
+  }
 }
 
-.error-message {
-  color: #f44336;
-  margin-bottom: 16px;
-  text-align: center;
-  font-size: 14px;
+/* Style form fields container as grid for compact layout */
+mat-card-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap:8px;
 }
 
+/* Make mat-form-field take full width of grid cell */
 mat-form-field {
-  margin-bottom: 7%;
+  width: 100%;
+  margin-bottom: 0;
+  height: 75px;
 }
-#buttonLogin {
-  display: flex;
-  align-items: center;
+
+mat-form-field input.mat-input-element {
+  height: 100%;
+  padding: 16px 12px 16px 12px;
+  box-sizing: border-box;
+}
+
+/* For inputs that should span full width (like password, email, username), override grid */
+mat-form-field[name="login"],
+mat-form-field[name="password"],
+mat-form-field[name="email"] {
+  grid-column: 1 / -1;
+}
+
+/* Header styles */
+mat-card-header {
+  text-align: center;
+  margin-bottom: 12px;
   justify-content: center;
-  font-weight: 100;
-  border-radius: 6px;
-  background-color: #e61b15;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
   margin-bottom: 5%;
 }
 
-#buttonLogin:hover {
-  background-color: #333333;
-}
-
-#buttonHide {
-  background-color: #f5f5f5;
-  padding-top: 8%;
+mat-card-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+   
 }
 
 img {
    height: 40px;
    margin-right: 0.5rem;
 
+}
+
+
+/* Style the sign-up button */
+#buttonLogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / -1;
+  width: 100%;
+  background-color: #e61b15;
+  color: white;
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 4px;
+  height: 36px;
+  margin-top: 12px;
+  border: none;
+}
+
+#buttonLogin:hover {
+  background-color: #333333;
+}
+/* Hide the password toggle button for cleaner look */
+#buttonHide {
+  display: none;
+}
+
+/* Error message style */
+.error-message {
+  grid-column: 1 / -1;
+  color: #d32f2f;
+  font-size: 13px;
+  margin-bottom: 8px;
+  text-align: center;
 }
