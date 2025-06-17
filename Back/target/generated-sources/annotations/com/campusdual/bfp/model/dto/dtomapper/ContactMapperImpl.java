@@ -8,8 +8,8 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-16T08:45:36+0200",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.27 (Eclipse Adoptium)"
+    date = "2025-06-17T08:39:19+0200",
+    comments = "version: 1.5.3.Final, compiler: Eclipse JDT (IDE) 3.42.0.v20250514-1000, environment: Java 22.0.2 (Oracle Corporation)"
 )
 public class ContactMapperImpl implements ContactMapper {
 

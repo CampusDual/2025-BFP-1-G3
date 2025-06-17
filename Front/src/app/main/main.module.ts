@@ -15,6 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DisplayOffersComponent } from './display-offers/display-offers.component';
 import { MatTableModule } from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.component';
 
 
 
@@ -24,7 +25,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     LoginComponent,
     IndexComponent,
     PublishOfferComponent,
-    DisplayOffersComponent
+    DisplayOffersComponent,
+    CandidateSignUpComponent
   ],
   imports: [
     CommonModule,
