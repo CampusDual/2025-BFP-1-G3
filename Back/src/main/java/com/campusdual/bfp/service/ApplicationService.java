@@ -43,6 +43,15 @@ public class ApplicationService implements IApplicationService {
 
     @Override
     public Long insertApplication(ApplicationDTO applicationDTO) {
+        int candidateId = applicationDTO.getId_candidate();
+        Long offerId = applicationDTO.getId_offer().longValue();
+
+        boolean alreadyExists = applicationDao.existsByCandidateIdAndOfferId(candidateId, offerId);
+
+        if (alreadyExists) {
+            throw new RuntimeException("El candidato ya está inscrito en esta oferta.");
+        }
+
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
         applicationDao.saveAndFlush(application);
         return application.getId();
