@@ -16,34 +16,31 @@ public interface ApplicationMapper {
 
     ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
 
+    // Convierte Application → ApplicationDTO
     @Mapping(source = "candidate.id", target = "id_candidate")
     @Mapping(source = "offer.id", target = "id_offer")
     ApplicationDTO toDTO(Application application);
 
     List<ApplicationDTO> toDTOList(List<Application> applications);
 
-    @Mapping(source = "id_candidate", target = "candidate")
-    @Mapping(source = "id_offer", target = "offer")
-
+    // Convierte ApplicationDTO → Application
+    @Mapping(source = "id_candidate", target = "candidate", qualifiedByName = "idCandidateToCandidate")
+    @Mapping(source = "id_offer", target = "offer", qualifiedByName = "idOfferToOffer")
     Application toEntity(ApplicationDTO applicationDTO);
 
     @Named("idCandidateToCandidate")
     default Candidate idCandidateToCandidate(Integer id_candidate) {
-        if (id_candidate == null) {
-            return null;
-        }
+        if (id_candidate == null) return null;
         Candidate candidate = new Candidate();
         candidate.setId(id_candidate);
         return candidate;
     }
 
     @Named("idOfferToOffer")
-    default Offer idOfferToOffer(Long id_offer) {
-        if (id_offer == null) {
-            return null;
-        }
+    default Offer idOfferToOffer(Integer id_offer) {
+        if (id_offer == null) return null;
         Offer offer = new Offer();
-        offer.setId(id_offer);
+        offer.setId(id_offer.longValue()); // conversión si tu DTO usa Integer pero el ID en Offer es Long
         return offer;
     }
 }
