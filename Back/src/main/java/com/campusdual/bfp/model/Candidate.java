@@ -3,7 +3,7 @@ package com.campusdual.bfp.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "CANDIDATE")
+@Table(name = "candidate")
 public class Candidate {
 
 

@@ -1,12 +1,10 @@
 package com.campusdual.bfp.service;
 
 import com.campusdual.bfp.api.IOfferService;
-import com.campusdual.bfp.model.Contact;
 import com.campusdual.bfp.model.Offer;
 import com.campusdual.bfp.model.dao.CompanyDao;
 import com.campusdual.bfp.model.dao.OfferDao;
 import com.campusdual.bfp.model.dto.OfferDTO;
-import com.campusdual.bfp.model.dto.dtomapper.ContactMapper;
 import com.campusdual.bfp.model.dto.dtomapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

@@ -3,7 +3,7 @@ package com.campusdual.bfp.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "COMPANY")
+@Table(name = "company")
 public class Company {
 
     @Id
