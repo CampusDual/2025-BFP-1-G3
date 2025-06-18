@@ -1,0 +1,83 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-candidate-sign-up',
+  templateUrl: './candidate-sign-up.component.html',
+  styleUrls: ['./candidate-sign-up.component.css']
+})
+export class CandidateSignUpComponent {
+  hide = true;
+  signUpForm!: FormGroup;
+  signUpError: string = '';
+  submitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
+
+  constructor(private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private http: HttpClient,
+    private router: Router) {
+    this.signUpForm = this.fb.group({
+      login: ['', Validators.required],
+      password: ['', Validators.required],
+      name: ['', Validators.required],
+      surname1: ['', Validators.required],
+      surname2: ['', Validators.required],
+      phone: ['', Validators.required],
+      email: ['', Validators.required]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.signUpForm.invalid) {
+      this.signUpError = 'Por favor, complete todos los campos requeridos.';
+      return;
+    }
+    const registerData = {
+      login: String(this.signUpForm.value.login).trim(),
+      password: String(this.signUpForm.value.password).trim(),
+      name: String(this.signUpForm.value.name).trim(),
+      surname1: String(this.signUpForm.value.surname1).trim(),
+      surname2: String(this.signUpForm.value.surname2).trim(),
+      phone: String(this.signUpForm.value.phone).trim(),
+      email: String(this.signUpForm.value.email).trim()
+    };
+
+    this.submitting = true;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http.post('http://localhost:30030/auth/signup', registerData, { headers })
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
+            duration: 1000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-success'],
+          });
+          console.log('Registro exitoso, navegando a login...');
+          this.successMessage = 'Te has registrado con éxito.';
+          this.signUpForm.reset();
+          this.submitting = false;
+          this.router.navigateByUrl('/main/login')
+
+        },
+        error: (error) => {
+          if (error.status === 201) {
+            this.signUpForm.reset();
+            this.submitting = false;
+            this.router.navigateByUrl('/main/login')
+          } else {
+            this.errorMessage = 'Error al registrarse.';
+            this.submitting = false;
+          }
+        }
+      });
+  }
+}

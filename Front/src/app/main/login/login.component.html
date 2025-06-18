@@ -1,4 +1,4 @@
-<form color="primary">
+<form color="primary" (ngSubmit)="login(user, password)">
   <mat-card class="form-data">
     <mat-card-header>
       <mat-card-title> <img src="assets/img/icono-cluster.png" alt=""> INICIAR SESION</mat-card-title>
@@ -15,8 +15,9 @@
       <!-- PASSWORD -->
       <mat-form-field appearance="fill">
         <mat-label>Enter your password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password" />
-        <button id="buttonHide" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+        <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password"
+          (keyup.enter)="login(user, password)" />
+        <button type="button" id="buttonHide" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -26,13 +27,12 @@
       <div *ngIf="loginError" class="error-message">
         {{ loginError }}
       </div>
-
       <!-- BOTÓN LOGIN -->
-      <button mat-raised-button color="primary" id="buttonLogin" (click)="login(user, password)">
+      <button type="submit" mat-raised-button color="primary" id="buttonLogin">
         Login
         <mat-icon>login</mat-icon>
       </button>
-
+      <div id="buttonRegister" [routerLink]="['/main/registrarse']">¿No tienes una cuenta aún? Regístrate</div>
     </mat-card-content>
   </mat-card>
 </form>

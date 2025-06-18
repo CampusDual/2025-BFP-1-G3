@@ -1,11 +1,14 @@
 package com.campusdual.bfp.service;
 
+import com.campusdual.bfp.model.Candidate;
 import com.campusdual.bfp.model.Role;
 import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.UserRole;
 import com.campusdual.bfp.model.dao.RoleDao;
 import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dao.UserRoleDao;
+import com.campusdual.bfp.model.dto.CandidateDTO;
+import com.campusdual.bfp.model.dto.SignupDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +24,9 @@ import java.util.Collections;
 @Service
 @Lazy
 public class UserService implements UserDetailsService {
+
+    @Autowired
+    private CandidateService candidateService;
 
     @Autowired
     private UserDao userDao;
@@ -66,20 +72,39 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void registerNewUser(String username, String password) {
+    // Para registrar un usuario necesitamos sus datos como Candidate
+    // Ahora registerNewUser recibe como parámetro un objeto signupDTO
+    public void registerNewUser(SignupDTO signupDTO) {
+        // Creamos y guardamos el nuevo Candidate
+        CandidateDTO candidateDTO = new CandidateDTO();
+        candidateDTO.setName(signupDTO.getName());
+        candidateDTO.setSurname1(signupDTO.getSurname1());
+        candidateDTO.setSurname2(signupDTO.getSurname2());
+        candidateDTO.setPhone(signupDTO.getPhone());
+        candidateDTO.setEmail(signupDTO.getEmail());
+
+        int candidateId = candidateService.insertCandidate(candidateDTO);
+
+        //Creamos un objeto Candidate y seteamos su id
+        Candidate candidate = new Candidate();
+        candidate.setId(candidateId);
+
+        // Creamos y guardamos el nuevo User
         User user = new User();
-        user.setLogin(username);
-        user.setName(username);
-        user.setPassword(this.passwordEncoder().encode(password));
+        user.setLogin(signupDTO.getLogin());
+        user.setPassword(this.passwordEncoder().encode(signupDTO.getPassword()));
+        user.setCandidate(candidate); // Aquí se asigna la relación
+
         User savedUser = this.userDao.saveAndFlush(user);
 
-        Role role = this.roleDao.findByRoleName("ROLE_USER");
-        if (role != null) {
-            UserRole userRole = new UserRole();
-            userRole.setUser(savedUser);
-            userRole.setRole(role);
-            this.userRoleDao.saveAndFlush(userRole);
-        }
+        // Asignamos un rol ¿Necesario?
+        Role role = roleDao.findByRoleName("role_candidate");
+
+        UserRole userRole = new UserRole();
+        userRole.setUser(savedUser);
+        userRole.setRole(role);
+
+        userRoleDao.saveAndFlush(userRole);
     }
 
     @Bean
