@@ -14,7 +14,7 @@ export class LoginComponent {
   password: string = '';
   loginError: string = '';
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) { }
 
   login(user: string, password: string) {
     console.log("Datos recogidos del formulario:", user, password);
@@ -22,9 +22,13 @@ export class LoginComponent {
 
     this.loginService.login(user, password).subscribe(
       response => {
-        console.log("Respuesta del backend:", response);
+        // console.log("Respuesta del backend:", response);
         // Cambiado para redirigir a ofertas en lugar de index
-        this.router.navigate(['/main/ofertas']);
+        if (response.empresa === "") {
+          this.router.navigate(['/main/candidato']);
+        } else {
+          this.router.navigate(['/main/empresa']);
+        }
       },
       error => {
         console.error("Error en login:", error);

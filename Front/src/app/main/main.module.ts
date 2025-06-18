@@ -16,6 +16,8 @@ import { DisplayOffersComponent } from './display-offers/display-offers.componen
 import { MatTableModule } from '@angular/material/table';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.component';
+import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
+import { CompanyPanelComponent } from './company-panel/company-panel.component';
 
 
 
@@ -26,7 +28,9 @@ import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.
     IndexComponent,
     PublishOfferComponent,
     DisplayOffersComponent,
-    CandidateSignUpComponent
+    CandidateSignUpComponent,
+    CandidatePanelComponent,
+    CompanyPanelComponent
   ],
   imports: [
     CommonModule,

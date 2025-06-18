@@ -73,9 +73,10 @@ export class CandidateSignUpComponent {
             this.signUpForm.reset();
             this.submitting = false;
             this.router.navigateByUrl('/main/login')
-          } else {
-            this.errorMessage = 'Error al registrarse.';
+          } else if (error.status === 409) {
+            this.signUpError = 'Error al registrarse el nombre de usuario ya existe.';
             this.submitting = false;
+
           }
         }
       });

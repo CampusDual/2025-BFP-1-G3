@@ -11,7 +11,7 @@ import { Offer } from "../model/offer";
 export class LoginService {
 
   private urlEndPoint: string = 'http://localhost:30030'
-  
+
   constructor(private http: HttpClient) { }
 
   login(user: string, password: string) {
@@ -62,7 +62,8 @@ export class LoginService {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('empresa');
-    
+
     console.log('Sesión cerrada correctamente');
   }
+
 }
