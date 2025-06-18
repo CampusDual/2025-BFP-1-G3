@@ -4,7 +4,7 @@ import com.campusdual.bfp.model.Candidate;
 import com.campusdual.bfp.model.Offer;
 
 public class ApplicationDTO {
-    private long id;
+    private Long id;
     private Integer id_candidate;
     private Integer id_offer;
 
@@ -17,11 +17,11 @@ public class ApplicationDTO {
         this.id_offer = offer;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -33,7 +33,7 @@ public class ApplicationService implements IApplicationService {
     @Override
     public ApplicationDTO queryApplication(ApplicationDTO applicationDTO) {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
-        return ApplicationMapper.INSTANCE.toDTO(applicationDao.getReferenceById(Math.toIntExact(application.getId())));
+        return ApplicationMapper.INSTANCE.toDTO(applicationDao.getReferenceById(application.getId()));
     }
 
     @Override
