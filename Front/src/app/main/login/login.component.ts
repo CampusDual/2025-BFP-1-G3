@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
         if (response.empresa === "" && this.loginService.clickedApplyOffer) {
           this.applyOfferAfterLogIn();
           this.router.navigate(['/main/ofertas']);
+          this.loginService.clickedApplyOffer = false;
         } else if (response.empresa === "") {
           this.router.navigate(['/main/candidato']);
         } else {
@@ -54,7 +55,7 @@ export class LoginComponent implements OnInit {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         });
-        
+
         const applicationData = {
           id_candidate: this.loginService.candidateId,
           id_offer: this.loginService.idOffer
