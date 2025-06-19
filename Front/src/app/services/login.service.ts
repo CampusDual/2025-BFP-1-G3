@@ -10,8 +10,13 @@ import { Offer } from "../model/offer";
 })
 export class LoginService {
 
+  clickedApplyOffer: boolean = false;
+  idOffer!: number;
+  companyId!:number;
+  candidateId!:number;
+
   private urlEndPoint: string = 'http://localhost:30030'
-  
+
   constructor(private http: HttpClient) { }
 
   login(user: string, password: string) {
@@ -62,7 +67,29 @@ export class LoginService {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('empresa');
-    
+
     console.log('Sesión cerrada correctamente');
+  }
+
+  loadUserProfile(): Observable<{ companyId: number, candidateId: number }> {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      // this.errorMessage = 'No está logueado.';
+      return new Observable(observer => {
+        observer.error('No token found');
+        observer.complete();
+      });
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + token
+    });
+
+    return this.http.get<{ companyId: number, candidateId: number }>('http://localhost:30030/auth/profile', { headers }).pipe(
+      tap(response => {
+        this.companyId = response.companyId;
+        this.candidateId = response.candidateId;
+      })
+    );
   }
 }

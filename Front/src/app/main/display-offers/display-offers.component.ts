@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginService } from 'src/app/services/login.service';
 import { Offer } from 'src/app/model/offer';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-display-offers',
@@ -11,18 +12,25 @@ import { Offer } from 'src/app/model/offer';
 })
 export class DisplayOffersComponent implements OnInit {
 
+
   offers: Offer[] = [];
   submitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
   companyId: number | null = null;
   companyName: string = ''; // Nuevo campo para el nombre de la empresa
+  candidateId: number | null = null;
+  token: string = sessionStorage.getItem('token') ?? '';
+  headers: HttpHeaders = new HttpHeaders({
+    'Authorization': 'Bearer ' + this.token
+  });
 
-  constructor(private loginService: LoginService, private router:Router, private http:HttpClient) { }
+  constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.load();
     this.loadCompanyName();
+    this.loginService.loadUserProfile();
   }
 
   loadCompanyName(): void {
@@ -51,34 +59,66 @@ export class DisplayOffersComponent implements OnInit {
   }
 
   publicar(): void {
-    if(this.loadUserProfile()){
+    if (this.loginService.loadUserProfile()) {
       this.router.navigate(['/main/publicar']);
-    } else{
+    } else {
       this.router.navigate(['/main/login']);
     }
   }
 
-  loadUserProfile(): boolean {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      this.errorMessage = 'No está logueado.';
-      return false;
+  applyOffer(idOffer: number): void {
+    if (!this.isLoggedIn()) {
+      this.loginService.clickedApplyOffer = true;
+      this.loginService.idOffer = idOffer;
+      this.router.navigate(['/main/login']);
+      return;
     }
 
+    this.loginService.clickedApplyOffer = true;
+    this.loginService.idOffer = idOffer;
+    console.log(this.loginService.idOffer);
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + token
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    this.http.get<{ companyId: number }>('http://localhost:30030/auth/profile', { headers })
-      .subscribe({
-        next: (response) => {
-          this.companyId = response.companyId;
-        },
-        error: (error) => {
-          this.errorMessage = 'Error al obtener el perfil del usuario.';
-          return false;
-        }
-      });
-      return true;
+    const applicationData = {
+      id_candidate: this.loginService.candidateId,
+      id_offer: idOffer
+    };
+
+    this.loginService.loadUserProfile().subscribe({
+      next: () => {
+        this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
+          .subscribe({
+            next: (response) => {
+              this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+                panelClass: ['snackbar-success'],
+              });
+              this.router.navigate(['/main/ofertas']);
+            },
+            error: (error) => {
+              this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+                panelClass: ['snackbar-failed'],
+              });
+            }
+          });
+      },
+      error: (err) => {
+        console.error('Error cargando perfil:', err);
+        this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['snackbar-failed'],
+        });
+      }
+    });
   }
 }

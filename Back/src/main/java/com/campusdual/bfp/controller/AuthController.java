@@ -102,11 +102,13 @@ public class AuthController {
         String username = authentication.getName();
         String companyName = userService.getCompanyNameByUsername(username);
         Integer companyId = userService.getCompanyIdByUsername(username);
+        Integer candidateId = userService.getCandidateIdByUsername(username);
 
         Map<String, Object> profile = new HashMap<>();
         profile.put("username", username);
         profile.put("companyName", companyName);
         profile.put("companyId", companyId);
+        profile.put("candidateId", candidateId);
 
         return ResponseEntity.ok(profile);
     }

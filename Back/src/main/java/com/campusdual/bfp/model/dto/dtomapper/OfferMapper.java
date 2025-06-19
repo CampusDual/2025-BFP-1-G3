@@ -20,7 +20,7 @@ public interface OfferMapper {
     OfferDTO toDTO(Offer offer);
     
     List<OfferDTO> toDTOList(List<Offer> offers);
-    
+
     @Mapping(source = "companyId", target = "company", qualifiedByName = "companyIdToCompany")
     Offer toEntity(OfferDTO offerDto);
     

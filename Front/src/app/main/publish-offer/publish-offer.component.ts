@@ -89,7 +89,7 @@ export class PublishOfferComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
-            duration: 10000, 
+            duration: 1000, 
             horizontalPosition: 'center',
             verticalPosition: 'bottom', 
             panelClass: ['snackbar-success'],

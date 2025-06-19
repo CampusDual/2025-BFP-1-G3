@@ -3,7 +3,7 @@ package com.campusdual.bfp.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "OFFERS")
+@Table(name = "offers")
 
 public class Offer {
 
@@ -11,15 +11,15 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "TITLE", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     private String offerDescription;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ID_COMPANY", nullable = false, foreignKey = @ForeignKey(name = "FK_OFFER_COMPANY"))
+    @JoinColumn(name = "id_company", nullable = false, foreignKey = @ForeignKey(name = "FK_OFFER_COMPANY"))
     private Company company;
 
     public Offer() {

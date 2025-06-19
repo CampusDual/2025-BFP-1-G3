@@ -71,6 +71,14 @@ public class UserService implements UserDetailsService {
             return null;
         }
     }
+    public Integer getCandidateIdByUsername(String username) {
+        User user = userDao.findByLogin(username);
+        if (user != null && user.getCandidate() != null) {
+            return user.getCandidate().getId();
+        } else {
+            return null;
+        }
+    }
 
     // Para registrar un usuario necesitamos sus datos como Candidate
     // Ahora registerNewUser recibe como parámetro un objeto signupDTO
