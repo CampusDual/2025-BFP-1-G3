@@ -30,7 +30,7 @@ export class DisplayOffersComponent implements OnInit {
   ngOnInit() {
     this.load();
     this.loadCompanyName();
-    this.loadUserProfile();
+    this.loginService.loadUserProfile();
   }
 
   loadCompanyName(): void {
@@ -59,72 +59,66 @@ export class DisplayOffersComponent implements OnInit {
   }
 
   publicar(): void {
-    if (this.loadUserProfile()) {
+    if (this.loginService.loadUserProfile()) {
       this.router.navigate(['/main/publicar']);
     } else {
       this.router.navigate(['/main/login']);
     }
   }
 
-  loadUserProfile(): boolean {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      this.errorMessage = 'No está logueado.';
-      return false;
+  applyOffer(idOffer: number): void {
+    if (!this.isLoggedIn()) {
+      this.loginService.clickedApplyOffer = true;
+      this.loginService.idOffer = idOffer;
+      this.router.navigate(['/main/login']);
+      return;
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + token
-    });
-
-    this.http.get<{ companyId: number, candidateId: number }>('http://localhost:30030/auth/profile', { headers })
-      .subscribe({
-        next: (response) => {
-          this.companyId = response.companyId;
-          this.candidateId = response.candidateId;
-        },
-        error: (error) => {
-          this.errorMessage = 'Error al obtener el perfil del usuario.';
-          return false;
-        }
-      });
-    return true;
-  }
-
-  applyOffer(idOffer: number) {
+    this.loginService.clickedApplyOffer = true;
+    this.loginService.idOffer = idOffer;
+    console.log(this.loginService.idOffer);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
     const applicationData = {
-      id_candidate: this.candidateId,
+      id_candidate: this.loginService.candidateId,
       id_offer: idOffer
     };
 
-    if (this.loadUserProfile()) {
-      this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
-        .subscribe({
-          next: (response) => {
-            this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
-              duration: 3000,
-              horizontalPosition: 'center',
-              verticalPosition: 'bottom',
-              panelClass: ['snackbar-success'],
-            });
-            this.router.navigate(['/main/ofertas']);
-          },
-          error: (error) => {
-            this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
-              duration: 3000,
-              horizontalPosition: 'center',
-              verticalPosition: 'bottom',
-              panelClass: ['snackbar-failed'],
-            });
-          }
+    this.loginService.loadUserProfile().subscribe({
+      next: () => {
+        this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
+          .subscribe({
+            next: (response) => {
+              this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+                panelClass: ['snackbar-success'],
+              });
+              this.router.navigate(['/main/ofertas']);
+            },
+            error: (error) => {
+              this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+                panelClass: ['snackbar-failed'],
+              });
+            }
+          });
+      },
+      error: (err) => {
+        console.error('Error cargando perfil:', err);
+        this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['snackbar-failed'],
         });
-    } else {
-      this.router.navigate(['main/login']);
-    }
+      }
+    });
   }
 }
