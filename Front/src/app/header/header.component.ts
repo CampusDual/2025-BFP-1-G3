@@ -15,6 +15,10 @@ export class HeaderComponent {
     return this.loginService.isAuthenticated();
   }
 
+  isLoggedAsCompany(): boolean {
+    return this.loginService.isLoggedAsCompany();
+  }
+
   logout(): void {
     this.loginService.logout();
     this.router.navigate(['/main']);

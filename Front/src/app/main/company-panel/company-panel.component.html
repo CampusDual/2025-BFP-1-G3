@@ -1,1 +1,38 @@
-<p>Hola, {{companyName}}</p>
+<!-- Fila superior con mensaje de bienvenida y botón -->
+ <div class="top-row">
+  <div class="welcome-message" *ngIf="isLoggedIn()">
+    <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
+  </div>
+  <div class="action-buttons-top-right">
+    <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Diseño de tarjetas -->
+<div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
+  <div class="cards-grid">
+    <mat-card class="offer-card" *ngFor="let offer of offers">
+      <mat-card-header>
+        <mat-card-title>{{offer.title}}</mat-card-title>
+        <mat-card-subtitle>Empresa: {{offer.companyName || 'Sin nombre'}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{offer.offerDescription}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">VER DETALLES</button>
+        <!-- <button mat-button color="accent" (click)="applyOffer(offer.id)">APLICAR</button> -->
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Mensaje cuando no hay ofertas -->
+<ng-template #noOffers>
+  <div class="no-offers">
+    <mat-icon>info</mat-icon>
+    <p>No hay ofertas disponibles en este momento</p>
+  </div>
+</ng-template>

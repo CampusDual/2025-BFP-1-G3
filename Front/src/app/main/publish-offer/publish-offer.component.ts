@@ -97,7 +97,7 @@ export class PublishOfferComponent implements OnInit {
           this.successMessage = 'Oferta publicada con éxito.';
           this.offerForm.reset();
           this.submitting = false;
-          this.router.navigate(['/main/ofertas']);
+          this.router.navigate(['/main/empresa']);
         },
         error: (error) => {
           this.errorMessage = 'Error al publicar la oferta.';
