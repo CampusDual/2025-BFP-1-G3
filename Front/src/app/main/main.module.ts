@@ -18,6 +18,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.component';
 import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
 import { CompanyPanelComponent } from './company-panel/company-panel.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -43,7 +44,8 @@ import { CompanyPanelComponent } from './company-panel/company-panel.component';
     HttpClientModule,
     ReactiveFormsModule,
     MatTableModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTooltipModule
   ]
 })
 export class MainModule { }
