@@ -82,11 +82,19 @@ export class LoginService {
   }
 
   isLoggedAsCompany(): boolean {
-    if(sessionStorage.getItem('empresa') !== null){
+    if(sessionStorage.getItem('empresa') !== '' && sessionStorage.getItem('token')){
       return true
     }
     return false;
   }
+
+  isLoggedAsCandidate(): boolean {
+    if((sessionStorage.getItem('empresa') === '') && sessionStorage.getItem('token')){
+      return true;
+    }
+    return false;
+  }
+
 
   logout(): void {
     sessionStorage.removeItem('user');
