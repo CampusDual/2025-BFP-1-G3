@@ -1,20 +1,23 @@
-<form color="primary" (ngSubmit)="login(user, password)">
-  <mat-card class="form-data">
+<form color="primary" (ngSubmit)="login(user, password)" class="login-container">
+  <div class="welcome-panel">
+    <h1>Bienvenido</h1>
+    <p>Inicia sesión para continuar tu aventura. 🚀</p>
+  </div>
+  <mat-card class="form-panel">
     <mat-card-header>
-      <mat-card-title> <img src="assets/img/icono-cluster.png" alt=""> INICIAR SESION</mat-card-title>
+      <mat-card-title>INICIAR SESIÓN</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-
       <!-- USERNAME -->
-      <mat-form-field appearance="fill">
-        <mat-label>User name</mat-label>
+      <mat-form-field appearance="fill" class="input-field">
+        <mat-label>Nombre de usuario</mat-label>
         <input matInput type="text" name="user" [(ngModel)]="user" />
       </mat-form-field>
 
       <!-- PASSWORD -->
-      <mat-form-field appearance="fill">
-        <mat-label>Enter your password</mat-label>
+      <mat-form-field appearance="fill" class="input-field">
+        <mat-label>Contraseña</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password"
           (keyup.enter)="login(user, password)" />
         <button type="button" id="buttonHide" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
@@ -27,12 +30,15 @@
       <div *ngIf="loginError" class="error-message">
         {{ loginError }}
       </div>
-      <!-- BOTÓN LOGIN -->
+
+      <!-- LOGIN BUTTON -->
       <button type="submit" mat-raised-button color="primary" id="buttonLogin">
-        Login
-        <mat-icon>login</mat-icon>
+        Iniciar Sesión
       </button>
-      <div id="buttonRegister" [routerLink]="['/main/registrarse']">¿No tienes una cuenta aún? Regístrate</div>
+
+      <div id="buttonRegister" [routerLink]="['/main/registrarse']">
+        ¿No tienes una cuenta? <span class="register-link">Regístrate aquí</span>
+      </div>
     </mat-card-content>
   </mat-card>
 </form>
