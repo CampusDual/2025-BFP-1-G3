@@ -15,7 +15,7 @@ export class CompanyPanelComponent implements OnInit {
   offers: Offer[] = [];
   submitting: boolean = false;
   companyId: number | null = null;
-  companyName: string = ''; // Nuevo campo para el nombre de la empresa
+  companyName: string = '';
   token: string = sessionStorage.getItem('token') ?? '';
   headers: HttpHeaders = new HttpHeaders({
     'Authorization': 'Bearer ' + this.token

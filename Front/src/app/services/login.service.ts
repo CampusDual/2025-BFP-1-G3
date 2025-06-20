@@ -60,10 +60,10 @@ export class LoginService {
 
   // Método para obtener ofertas por empresa
   getOffersByCompanyId(companyId: number): Observable<Offer[]> {
-    const token = sessionStorage.getItem('token'); // obtén el token de autenticación del almacenamiento local
+    const token = sessionStorage.getItem('token'); 
     console.log(token);
     const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}` // pasa el token de autenticación en el encabezado
+    'Authorization': `Bearer ${token}`
   });
   return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getOffersByCompany/${companyId}`, {headers}).pipe(
     map(response => {
