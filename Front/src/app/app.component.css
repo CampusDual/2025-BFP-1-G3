@@ -1,11 +1,20 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-
+ 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+ 
 .content {
   display: grid;
-  min-height: 100dvh;
   grid-template-rows: auto 1fr auto;
+  min-height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+ 
