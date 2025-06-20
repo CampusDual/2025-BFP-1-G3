@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
         this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
           .subscribe({
             next: (response) => {
-              this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
+              this.snackBar.open('Inscripción recibida con éxito.', 'Cerrar', {
                 duration: 3000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
               this.router.navigate(['/main/ofertas']);
             },
             error: (error) => {
-              this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
+              this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
                 duration: 3000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',

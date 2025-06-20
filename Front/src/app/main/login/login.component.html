@@ -36,8 +36,8 @@
         Iniciar Sesión
       </button>
 
-      <div id="buttonRegister" [routerLink]="['/main/registrarse']">
-        ¿No tienes una cuenta? <span class="register-link">Regístrate aquí</span>
+      <div id="buttonRegister">
+        ¿No tienes una cuenta? <span [routerLink]="['/main/registrarse']" class="register-link" >Regístrate aquí</span>
       </div>
     </mat-card-content>
   </mat-card>

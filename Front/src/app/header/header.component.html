@@ -1,37 +1,50 @@
 <mat-toolbar color="accent">
-  <a [routerLink]="['/main/ofertas']" class="logo-link">
-    <img src="assets/img/logo-clustertic.png" alt=""></a>
+  <img src="assets/img/logo-clustertic.png" alt="Logo" />
+
   <span class="fill-remaining-space"></span>
-  <button class="menuhome" mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger"
-    (mouseover)="menuTrigger.openMenu()">
-    <mat-icon>menu</mat-icon>
-       </button>
-        <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-       <span (mouseleave)="menuTrigger.closeMenu()">
-      <button mat-menu-item [routerLink]="['/main']">
+
+  <!-- Botón del menú tipo ASUS -->
+  <div class="menu-wrapper" (mouseleave)="menuOpen = false">
+    <button mat-icon-button class="menu-button" (mouseenter)="menuOpen = true">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- Menú personalizado -->
+    <div *ngIf="menuOpen" class="custom-asus-menu" (mouseenter)="menuOpen = true">
+      <a routerLink="/main" (click)="closeMenu()">
         <mat-icon>home</mat-icon>
         <span>Inicio</span>
-      </button>
+      </a>
 
-      <button *ngIf="isLoggedAsCompany()" mat-menu-item [routerLink]="['/main/empresa']">
-        <mat-icon>account_circle</mat-icon>
-        <span>Área Empresa</span>
-      </button>
-      
-      <button *ngIf="!isLoggedIn()" mat-menu-item [routerLink]="['/main/login']">
+      <a *ngIf="isLoggedAsCompany()" routerLink="/main/empresa" (click)="closeMenu()">
+        <mat-icon>business</mat-icon>
+        <span>Panel Empresa</span>
+      </a>
+
+      <a *ngIf="isLoggedAsCandidate()" routerLink="/main/candidato" (click)="closeMenu()">
+        <mat-icon>person</mat-icon>
+        <span>Panel Usuario</span>
+      </a>
+
+      <a *ngIf="!isLoggedIn()" routerLink="/main/login" (click)="closeMenu()">
         <mat-icon>login</mat-icon>
         <span>Login</span>
-      </button>
-      
-      <button *ngIf="isLoggedIn()" mat-menu-item (click)="logout()">
+      </a>
+
+      <a *ngIf="isLoggedIn()" (click)="logout(); closeMenu()">
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
-      </button>
+      </a>
 
-      <button mat-menu-item [routerLink]="['/main/registrarse']">
+      <a *ngIf="!isLoggedIn()" routerLink="/main/registrarse" (click)="closeMenu()">
         <mat-icon>person_add</mat-icon>
         <span>Registrarse</span>
-      </button>
-    </span>
-  </mat-menu>
+      </a>
+    </div>
+  </div>
 </mat-toolbar>
+
+<!-- Banner dinámico -->
+<div *ngIf="isLoggedIn()" class="diagonal-section-header">
+  <h2>{{ currentSectionTitle }}</h2>
+</div>

@@ -4,28 +4,29 @@
   <div class="cards-grid">
     <mat-card class="offer-card" *ngFor="let offer of offers">
       <mat-card-header>
-        <mat-card-title>{{offer.title}}</mat-card-title>
-        <mat-card-subtitle>Empresa: {{offer.companyName || 'Sin nombre'}}</mat-card-subtitle>
+        <div class="header-content">
+          <mat-card-title>{{ offer.title }}</mat-card-title>
+          <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
+        </div>
       </mat-card-header>
+
       <mat-card-content>
-        <p>{{offer.offerDescription}}</p>
+        <p class="offer-description">{{ offer.offerDescription }}</p>
       </mat-card-content>
-      <mat-card-actions>
 
-        <button mat-icon-button matTooltip="Ver detalles" matTooltipPosition="above" class="tooltip-button">
-          <mat-icon>visibility</mat-icon>
+      <mat-card-actions class="card-actions">
+        <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button">
+          <mat-icon id="info">info</mat-icon>
         </button>
-
-        <button mat-icon-button matTooltip="Inscribirme en la oferta" matTooltipPosition="above" class="tooltip-button" (click)="applyOffer(offer.id)">
-          <mat-icon>send</mat-icon>
+        <button mat-icon-button matTooltip="Inscribirse a la oferta" (click)="applyOffer(offer.id)" class="tooltip-button">
+          <mat-icon id="apply">work</mat-icon>
         </button>
-
       </mat-card-actions>
     </mat-card>
   </div>
 </div>
 
-<!-- Mensaje cuando no hay ofertas -->
+<!-- Mensaje cuando no hay ofertas disponibles -->
 <ng-template #noOffers>
   <div class="no-offers">
     <mat-icon>info</mat-icon>
