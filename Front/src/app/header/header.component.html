@@ -5,12 +5,17 @@
   <button class="menuhome" mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger"
     (mouseover)="menuTrigger.openMenu()">
     <mat-icon>menu</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-    <span (mouseleave)="menuTrigger.closeMenu()">
+       </button>
+        <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+       <span (mouseleave)="menuTrigger.closeMenu()">
       <button mat-menu-item [routerLink]="['/main']">
         <mat-icon>home</mat-icon>
         <span>Inicio</span>
+      </button>
+
+      <button *ngIf="isLoggedAsCompany()" mat-menu-item [routerLink]="['/main/empresa']">
+        <mat-icon>account_circle</mat-icon>
+        <span>Área Empresa</span>
       </button>
       
       <button *ngIf="!isLoggedIn()" mat-menu-item [routerLink]="['/main/login']">
@@ -22,9 +27,10 @@
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>
+
       <button mat-menu-item [routerLink]="['/main/registrarse']">
         <mat-icon>person_add</mat-icon>
-        <span>Registarse</span>
+        <span>Registrarse</span>
       </button>
     </span>
   </mat-menu>

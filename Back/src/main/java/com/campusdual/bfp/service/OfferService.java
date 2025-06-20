@@ -45,6 +45,13 @@ public class OfferService implements IOfferService {
     }
 
     @Override
+    public List<OfferDTO> getOffersByCompanyId(int companyId) {
+        List<Offer> offers = offerDao.findByCompanyId(companyId);
+        return OfferMapper.INSTANCE.toDTOList(offers);
+    }
+
+
+    @Override
     public long insertOffer(OfferDTO offerDto) {
         Integer companyId = offerDto.getCompanyId();
         if (companyId == null || !companyDao.existsById(companyId)) {
