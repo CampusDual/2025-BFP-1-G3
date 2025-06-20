@@ -44,12 +44,7 @@ h3 {
   margin: 16px 16px 0 0;
 }
 
-.buttonadd {
-  width: 2dvw;
-  height: 2dvw;
-  padding: 0.6%;
-  border-radius: 100%;
-}
+
 
 .offers-container {
   padding: 16px;
@@ -98,31 +93,14 @@ mat-card-content {
   margin-bottom: 16px;
 }
 
-button {
-  display: flex;
-  width: fit-content;
-  padding: 2%;
-  margin-left: 2.5%;
-  margin-top: 2.5%;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 100;
-  border-radius: 6px;
-  background-color: #e61b15;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  justify-content: center;
-}
 
-button:hover {
-  background-color: #333333;
-}
 
 .mdc-card__actions {
-  justify-content: space-around;
-  margin-top: 5%;
+  display: flex;
+  justify-content: center; 
+  gap: 8px;
+  margin-top: 16px; 
+  
 }
 .mat-mdc-card-header {
   display: center;
@@ -136,4 +114,27 @@ mat-card-subtitle {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.tooltip-button {
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: #ffffff;
+}
+
+.tooltip-button:hover {
+  background-color: #333333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.tooltip-button mat-icon {
+  font-size: 24px;
+  color: #e61b15;
+}
+
+
+.tooltip-button {
+  margin: 0 4px;
 }

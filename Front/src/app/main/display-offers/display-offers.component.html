@@ -1,14 +1,3 @@
-<!-- Fila superior con mensaje de bienvenida y botón -->
-<!-- <div class="top-row">
-  <div class="welcome-message" *ngIf="isLoggedIn()">
-    <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
-  </div>
-  <div class="action-buttons-top-right">
-    <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-</div> -->
 
 <!-- Diseño de tarjetas -->
 <div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
@@ -22,8 +11,15 @@
         <p>{{offer.offerDescription}}</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button color="primary">VER DETALLES</button>
-        <button mat-button color="accent" (click)="applyOffer(offer.id)">APLICAR</button>
+
+        <button mat-icon-button matTooltip="Ver detalles" matTooltipPosition="above" class="tooltip-button">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button mat-icon-button matTooltip="Inscribirme en la oferta" matTooltipPosition="above" class="tooltip-button" (click)="applyOffer(offer.id)">
+          <mat-icon>send</mat-icon>
+        </button>
+
       </mat-card-actions>
     </mat-card>
   </div>
