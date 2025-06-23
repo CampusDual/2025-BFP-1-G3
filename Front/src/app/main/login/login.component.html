@@ -1,43 +1,48 @@
-<form color="primary" (ngSubmit)="login(user, password)" class="login-container">
+<form class="login-container" (ngSubmit)="login(user, password)">
   <div class="welcome-panel">
     <h1>Bienvenido</h1>
-    <p>Inicia sesión para continuar tu aventura. 🚀</p>
+    <p>Inicia sesión para continuar tu aventura.
+      <mat-icon>rocket_launch</mat-icon>
+    </p>
   </div>
+
   <mat-card class="form-panel">
     <mat-card-header>
       <mat-card-title>INICIAR SESIÓN</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <!-- USERNAME -->
-      <mat-form-field appearance="fill" class="input-field">
+      <!-- NOMBRE DE USUARIO -->
+      <mat-form-field class="input-field" appearance="fill" >
         <mat-label>Nombre de usuario</mat-label>
         <input matInput type="text" name="user" [(ngModel)]="user" />
       </mat-form-field>
 
-      <!-- PASSWORD -->
-      <mat-form-field appearance="fill" class="input-field">
+      <!-- CONTRASEÑA -->
+      <mat-form-field id="pass-field" class="input-field" appearance="fill" >
         <mat-label>Contraseña</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="password"
           (keyup.enter)="login(user, password)" />
-        <button type="button" id="buttonHide" matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+        <button id="hideBtn" type="button"  matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>
 
-      <!-- ERROR MESSAGE -->
-      <div *ngIf="loginError" class="error-message">
+      <!-- MENSAJES DE ERROR -->
+      <div class="error-message" *ngIf="loginError">
+          <mat-icon id="errorIcon">error</mat-icon>
         {{ loginError }}
       </div>
 
-      <!-- LOGIN BUTTON -->
-      <button type="submit" mat-raised-button color="primary" id="buttonLogin">
+      <!-- BOTON DE LOGUEO -->
+      <button id="loginBtn" type="submit" mat-raised-button >
         Iniciar Sesión
       </button>
 
+      <!-- ENLACE DE REGISTRO -->
       <div id="buttonRegister">
-        ¿No tienes una cuenta? <span [routerLink]="['/main/registrarse']" class="register-link" >Regístrate aquí</span>
+        ¿No tienes una cuenta? <span class="register-link" [routerLink]="['/main/registrarse']">Regístrate aquí</span>
       </div>
     </mat-card-content>
   </mat-card>

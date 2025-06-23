@@ -6,31 +6,30 @@
   height: 400px;
   border-radius: 15px;
   overflow: hidden;
+  margin: 7% auto auto auto;
+  color: #F2F2F2;   /* BLANCO CLARO */
+  background-color: #3D3D3D;   /*NEGRO CLARO*/
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  background-color: #2c2c2c;
-  margin: 7% auto auto auto; /* Center horizontally */
 }
 
-/* Left welcome panel */
+/* == PANEL WELCOME == */
 .welcome-panel {
-  flex: 1; /* Fix invalid flex value */
-  background: linear-gradient(180deg, #d92a1a 0%, #a31f1a 100%);
-  color: white;
-  padding: 3rem 2rem;
   display: flex;
+  flex: 0.5;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 3rem 2rem;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
-  box-sizing: border-box;
-  text-align: center;
+  background-image: repeating-radial-gradient(circle at 0 100%, transparent 0, #bb1711 100px), repeating-linear-gradient(#e61b15, #BB1711);
 }
 
 .welcome-panel h1 {
   font-size: 2.5rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .welcome-panel p {
@@ -39,113 +38,125 @@
   line-height: 1.5;
 }
 
-/* Right form panel */
+/* == PANEL FORM == */
 .form-panel {
-  flex: 1;
-  background-color: #333333;
-  padding: 2rem 2.5rem;
   display: flex;
+  flex: 1;
   flex-direction: column;
+  justify-content: center;
+  padding: 2rem 2.5rem;
+  box-sizing: border-box;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
-  box-sizing: border-box;
-  color: #ccc;
-  justify-content: center;
+  background-color: #3D3D3D; /*NEGRO CLARO*/
 }
 
+/* == PANEL FORM: INICIAR SERSION == */
 mat-card-header {
   display: flex;
   justify-content: center;
 }
 
 mat-card-title {
-  color: #ccc !important;
-  font-weight: 700;
   font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-align: center;
   margin-bottom: 1.5rem;
-  letter-spacing: 1px;
 }
 
 .input-field {
-  margin-bottom: 1.5rem;
   width: 100%;
+  margin-bottom: 1.5rem;
 }
 
+
 input.mat-input-element {
-  background-color: #4a4a4a !important;
-  color: white !important;
-  border-radius: 6px;
   padding: 0.5rem 0.75rem;
 }
 
 input::placeholder {
-  color: #e61b15 !important;
+  color: #E61B15; /* ROJO MEDIO*/
   opacity: 1;
 }
 
-#buttonLogin {
-  background-color: #e61b15 !important;
-  color: white !important;
+/* == CAMPO CONTRASEÑA == */
+#pass-field {
+  margin-bottom: 0;
+}
+
+#loginBtn {
+  background-color: #E61B15; /* ROJO MEDIO*/
+  color: #F2F2F2;   /* BLANCO CLARO */
   font-weight: 700;
-  border-radius: 8px;
-  box-shadow: 0 0 10px #e61b15;
+  border-radius: 15px;
+  box-shadow: 0 0 10px #EF5C57; /* ROJO CLARO*/
   transition: background-color 0.3s ease;
   width: 100%;
   height: 45px;
+  border: none;
 }
 
-#buttonLogin:hover {
-  background-color: #b71c1c !important;
-  box-shadow: 0 0 15px #b71c1c;
+#loginBtn:hover {
+  background-color: #BB1711; /* ROJO OSCURO*/
+  box-shadow: 0 0 10px #E61B15; /* ROJO MEDIO*/
 }
 
 .error-message {
-  color: #f44336;
-  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
   text-align: center;
-  font-size: 14px;
+  margin-bottom: 1rem;
+  color: #EF5C57; /* ROJO CLARO*/
+  font-weight: bold;
 }
 
-#buttonHide {
+#errorIcon {
+  margin-right: 0.5rem;
+}
+
+#hideBtn {
   background-color: #f5f5f5;
-  padding-top: 8%;
   border: none;
 }
 
 #buttonRegister {
-  margin-top: 1rem;
   text-align: center;
+  margin-top: 1rem;
   font-size: 0.9rem;
-  color: #ccc;
+  color: #C2C2C2; /* GRIS CLARO*/
 }
 
 .register-link:hover {
-  color: #e61b15;
+  color: #E61B15; /* ROJO MEDIO*/
   text-decoration: underline;
   cursor: pointer;
 }
 
 .register-link {
-  color: #e61b15;
+  color: #E61B15; /* ROJO MEDIO*/
   font-weight: 700;
   cursor: pointer;
 }
 
-/* Responsive: stack panels vertically on small screens */
+/* == MOVIL ==*/
 @media (max-width: 600px) {
   .login-container {
     flex-direction: column;
-    height: auto;
     width: 90vw;
-    margin: 7% auto 7% auto; /* Reset margin to center on mobile */
+    height: auto;
+    margin: 7% auto 7% auto;
   }
+
+  /* == PANEL WELCOME == */
   .welcome-panel {
+    padding: 2rem 1.5rem;
     border-radius: 15px 15px 0 0;
-    padding: 2rem 1.5rem;
   }
+
+  /* == PANEL FORM == */
   .form-panel {
-    border-radius: 0 0 15px 15px;
     padding: 2rem 1.5rem;
+    border-radius: 0 0 15px 15px;
   }
 }
