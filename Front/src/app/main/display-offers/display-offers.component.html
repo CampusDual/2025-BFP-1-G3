@@ -1,4 +1,3 @@
-
 <!-- Diseño de tarjetas -->
 <div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
   <div class="cards-grid">
@@ -8,15 +7,9 @@
           <mat-card-title>{{ offer.title }}</mat-card-title>
           <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
         </div>
-        <div class="header-content">
-          <mat-card-title>{{ offer.title }}</mat-card-title>
-          <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
-        </div>
       </mat-card-header>
 
-
       <mat-card-content>
-        <p class="offer-description">{{ offer.offerDescription }}</p>
         <p class="offer-description">{{ offer.offerDescription }}</p>
       </mat-card-content>
 
@@ -33,11 +26,9 @@
 </div>
 
 <!-- Mensaje cuando no hay ofertas disponibles -->
-<!-- Mensaje cuando no hay ofertas disponibles -->
 <ng-template #noOffers>
   <div class="no-offers">
     <mat-icon>info</mat-icon>
     <p>No hay ofertas disponibles en este momento</p>
   </div>
 </ng-template>
-

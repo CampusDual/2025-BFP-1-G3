@@ -1,12 +1,9 @@
-/* === CONTENEDOR PRINCIPAL === */
-/* === CONTENEDOR PRINCIPAL === */
+
 .offers-container {
   padding: 32px;
   padding: 32px;
 }
 
-/* === GRID RESPONSIVO === */
-/* === GRID RESPONSIVO === */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -15,8 +12,6 @@
   gap: 24px;
 }
 
-/* === TARJETA DE OFERTA === */
-/* === TARJETA DE OFERTA === */
 .offer-card {
   background-color: #ffffff;
   border-radius: 16px;
@@ -39,7 +34,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* === TÍTULO Y EMPRESA === */
+
 mat-card-title {
   font-size: 1.2rem;
   font-weight: bold;
@@ -57,7 +52,7 @@ mat-card-subtitle {
   font-weight: bold;
 }
 
-/* === DESCRIPCIÓN DE LA OFERTA === */
+
 .offer-description {
   font-size: 0.95rem;
   color: #333;
@@ -65,9 +60,6 @@ mat-card-subtitle {
   min-height: 60px;
 }
 
-/* === BOTONES DE ACCIÓN === */
-.card-actions {
-/* === TÍTULO Y EMPRESA === */
 mat-card-title {
   font-size: 1.2rem;
   font-weight: bold;
@@ -85,7 +77,6 @@ mat-card-subtitle {
   font-weight: bold;
 }
 
-/* === DESCRIPCIÓN DE LA OFERTA === */
 .offer-description {
   font-size: 0.95rem;
   color: #333;
@@ -93,7 +84,6 @@ mat-card-subtitle {
   min-height: 60px;
 }
 
-/* === BOTONES DE ACCIÓN === */
 .card-actions {
   display: flex;
   justify-content: center;
@@ -105,11 +95,6 @@ mat-card-subtitle {
 
 }
 
-/* === BOTÓN REDONDO === */
-.tooltip-button {
-  width: 50px;
-  height: 50px;
-/* === BOTÓN REDONDO === */
 .tooltip-button {
   width: 50px;
   height: 50px;
@@ -129,9 +114,6 @@ mat-card-subtitle {
   transform: scale(1.1);
 }
 
-/* mat-icon {
-  
-} */
 
 #info, #apply  {
   display: flex;
@@ -148,7 +130,6 @@ mat-card-subtitle {
   color: #ffffff;
 }
 
-/* === MENSAJE SIN OFERTAS === */
 .no-offers {
   text-align: center;
   padding: 60px;

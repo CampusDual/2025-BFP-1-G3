@@ -27,11 +27,6 @@ public class OffersController {
     public List<OfferDTO> queryAllActiveOffers() {
         return offersService.queryAllActiveOffers();
     }
-
-    @GetMapping("/getOffersByCompany/{companyId}")
-    public List<OfferDTO> getOffersByCompanyId(@PathVariable int companyId) {
-        return offersService.getOffersByCompanyId(companyId);
-    }
     
     @GetMapping("/getActiveOffersByCompany/{companyId}")
     public List<OfferDTO> getActiveOffersByCompanyId(@PathVariable int companyId) {

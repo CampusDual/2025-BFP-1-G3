@@ -1,7 +1,6 @@
 package com.campusdual.bfp.api;
 
 import com.campusdual.bfp.model.dto.CandidateDTO;
-import com.campusdual.bfp.model.dto.CompanyDTO;
 
 import java.util.List;
 

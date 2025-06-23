@@ -16,11 +16,7 @@ import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.
 import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
 import { CompanyPanelComponent } from './company-panel/company-panel.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
-
-
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EditOfferComponent } from './edit-offer/edit-offer.component';
 
@@ -46,8 +42,6 @@ import { EditOfferComponent } from './edit-offer/edit-offer.component';
     HttpClientModule,
     ReactiveFormsModule,
     MatTableModule,
-    MatSnackBarModule,
-    MatTooltipModule
     MatSnackBarModule,
     MatTooltipModule,
     MatDialogModule

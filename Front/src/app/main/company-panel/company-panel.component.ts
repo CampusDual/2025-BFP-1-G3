@@ -1,11 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Offer } from 'src/app/model/offer';
 import { Offer } from 'src/app/model/offer';
 import { LoginService } from 'src/app/services/login.service';
 import { MatDialog } from '@angular/material/dialog';
