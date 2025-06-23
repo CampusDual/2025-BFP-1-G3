@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LoginService } from 'src/app/services/login.service';
 import { Router } from '@angular/router';
+import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -10,22 +10,23 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './publish-offer.component.html',
   styleUrls: ['./publish-offer.component.css']
 })
-
-
 export class PublishOfferComponent implements OnInit {
   offerForm: FormGroup;
-  submitting: boolean = false;
-  successMessage: string = '';
-  errorMessage: string = '';
+  submitting = false;
+  errorMessage = '';
+  successMessage = '';
   companyId: number | null = null;
 
-  constructor(private fb: FormBuilder, 
-    private http: HttpClient, private loginService: LoginService, 
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private loginService: LoginService,
     private router: Router,
-    private snackBar: MatSnackBar) {
+    private snackBar: MatSnackBar
+  ) {
     this.offerForm = this.fb.group({
-      titulo: ['', Validators.required],
-      descripcion: ['', Validators.required]
+      titulo: ['', [Validators.required, Validators.maxLength(70)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(1500)]]
     });
   }
 

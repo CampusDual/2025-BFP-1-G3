@@ -1,7 +1,9 @@
 <form [formGroup]="signUpForm" color="primary" (ngSubmit)="onSubmit()" class="login-container">
   <div class="welcome-panel">
     <h1>Bienvenido</h1>
-    <p>Regístrate para comenzar tu aventura. 🚀</p>
+    <p>Regístrate para comenzar tu aventura. 
+      <mat-icon>rocket_launch</mat-icon>
+    </p>
   </div>
   <mat-card class="form-panel">
     <mat-card-header>
@@ -47,18 +49,19 @@
         <input matInput type="tel" name="phone" formControlName="phone" />
       </mat-form-field>
 
-      <mat-form-field appearance="fill" class="input-field">
+      <mat-form-field id="email-field" appearance="fill" class="input-field">
         <mat-label>Correo</mat-label>
         <input matInput type="email" name="email" formControlName="email" />
       </mat-form-field>
 
       <!-- ERROR MESSAGE -->
       <div *ngIf="signUpError" class="error-message">
+        <mat-icon id="errorIcon">error</mat-icon>
         {{ signUpError }}
       </div>
 
-      <!-- BOTÓN LOGIN -->
-      <button type="submit" mat-raised-button color="primary" id="buttonLogin">
+      <!-- BOTÓN REGISTRO -->
+      <button type="submit" mat-raised-button id="buttonLogin">
         Registrarse
       </button>
 

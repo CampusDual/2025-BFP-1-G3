@@ -38,6 +38,11 @@ public class OffersController {
         return offersService.getActiveOffersByCompanyId(companyId);
     }
 
+    @GetMapping("/getOffersByCompany/{companyId}")
+    public List<OfferDTO> getOffersByCompanyId(@PathVariable int companyId) {
+        return offersService.getOffersByCompanyId(companyId);
+    }
+
     @PostMapping(value = "/add")
     public long addOffer(@RequestBody OfferDTO offerDto) {
         return offersService.insertOffer(offerDto);

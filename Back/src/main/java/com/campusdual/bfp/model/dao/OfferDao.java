@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface OfferDao extends JpaRepository<Offer, Long> {
     List<Offer> findByCompanyId(int companyId);
     List<Offer> findByCompanyIdAndActiveTrue(int companyId);

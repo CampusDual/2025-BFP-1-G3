@@ -1,4 +1,12 @@
 mat-toolbar{
     justify-content: center;
     min-height: 100%;
+    background-color: #1F1F1F; /* NEGRO MEDIO*/
+    color: #F2F2F2; /*BLANCO CLARO*/
+}
+
+span {
+    color: #E61B15; /* ROJO MEDIO*/
+    font-size: x-large;
+    margin-left: 0.2rem;
 }
