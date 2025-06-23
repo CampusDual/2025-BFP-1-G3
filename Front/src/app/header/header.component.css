@@ -7,6 +7,19 @@ mat-toolbar img {
   max-height: 90%;
 }
 
+.logo-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logo-link img {
+  max-height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
 .fill-remaining-space {
   flex-grow: 1;
 }
