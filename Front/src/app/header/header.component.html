@@ -1,5 +1,6 @@
 <mat-toolbar color="accent">
-  <img src="assets/img/logo-clustertic.png" alt="">
+  <a [routerLink]="['/main/ofertas']" class="logo-link">
+    <img src="assets/img/logo-clustertic.png" alt=""></a>
   <span class="fill-remaining-space"></span>
   <button class="menuhome" mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger"
     (mouseover)="menuTrigger.openMenu()">
