@@ -1,0 +1,33 @@
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+
+.welcome-message {
+  font-family: sans-serif;
+  color: #333333;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.companyName {
+  color: #e61b15;
+  font-weight: bold;
+}
+
+.welcome-message h3 {
+  margin: 0;
+}
+
+h3 {
+  align-items: center;
+}
+
+.person_emoji {
+  color: #333333;
+  font-size: 2rem;
+  align-items: baseline;
+}

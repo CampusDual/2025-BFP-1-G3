@@ -58,9 +58,43 @@ export class LoginService {
     );
   }
 
+  // Método para obtener ofertas por empresa
+  getOffersByCompanyId(companyId: number): Observable<Offer[]> {
+    const token = sessionStorage.getItem('token'); 
+    console.log(token);
+    const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+  return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getOffersByCompany/${companyId}`, {headers}).pipe(
+    map(response => {
+      console.log('Respuesta del servidor:', response);
+      return response;
+    }),
+    catchError(error => {
+      console.error('Error obteniendo ofertas:', error);
+      return throwError(() => error);
+    })
+  );
+}
+
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
+
+  isLoggedAsCompany(): boolean {
+    if(sessionStorage.getItem('empresa') !== '' && sessionStorage.getItem('token')){
+      return true
+    }
+    return false;
+  }
+
+  isLoggedAsCandidate(): boolean {
+    if((sessionStorage.getItem('empresa') === '') && sessionStorage.getItem('token')){
+      return true;
+    }
+    return false;
+  }
+
 
   logout(): void {
     sessionStorage.removeItem('user');

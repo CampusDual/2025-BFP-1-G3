@@ -1,35 +1,32 @@
-<!-- Fila superior con mensaje de bienvenida y botón -->
-<!-- <div class="top-row">
-  <div class="welcome-message" *ngIf="isLoggedIn()">
-    <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
-  </div>
-  <div class="action-buttons-top-right">
-    <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-</div> -->
 
 <!-- Diseño de tarjetas -->
 <div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
   <div class="cards-grid">
     <mat-card class="offer-card" *ngFor="let offer of offers">
       <mat-card-header>
-        <mat-card-title>{{offer.title}}</mat-card-title>
-        <mat-card-subtitle>Empresa: {{offer.companyName || 'Sin nombre'}}</mat-card-subtitle>
+        <div class="header-content">
+          <mat-card-title>{{ offer.title }}</mat-card-title>
+          <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
+        </div>
       </mat-card-header>
+
       <mat-card-content>
-        <p>{{offer.offerDescription}}</p>
+        <p class="offer-description">{{ offer.offerDescription }}</p>
       </mat-card-content>
-      <mat-card-actions>
-        <button mat-button color="primary">VER DETALLES</button>
-        <button mat-button color="accent" (click)="applyOffer(offer.id)">APLICAR</button>
+
+      <mat-card-actions class="card-actions">
+        <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button">
+          <mat-icon id="info">info</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Inscribirse a la oferta" (click)="applyOffer(offer.id)" class="tooltip-button">
+          <mat-icon id="apply">work</mat-icon>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
 </div>
 
-<!-- Mensaje cuando no hay ofertas -->
+<!-- Mensaje cuando no hay ofertas disponibles -->
 <ng-template #noOffers>
   <div class="no-offers">
     <mat-icon>info</mat-icon>

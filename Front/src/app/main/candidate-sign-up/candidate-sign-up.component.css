@@ -1,112 +1,154 @@
-/* Center the form card on the page */
-:host {
+.login-container {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 1000px;
+  max-width: 90vw;
+  height: 500px;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 2% auto 2% auto;
+  color: #F2F2F2;   /* BLANCO CLARO */
+  background-color: #3D3D3D;   /*NEGRO CLARO*/
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 0.5;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 3rem 2rem;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-image: repeating-radial-gradient(circle at 0 100%, transparent 0, #bb1711 100px), repeating-linear-gradient(#e61b15, #BB1711);
+}
+
+.welcome-panel h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+
+.welcome-panel p {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* == PANEL FORM == */
+.form-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 2.5rem;
+  box-sizing: border-box;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  background-color: #3D3D3D; /*NEGRO CLARO*/
+}
+
+/* == PANEL FORM: INICIAR SERSION == */
+mat-card-header {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 82dvh;
-}
-
-/* Style the mat-card container */
-.form-data {
-  max-width: 90%;
-  width: 600px;
-  padding: 24px 28px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-
-/* Responsive layout: single column on narrow screens */
-@media (max-width: 480px) {
-  mat-card-content {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Style form fields container as grid for compact layout */
-mat-card-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap:8px;
-}
-
-/* Make mat-form-field take full width of grid cell */
-mat-form-field {
-  width: 100%;
-  margin-bottom: 0;
-  height: 75px;
-}
-
-mat-form-field input.mat-input-element {
-  height: 100%;
-  padding: 16px 12px 16px 12px;
-  box-sizing: border-box;
-}
-
-/* For inputs that should span full width (like password, email, username), override grid */
-mat-form-field[name="login"],
-mat-form-field[name="password"],
-mat-form-field[name="email"] {
-  grid-column: 1 / -1;
-}
-
-/* Header styles */
-mat-card-header {
-  text-align: center;
-  margin-bottom: 12px;
-  justify-content: center;
-  margin-bottom: 5%;
 }
 
 mat-card-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #222;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-   
-}
-
-img {
-   height: 40px;
-   margin-right: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 1.5rem;
 
 }
 
-
-/* Style the sign-up button */
-#buttonLogin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-column: 1 / -1;
+mat-card-content{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 8px;
+}
+.input-field {
   width: 100%;
-  background-color: #e61b15;
-  color: white;
-  font-weight: 600;
-  text-transform: none;
-  border-radius: 4px;
-  height: 36px;
-  margin-top: 12px;
+}
+
+input.mat-input-element {
+  padding: 0.5rem 0.75rem;
+}
+
+input::placeholder {
+  color: #E61B15; /* ROJO MEDIO*/
+  opacity: 1;
+}
+
+#buttonLogin {
+  background-color: #E61B15; /* ROJO MEDIO*/
+  color: #F2F2F2;   /* BLANCO CLARO */
+  font-weight: 700;
+  border-radius: 15px;
   border: none;
+  box-shadow: 0 0 10px #EF5C57; /* ROJO CLARO*/
+  transition: background-color 0.3s ease;
+  width: 100%;
+  height: 45px;
+  margin-bottom: 1rem;
+  grid-column: 1 / -1;
 }
 
 #buttonLogin:hover {
-  background-color: #333333;
-}
-/* Hide the password toggle button for cleaner look */
-#buttonHide {
-  display: none;
+  background-color: #BB1711; /* ROJO OSCURO*/
+  box-shadow: 0 0 10px #E61B15; /* ROJO MEDIO*/
 }
 
-/* Error message style */
 .error-message {
-  grid-column: 1 / -1;
-  color: #d32f2f;
-  font-size: 13px;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
   text-align: center;
+  color: #EF5C57; /* ROJO CLARO*/
+  font-weight: bold;
+  grid-column: 1 / -1;
+}
+
+#errorIcon {
+  margin-left: 0.5rem;
+}
+
+#buttonHide {
+  background-color: #f5f5f5;
+  border: none;
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    flex-direction: column;
+    height: auto;
+    width: 90vw;
+    margin: 7% auto 7% auto; 
+  }
+  .welcome-panel {
+    border-radius: 15px 15px 0 0;
+    padding: 0.1rem;
+  }
+  .welcome-panel h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .welcome-panel p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1% 5% 3% 5%;
+  }
+  .form-panel {
+    border-radius: 0 0 15px 15px;
+    padding: 2rem 1.5rem;
+    flex: 1;
+  }
+  mat-label {
+    font-size: x-small;
+  }
 }
