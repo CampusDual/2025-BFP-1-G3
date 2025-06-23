@@ -7,16 +7,18 @@ public class OfferDTO {
     private String offerDescription;
     private Integer companyId;
     private String companyName;
+    private boolean active = true;
 
     public OfferDTO() {
     }
 
-    public OfferDTO(Long id, String title, String offerDescription, Integer companyId, String companyName) {
+    public OfferDTO(Long id, String title, String offerDescription, Integer companyId, String companyName, boolean active) {
         this.id = id;
         this.title = title;
         this.offerDescription = offerDescription;
         this.companyId = companyId;
         this.companyName = companyName;
+        this.active = active;
     }
 
     public Long getId() {
@@ -57,5 +59,13 @@ public class OfferDTO {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

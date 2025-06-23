@@ -42,18 +42,18 @@ export class DisplayOffersComponent implements OnInit {
   }
 
   load(): void {
-    console.log('Iniciando carga de ofertas...');
-    this.loginService.getOffers().subscribe(
+    console.log('Iniciando carga de ofertas activas...');
+    this.loginService.getActiveOffers().subscribe(
       getOffers => {
         this.offers = getOffers;
-        console.log('Ofertas cargadas:', this.offers);
-        console.log('Cantidad de ofertas:', this.offers.length);
+        console.log('Ofertas activas cargadas:', this.offers);
+        console.log('Cantidad de ofertas activas:', this.offers.length);
         if (this.offers.length > 0) {
-          console.log('Primera oferta:', this.offers[0]);
+          console.log('Primera oferta activa:', this.offers[0]);
         }
       },
       error => {
-        console.error('Error al cargar ofertas:', error);
+        console.error('Error al cargar ofertas activas:', error);
       }
     );
   }

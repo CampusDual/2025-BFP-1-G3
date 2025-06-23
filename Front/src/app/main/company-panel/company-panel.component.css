@@ -175,3 +175,40 @@ mat-card-subtitle {
 #edit:hover {
   color: #ffffff;
 }
+
+.toggle-button {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+}
+
+.toggle-button:hover {
+  background-color: #e61b15;
+  transform: scale(1.1);
+}
+
+#toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e61b15;
+  font-size: 2.3rem;
+  transition: color 0.3s ease;
+  height: max-content;
+  width: max-content;
+}
+
+#toggle.inactive {
+  color: #999999;
+}
+
+#toggle:hover {
+  color: #ffffff;
+}

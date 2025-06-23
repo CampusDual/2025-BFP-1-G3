@@ -36,7 +36,8 @@ export class EditOfferComponent {
       title: this.offerForm.value.titulo,
       offerDescription: this.offerForm.value.descripcion,
       companyId: this.data.offer.companyId,
-      companyName: this.data.offer.companyName
+      companyName: this.data.offer.companyName,
+      active: this.data.offer.active
     };
 
     this.dialogRef.close(updatedOffer);

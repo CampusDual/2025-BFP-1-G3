@@ -126,4 +126,17 @@ export class LoginService {
       })
     );
   }
+
+  getActiveOffers(): Observable<Offer[]> {
+    return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getAllActive`).pipe(
+      map(response => {
+        console.log('Respuesta del servidor (ofertas activas):', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo ofertas activas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

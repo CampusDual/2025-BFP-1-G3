@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface OfferDao extends JpaRepository<Offer, Long> {
     List<Offer> findByCompanyId(int companyId);
-
+    List<Offer> findByCompanyIdAndActiveTrue(int companyId);
+    List<Offer> findByActiveTrue();
 }
-

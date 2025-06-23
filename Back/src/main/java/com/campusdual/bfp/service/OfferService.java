@@ -43,13 +43,29 @@ public class OfferService implements IOfferService {
         });
         return OfferMapper.INSTANCE.toDTOList(offers);
     }
+    
+    @Override
+    public List<OfferDTO> queryAllActiveOffers() {
+        List<Offer> offers = offerDao.findByActiveTrue();
+        offers.forEach(offer -> {
+            if(offer.getCompany() != null) {
+                offer.getCompany().getName();
+            }
+        });
+        return OfferMapper.INSTANCE.toDTOList(offers);
+    }
 
     @Override
     public List<OfferDTO> getOffersByCompanyId(int companyId) {
         List<Offer> offers = offerDao.findByCompanyId(companyId);
         return OfferMapper.INSTANCE.toDTOList(offers);
     }
-
+    
+    @Override
+    public List<OfferDTO> getActiveOffersByCompanyId(int companyId) {
+        List<Offer> offers = offerDao.findByCompanyIdAndActiveTrue(companyId);
+        return OfferMapper.INSTANCE.toDTOList(offers);
+    }
 
     @Override
     public long insertOffer(OfferDTO offerDto) {
@@ -76,5 +92,14 @@ public class OfferService implements IOfferService {
         Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
         offerDao.delete(offer);
         return id;
+    }
+    
+    @Override
+    public long toggleOfferStatus(Long offerId, boolean active) {
+        Offer offer = offerDao.findById(offerId)
+            .orElseThrow(() -> new RuntimeException("Offer not found with id: " + offerId));
+        offer.setActive(active);
+        offerDao.saveAndFlush(offer);
+        return offer.getId();
     }
 }

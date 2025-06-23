@@ -28,6 +28,12 @@
         <button mat-icon-button matTooltip="Editar oferta" (click)="editOffer(offer)" class="tooltip-button edit-button">
           <mat-icon id="edit">edit</mat-icon>
         </button>
+        <button mat-icon-button [matTooltip]="offer.active ? 'Deshabilitar oferta' : 'Habilitar oferta'" 
+          (click)="toggleOfferStatus(offer)" class="tooltip-button toggle-button">
+          <mat-icon id="toggle" [class.inactive]="!offer.active">
+            {{ offer.active ? 'visibility' : 'visibility_off' }}
+          </mat-icon>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>

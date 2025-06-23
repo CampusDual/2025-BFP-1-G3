@@ -22,10 +22,20 @@ public class OffersController {
     public List<OfferDTO> queryAllOffers() {
         return offersService.queryAllOffers();
     }
+    
+    @GetMapping(value = "/getAllActive")
+    public List<OfferDTO> queryAllActiveOffers() {
+        return offersService.queryAllActiveOffers();
+    }
 
     @GetMapping("/getOffersByCompany/{companyId}")
     public List<OfferDTO> getOffersByCompanyId(@PathVariable int companyId) {
         return offersService.getOffersByCompanyId(companyId);
+    }
+    
+    @GetMapping("/getActiveOffersByCompany/{companyId}")
+    public List<OfferDTO> getActiveOffersByCompanyId(@PathVariable int companyId) {
+        return offersService.getActiveOffersByCompanyId(companyId);
     }
 
     @PostMapping(value = "/add")
@@ -41,5 +51,10 @@ public class OffersController {
     @DeleteMapping(value = "/delete")
     public long deleteOffer(@RequestBody OfferDTO offerDto) {
         return offersService.deleteOffer(offerDto);
+    }
+    
+    @PatchMapping(value = "/toggle/{offerId}")
+    public long toggleOfferStatus(@PathVariable Long offerId, @RequestParam boolean active) {
+        return offersService.toggleOfferStatus(offerId, active);
     }
 }

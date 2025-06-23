@@ -113,4 +113,36 @@ export class CompanyPanelComponent implements OnInit {
         }
       });
   }
+
+  toggleOfferStatus(offer: Offer): void {
+    const newStatus = !offer.active;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+    });
+
+    this.http.patch(`http://localhost:30030/offers/toggle/${offer.id}?active=${newStatus}`, {}, { headers })
+      .subscribe({
+        next: (response) => {
+          const action = newStatus ? 'activada' : 'desactivada';
+          this.snackBar.open(`Oferta ${action} con éxito.`, 'Cerrar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-success'],
+          });
+          // Actualizar el estado local de la oferta sin necesidad de recargar
+          offer.active = newStatus;
+        },
+        error: (error) => {
+          this.snackBar.open('Error al cambiar el estado de la oferta.', 'Cerrar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-failed'],
+          });
+        }
+      });
+  }
+
 }
