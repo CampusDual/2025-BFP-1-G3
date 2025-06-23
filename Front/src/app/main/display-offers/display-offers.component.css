@@ -72,33 +72,28 @@ mat-card-subtitle {
   border: 2px solid #e61b15;
   background-color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   border: none;
 }
 
+.tooltip-button {
+  color: #e61b15;
+}
 .tooltip-button:hover {
   background-color: #e61b15;
-  transform: scale(1.1);
+  color: #f2f2f2;
 }
 
-/* mat-icon {
-
-} */
-
+/* === ICONOS DE LOS BOTONES === */
 #info, #apply  {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e61b15;
   font-size: 2.3rem;
   transition: color 0.2s ease;
   height: max-content;
   width: max-content;
 }
 
-#info:hover, #apply:hover {
-  color: #ffffff;
-}
 
 /* === MENSAJE SIN OFERTAS === */
 .no-offers {
