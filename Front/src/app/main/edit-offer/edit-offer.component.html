@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Editar Oferta</h2>
+
+<form [formGroup]="offerForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Título del puesto</mat-label>
+      <input matInput id="titulo" type="text" formControlName="titulo" placeholder="Ej. Desarrollador Frontend" />
+      <mat-error *ngIf="offerForm.get('titulo')?.invalid && offerForm.get('titulo')?.touched">El título es obligatorio.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Descripción de la oferta</mat-label>
+      <textarea matInput id="descripcion" formControlName="descripcion" placeholder="Detalles del puesto" rows="5"></textarea>
+      <mat-error *ngIf="offerForm.get('descripcion')?.invalid && offerForm.get('descripcion')?.touched">La descripción es obligatoria.</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="offerForm.invalid">Guardar</button>
+  </mat-dialog-actions>
+</form>
