@@ -84,13 +84,17 @@ export class LoginService {
   }
 
   isLoggedAsCompany(): boolean {
-    this.myRoleProflile().subscribe(role => {
+    console.log("Buscando rol...");
+    if(sessionStorage.getItem('token') !== null){
+       this.myRoleProflile().subscribe(role => {
       this.role = role;
       console.log(this.role);
     })
     if(this.role === 'role_company'){
       return true
     }
+    }
+    console.log("Rol no encontrado");
     return false;
   }
 
@@ -103,6 +107,8 @@ export class LoginService {
 
   myRoleProflile(): Observable<string> {
     const token = sessionStorage.getItem('token');
+    console.log("Token obtenido de la sesión:", token);
+
     if (!token) {
       // this.errorMessage = 'No está logueado.';
       return new Observable(observer => {
@@ -117,6 +123,7 @@ export class LoginService {
 
     return this.http.get<{ roles: string[] }>('http://localhost:30030/auth/profile', { headers }).pipe(
       map(response => {
+        console.log(response);
         return response.roles[0];
       })
     );
