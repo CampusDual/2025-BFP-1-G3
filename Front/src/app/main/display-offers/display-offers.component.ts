@@ -96,7 +96,7 @@ throw new Error('Method not implemented.');
           .subscribe({
             next: (response) => {
               this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
-                duration: 3000,
+                duration: 10000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-success'],
@@ -105,7 +105,7 @@ throw new Error('Method not implemented.');
             },
             error: (error) => {
               this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
-                duration: 3000,
+                duration: 10000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-failed'],
@@ -116,7 +116,7 @@ throw new Error('Method not implemented.');
       error: (err) => {
         console.error('Error cargando perfil:', err);
         this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
-          duration: 3000,
+          duration: 10000,
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
           panelClass: ['snackbar-failed'],
