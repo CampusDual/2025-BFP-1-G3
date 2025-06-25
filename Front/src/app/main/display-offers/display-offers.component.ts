@@ -11,6 +11,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./display-offers.component.css']
 })
 export class DisplayOffersComponent implements OnInit {
+isLoggedAsCandidate(): any {
+throw new Error('Method not implemented.');
+}
 
 
   offers: Offer[] = [];

@@ -4,6 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { map, catchError, tap } from 'rxjs/operators'
 import { OResponse } from "../model/response";
 import { Offer } from "../model/offer";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class LoginService {
 
   private urlEndPoint: string = 'http://localhost:30030'
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
@@ -29,7 +30,7 @@ export class LoginService {
       .pipe(
         tap(response => {
           sessionStorage.setItem('user', user);
-          sessionStorage.setItem('password', password);
+          // sessionStorage.setItem('password', password);
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
         }),
@@ -103,6 +104,9 @@ export class LoginService {
     sessionStorage.removeItem('empresa');
 
     console.log('Sesión cerrada correctamente');
+    
+    //Fuerzo que se recargue la página
+    window.location.reload();
   }
 
   loadUserProfile(): Observable<{ companyId: number, candidateId: number }> {
