@@ -11,6 +11,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./display-offers.component.css']
 })
 export class DisplayOffersComponent implements OnInit {
+isLoggedAsCandidate(): any {
+throw new Error('Method not implemented.');
+}
 
 
   offers: Offer[] = [];
@@ -93,7 +96,7 @@ export class DisplayOffersComponent implements OnInit {
           .subscribe({
             next: (response) => {
               this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
-                duration: 3000,
+                duration: 10000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-success'],
@@ -102,7 +105,7 @@ export class DisplayOffersComponent implements OnInit {
             },
             error: (error) => {
               this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
-                duration: 3000,
+                duration: 10000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-failed'],
@@ -113,7 +116,7 @@ export class DisplayOffersComponent implements OnInit {
       error: (err) => {
         console.error('Error cargando perfil:', err);
         this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
-          duration: 3000,
+          duration: 10000,
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
           panelClass: ['snackbar-failed'],

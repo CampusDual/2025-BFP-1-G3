@@ -102,4 +102,12 @@ mat-card-subtitle {
   color: #999;
 }
 
+/* .snackbar-failed{
+ background: #e61b15;
+} */
+
+.snackbar-failed .mat-mdc-snack-bar-container .mdc-snackbar__surface{
+  background-color: #e61b15!important;
+}
+
 

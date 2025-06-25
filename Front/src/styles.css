@@ -11,3 +11,15 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
+.snackbar-success.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #4CAF50!important; /* Verde */
+  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
+  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+}
+
+/* Estilos para el snackbar de error (rojo) */
+.snackbar-failed.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #F44336!important; /* Rojo */
+  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
+  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+}
