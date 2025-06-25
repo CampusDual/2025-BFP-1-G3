@@ -15,6 +15,7 @@ export class LoginService {
   idOffer!: number;
   companyId!:number;
   candidateId!:number;
+  role!:string;
 
   private urlEndPoint: string = 'http://localhost:30030'
 
@@ -83,7 +84,11 @@ export class LoginService {
   }
 
   isLoggedAsCompany(): boolean {
-    if(sessionStorage.getItem('empresa') !== '' && sessionStorage.getItem('token')){
+    this.myRoleProflile().subscribe(role => {
+      this.role = role;
+      console.log(this.role);
+    })
+    if(this.role === 'role_company'){
       return true
     }
     return false;
@@ -94,6 +99,27 @@ export class LoginService {
       return true;
     }
     return false;
+  }
+
+  myRoleProflile(): Observable<string> {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      // this.errorMessage = 'No está logueado.';
+      return new Observable(observer => {
+        observer.error('No token found');
+        observer.complete();
+      });
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + token
+    });
+
+    return this.http.get<{ roles: string[] }>('http://localhost:30030/auth/profile', { headers }).pipe(
+      map(response => {
+        return response.roles[0];
+      })
+    );
   }
 
 
