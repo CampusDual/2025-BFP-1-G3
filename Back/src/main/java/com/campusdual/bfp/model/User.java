@@ -41,6 +41,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
 
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
     public User(){ }
     public User(int id, String nif, String name, String surname1, String surname2, String login, String password) {
         this.id = id;

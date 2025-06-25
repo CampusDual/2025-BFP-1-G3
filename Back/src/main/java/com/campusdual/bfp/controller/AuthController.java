@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -103,12 +104,14 @@ public class AuthController {
         String companyName = userService.getCompanyNameByUsername(username);
         Integer companyId = userService.getCompanyIdByUsername(username);
         Integer candidateId = userService.getCandidateIdByUsername(username);
+        List roles = userService.getRolesByUsername(username);
 
         Map<String, Object> profile = new HashMap<>();
         profile.put("username", username);
         profile.put("companyName", companyName);
         profile.put("companyId", companyId);
         profile.put("candidateId", candidateId);
+        profile.put("roles",roles);
 
         return ResponseEntity.ok(profile);
     }
