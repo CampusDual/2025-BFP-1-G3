@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { LoginService } from '../services/login.service';
 import { filter } from 'rxjs/operators';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-header',
@@ -9,16 +9,11 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-menuOpen = false;
-
-closeMenu(): void {
-  this.menuOpen = false;
-}
-
+  @Output() sidenavToggle = new EventEmitter<void>();
 
   currentSectionTitle: string = '';
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) { }
 
   ngOnInit(): void {
     this.router.events.pipe(
@@ -28,7 +23,7 @@ closeMenu(): void {
     });
 
     // por si ya hay una ruta al cargar
-    this.setCurrentSectionTitle(); 
+    this.setCurrentSectionTitle();
   }
 
   isLoggedIn(): boolean {
@@ -42,11 +37,19 @@ closeMenu(): void {
   isLoggedAsCandidate(): boolean {
     return this.loginService.isLoggedAsCandidate();
   }
+  
+  isLoggedAsAdmin(): boolean {
+    return this.loginService.isLoggedAsAdmin();
+  }
 
+  toggleSidenav(): void {
+    this.sidenavToggle.emit();
+  }
 
   logout(): void {
     this.loginService.logout();
-    this.router.navigate(['/main']);
+    // Modificación aquí: siempre redirigir a /main/ofertas independientemente del rol
+    this.router.navigate(['/main/ofertas']);
   }
 
   private setCurrentSectionTitle(): void {
@@ -60,6 +63,8 @@ closeMenu(): void {
       this.currentSectionTitle = 'Publicar oferta';
     } else if (path.includes('/main/candidato')) {
       this.currentSectionTitle = 'Mi perfil';
+    } else if (path.includes('/main/admin')) {
+      this.currentSectionTitle = 'Panel de Administración';
     } else {
       this.currentSectionTitle = '';
     }

@@ -11,10 +11,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./display-offers.component.css']
 })
 export class DisplayOffersComponent implements OnInit {
-isLoggedAsCandidate(): any {
-throw new Error('Method not implemented.');
-}
-
+  isLoggedAsCandidate(): any {
+    throw new Error('Method not implemented.');
+  }
 
   offers: Offer[] = [];
   submitting: boolean = false;
@@ -79,7 +78,7 @@ throw new Error('Method not implemented.');
 
     this.loginService.clickedApplyOffer = true;
     this.loginService.idOffer = idOffer;
-    console.log(this.loginService.idOffer);
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -95,8 +94,8 @@ throw new Error('Method not implemented.');
         this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
           .subscribe({
             next: (response) => {
-              this.snackBar.open('Aplicación recibida con éxito.', 'Cerrar', {
-                duration: 10000,
+              this.snackBar.open('Te has inscrito a la oferta con éxito.', 'Cerrar', {
+                duration: 5000,
                 horizontalPosition: 'center',
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-success'],
@@ -104,19 +103,51 @@ throw new Error('Method not implemented.');
               this.router.navigate(['/main/ofertas']);
             },
             error: (error) => {
-              this.snackBar.open('Error al aplicar a la oferta.', 'Cerrar', {
-                duration: 10000,
-                horizontalPosition: 'center',
-                verticalPosition: 'bottom',
-                panelClass: ['snackbar-failed'],
-              });
+              // Imprimir error completo para depuración
+              console.log('Error completo:', error);
+
+              // También capturar errores 500 que probablemente sean por inscripción duplicada
+              if (error.status === 409 ||
+                error.status === 400 ||
+                error.status === 500 // Añadir status 500
+                // (error.error && typeof error.error === 'string' && 
+                //   (error.error.includes('ya inscrito') || 
+                //   error.error.includes('already applied') || 
+                //   error.error.includes('duplicate') ||
+                //   error.error.includes('Internal Server Error'))) || // Añadir mensaje de error interno
+                // (error.error && error.error.message && 
+                //   (error.error.message.includes('ya inscrito') || 
+                //   error.error.message.includes('already applied') ||
+                //   error.error.message.includes('duplicate'))) ||
+                // (error.message && 
+                //   (error.message.includes('ya inscrito') || 
+                //   error.message.includes('already applied') ||
+                //   error.message.includes('duplicate')))
+              ) {
+                // Mostrar mensaje informativo en lugar de error
+                this.snackBar.open('Ya te has inscrito a esta oferta', 'Cerrar', {
+                  duration: 5000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-info'],
+                });
+              } else {
+                console.log('Error completo:', error);
+                // Mostrar mensaje de error genérico para otros errores
+                this.snackBar.open('Error al inscribirse en la oferta.', 'Cerrar', {
+                  duration: 5000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-failed'],
+                });
+              }
             }
           });
       },
       error: (err) => {
         console.error('Error cargando perfil:', err);
         this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
-          duration: 10000,
+          duration: 5000,
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
           panelClass: ['snackbar-failed'],

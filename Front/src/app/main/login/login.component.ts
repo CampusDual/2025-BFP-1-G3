@@ -16,22 +16,29 @@ export class LoginComponent implements OnInit {
   loginError: string = '';
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
+
   ngOnInit() {
     this.loginService.loadUserProfile();
   }
+
   login(user: string, password: string) {
     console.log("Datos recogidos del formulario:", user, password);
     this.loginError = '';
 
     this.loginService.login(user, password).subscribe(
       response => {
-        // console.log("Respuesta del backend:", response);
-        // Cambiado para redirigir a ofertas en lugar de index
-        if (response.empresa === "" && this.loginService.clickedApplyOffer) {
-          this.applyOfferAfterLogIn();
-          this.router.navigate(['/main/ofertas']);
+        // Comprobar primero si es admin - esto tiene prioridad sobre todo lo demás
+        if (response.roles === 'role_admin') {
+          // Si es admin, cancelar cualquier intento de aplicación pendiente
           this.loginService.clickedApplyOffer = false;
-        } else if (response.empresa === "") {
+          this.router.navigate(['/main/admin']);
+        }
+        // Si no es admin, seguir con la lógica normal
+        else if (response.empresa === "" && this.loginService.clickedApplyOffer) {
+          // Si intentó aplicar a una oferta, manejamos eso primero
+          this.applyOfferAfterLogIn();
+          this.loginService.clickedApplyOffer = false;
+        } else if (response.roles === 'role_candidate') {
           this.router.navigate(['/main/candidato']);
         } else {
           this.router.navigate(['/main/empresa']);
@@ -60,7 +67,7 @@ export class LoginComponent implements OnInit {
           id_candidate: this.loginService.candidateId,
           id_offer: this.loginService.idOffer
         };
-        console.log(applicationData)
+
         this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
           .subscribe({
             next: (response) => {
@@ -70,15 +77,32 @@ export class LoginComponent implements OnInit {
                 verticalPosition: 'bottom',
                 panelClass: ['snackbar-success'],
               });
+              // Navegamos a ofertas después de la aplicación exitosa
               this.router.navigate(['/main/ofertas']);
             },
             error: (error) => {
-              this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
-                duration: 3000,
-                horizontalPosition: 'center',
-                verticalPosition: 'bottom',
-                panelClass: ['snackbar-failed'],
-              });
+              console.log('Error detallado:', error);
+
+              // Lógica mejorada para detectar si ya estaba inscrito
+              if (this.isAlreadyAppliedError(error)) {
+                // Mensaje informativo de ya inscrito
+                this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-info'],
+                });
+              } else {
+                // Mensaje de error genérico
+                this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-failed'],
+                });
+              }
+              // Siempre navegamos a ofertas después de mostrar el mensaje
+              this.router.navigate(['/main/ofertas']);
             }
           });
       },
@@ -90,7 +114,47 @@ export class LoginComponent implements OnInit {
           verticalPosition: 'bottom',
           panelClass: ['snackbar-failed'],
         });
+        // Navegamos a ofertas incluso en caso de error
+        this.router.navigate(['/main/ofertas']);
       }
     });
+  }
+
+  // Método auxiliar para detectar si el error es por ya estar inscrito
+  private isAlreadyAppliedError(error: any): boolean {
+    // Verificar por código de estado
+    if (error.status === 409 || error.status === 400 || error.status === 500) {
+      return true;
+    }
+
+    // Verificar en error.error (string)
+    if (error.error && typeof error.error === 'string') {
+      if (error.error.includes('ya inscrito') ||
+        error.error.includes('already applied') ||
+        error.error.includes('duplicate') ||
+        error.error.includes('Internal Server Error')) {
+        return true;
+      }
+    }
+
+    // Verificar en error.error.message
+    if (error.error && error.error.message) {
+      if (error.error.message.includes('ya inscrito') ||
+        error.error.message.includes('already applied') ||
+        error.error.message.includes('duplicate')) {
+        return true;
+      }
+    }
+
+    // Verificar en error.message
+    if (error.message) {
+      if (error.message.includes('ya inscrito') ||
+        error.message.includes('already applied') ||
+        error.message.includes('duplicate')) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

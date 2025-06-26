@@ -19,6 +19,15 @@
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   padding: 16px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  /* Añadir posición relativa para elementos absolutos */
+  position: relative;
+  /* Altura mínima para asegurar consistencia */
+  min-height: 280px;
 }
 
 .offer-card:hover {
@@ -32,16 +41,30 @@ mat-card-title {
   font-weight: bold;
   color: #000000;
   margin-bottom: 4px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 mat-card-subtitle {
   font-size: 0.95rem;
   color: #666;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .company-name {
   color: #e61b15;
   font-weight: bold;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* === DESCRIPCIÓN DE LA OFERTA === */
@@ -50,15 +73,49 @@ mat-card-subtitle {
   color: #333;
   margin-top: 16px;
   min-height: 60px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+  /* Añadir padding-bottom para dejar espacio al ícono */
+  padding-bottom: 60px;
+}
+
+/* === ICONO DE MALETÍN === */
+.briefcase-icon {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e61b15;
+  background-color: rgba(230, 27, 21, 0.08);
+  border-radius: 50%;
+}
+
+.briefcase-icon mat-icon {
+  font-size: 22px;
+  height: 22px;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* === BOTONES DE ACCIÓN === */
 .card-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 20px;
   margin-top: 20px;
-
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 }
 
 /* === BOTÓN REDONDO === */
@@ -72,6 +129,7 @@ mat-card-subtitle {
   border: 2px solid #e61b15;
   background-color: #ffffff;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
   border: none;
 }
 
@@ -94,7 +152,6 @@ mat-card-subtitle {
   width: max-content;
 }
 
-
 /* === MENSAJE SIN OFERTAS === */
 .no-offers {
   text-align: center;
@@ -102,12 +159,25 @@ mat-card-subtitle {
   color: #999;
 }
 
-/* .snackbar-failed{
- background: #e61b15;
-} */
-
-.snackbar-failed .mat-mdc-snack-bar-container .mdc-snackbar__surface{
-  background-color: #e61b15!important;
+/* Para elementos mat-card específicos */
+::ng-deep .mat-mdc-card-content {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
 }
 
-
+/* Para URLs y correos electrónicos */
+.offer-card a, 
+.offer-card span,
+.offer-card p,
+.offer-card h1,
+.offer-card h2,
+.offer-card h3,
+.offer-card h4,
+.offer-card h5,
+.offer-card h6 {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}

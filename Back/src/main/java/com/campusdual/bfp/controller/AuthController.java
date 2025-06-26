@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -70,9 +71,15 @@ public class AuthController {
 
             // Obtener el nombre de la empresa
             String nombreEmpresa = userService.getCompanyNameByUsername(userDetails.getUsername());
+            //Obtener el rol
+            String username = authentication.getName();
+            String roles = userService.getRolesByUsername(username).get(0);
+
 
             response.put("token", token);
             response.put("empresa", nombreEmpresa);
+            response.put("roles",roles);
+
 
             return ResponseEntity.ok(response);
 

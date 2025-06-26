@@ -7,6 +7,7 @@ import { DisplayOffersComponent } from './display-offers/display-offers.componen
 import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.component';
 import { CompanyPanelComponent } from './company-panel/company-panel.component';
 import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'ofertas', component: DisplayOffersComponent },
   { path: 'registrarse', component: CandidateSignUpComponent },
   { path: 'empresa', component: CompanyPanelComponent },
-  { path: 'candidato', component: CandidatePanelComponent }
+  { path: 'candidato', component: CandidatePanelComponent },
+  { path: 'admin', component: AdminPanelComponent }
 ];
 
 @NgModule({

@@ -1,6 +1,7 @@
 mat-toolbar {
   position: relative;
   background-color: #1F1F1F; /* NEGRO MEDIO*/
+  z-index: 2;
 }
 
 mat-toolbar img {
@@ -25,79 +26,41 @@ mat-toolbar img {
   flex-grow: 1;
 }
 
+/* Botón de toggle del sidenav */
+.sidenav-toggle {
+  margin-right: 8px;
+  color: white;
+}
+
+/* Botones de autenticación */
+.auth-button , .auth-button span{
+  color: white;
+}
+
+.auth-button mat-icon {
+  margin-right: 4px;
+  color: white;
+}
+
 /* === BANNER DE SECCIÓN === */
 .diagonal-section-header {
   width: 100%;
   background: #e61b15;
-  clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 0, 98% 100%, 0% 100%);
   padding: 16px 40px;
   color: white;
   font-weight: bold;
   font-size: 1.6rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  margin-bottom: 20px;
+  margin-bottom: 0; /* Cambiar de 20px a 0 */
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .diagonal-section-header h2 {
   margin: 0;
   font-size: 1.5rem;
-}
-
-/* === MENÚ TIPO ASUS === */
-.menu-wrapper {
-  position: relative;
-}
-
-.menu-button mat-icon {
-  color: white;
-  font-size: 28px;
-}
-
-/* Panel flotante */
-.custom-asus-menu {
-  position: absolute;
-  top: 48px;
-  right: -16px;
-  transform: translateX(0);
-  background-color: #333333;
-  border-radius: 2%;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-  padding: 30px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: fadeIn 0.3s ease;
-  z-index: 1000;
-}
-
-.custom-asus-menu a {
-  display: flex;
-  align-items: center;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  padding: 4px 6px;
-  border-radius: 6px;
-}
-
-.custom-asus-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.custom-asus-menu mat-icon {
-  color: #e61b15;
-  margin-right: 8px;
-}
-
-/* Animación de aparición */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

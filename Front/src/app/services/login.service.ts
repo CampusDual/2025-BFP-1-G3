@@ -13,8 +13,9 @@ export class LoginService {
 
   clickedApplyOffer: boolean = false;
   idOffer!: number;
-  companyId!:number;
-  candidateId!:number;
+  companyId!: number;
+  candidateId!: number;
+  role!: string;
 
   private urlEndPoint: string = 'http://localhost:30030'
 
@@ -33,6 +34,7 @@ export class LoginService {
           // sessionStorage.setItem('password', password);
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
+          this.role = response.roles;
         }),
         catchError(e => {
           if (e.status === 401) {
@@ -61,41 +63,46 @@ export class LoginService {
 
   // Método para obtener ofertas por empresa
   getOffersByCompanyId(companyId: number): Observable<Offer[]> {
-    const token = sessionStorage.getItem('token'); 
+    const token = sessionStorage.getItem('token');
     console.log(token);
     const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
-  return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getOffersByCompany/${companyId}`, {headers}).pipe(
-    map(response => {
-      console.log('Respuesta del servidor:', response);
-      return response;
-    }),
-    catchError(error => {
-      console.error('Error obteniendo ofertas:', error);
-      return throwError(() => error);
-    })
-  );
-}
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getOffersByCompany/${companyId}`, { headers }).pipe(
+      map(response => {
+        console.log('Respuesta del servidor:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo ofertas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
 
   isLoggedAsCompany(): boolean {
-    if(sessionStorage.getItem('empresa') !== '' && sessionStorage.getItem('token')){
+    if (sessionStorage.getItem('token') !== null && this.role === 'role_company') {
       return true
     }
     return false;
   }
 
   isLoggedAsCandidate(): boolean {
-    if((sessionStorage.getItem('empresa') === '') && sessionStorage.getItem('token')){
+    if (sessionStorage.getItem('token') && this.role === 'role_candidate') {
       return true;
     }
     return false;
   }
 
+  isLoggedAsAdmin(): boolean {
+    // if (sessionStorage.getItem('token') && this.role === 'role_admin') {
+    const token = sessionStorage.getItem('token');
+    return token !== null && this.role === 'role_admin';
+  }
 
   logout(): void {
     sessionStorage.removeItem('user');
@@ -104,9 +111,11 @@ export class LoginService {
     sessionStorage.removeItem('empresa');
 
     console.log('Sesión cerrada correctamente');
-    
+
     //Fuerzo que se recargue la página
-    window.location.reload();
+    if (window.location.pathname === '/main/ofertas') {
+      window.location.reload();
+    }
   }
 
   loadUserProfile(): Observable<{ companyId: number, candidateId: number }> {
@@ -130,4 +139,30 @@ export class LoginService {
       })
     );
   }
+
+  //Función que valida el token
+  isTokenValid(): boolean {
+    const token = sessionStorage.getItem('token');
+    if (!token) return false;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp;
+      const now = Math.floor(Date.now() / 1000);
+
+      return exp > now;
+    } catch (error) {
+      console.error('Error decodificando token:', error);
+      return false;
+    }
+  }
+
+
+  // isLoggedAsAdmin(): boolean {
+  //   // Esta implementación es de ejemplo, ajústala según tu lógica de autenticación
+  //   const token = sessionStorage.getItem('token');
+  //   const role = sessionStorage.getItem('role'); // Asegúrate de guardar el rol en el sessionStorage
+  //   return token !== null && role === 'admin';
+  // }
+
 }

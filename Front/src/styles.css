@@ -4,11 +4,15 @@
 } */
 html, body { 
     height: 100%; 
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body { 
     margin: 0; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    overflow-x: hidden;
 }
 
 .snackbar-success.mat-mdc-snack-bar-container {
@@ -20,6 +24,13 @@ body {
 /* Estilos para el snackbar de error (rojo) */
 .snackbar-failed.mat-mdc-snack-bar-container {
   --mdc-snackbar-container-color: #F44336!important; /* Rojo */
+  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
+  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+}
+
+/* Estilos para el snackbar informativo (azul) */
+.snackbar-info.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #2196F3!important; /* Azul */
   --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
   --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
 }

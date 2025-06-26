@@ -1,7 +1,75 @@
 <div class="content">
-  <app-header></app-header>
-  <div>
-    <router-outlet></router-outlet>
+  <!-- Header fuera del sidenav-container -->
+  <app-header (sidenavToggle)="toggleSidenav()"></app-header>
+  
+  <!-- Sidenav container debajo del header -->
+  <div class="main-layout">
+    <mat-sidenav-container class="sidenav-container">
+      <!-- Sidenav Universal -->
+      <mat-sidenav #sidenav mode="over" [opened]="false">
+        <!-- Se eliminó el div con clase sidenav-header que contenía "Menú" -->
+        <mat-nav-list>
+          <!-- Opciones normales (ocultas en admin) -->
+          <ng-container *ngIf="!isAdminRoute()">
+            <a mat-list-item routerLink="/main/ofertas" (click)="sidenav.close()">
+              <mat-icon>work</mat-icon>
+              <span>Ofertas</span>
+            </a>
+
+            <a mat-list-item *ngIf="isLoggedAsCompany()" routerLink="/main/empresa" (click)="sidenav.close()">
+              <mat-icon>business</mat-icon>
+              <span>Panel Empresa</span>
+            </a>
+
+            <a mat-list-item *ngIf="isLoggedAsCandidate()" routerLink="/main/candidato" (click)="sidenav.close()">
+              <mat-icon>person</mat-icon>
+              <span>Mi Perfil</span>
+            </a>
+
+            <a mat-list-item *ngIf="isLoggedAsCompany()" routerLink="/main/publicar" (click)="sidenav.close()">
+              <mat-icon>add_circle</mat-icon>
+              <span>Publicar Oferta</span>
+            </a>
+            
+            <a mat-list-item *ngIf="!isLoggedIn()" routerLink="/main/registrarse" (click)="sidenav.close()">
+              <mat-icon>person_add</mat-icon>
+              <span>Registrarse</span>
+            </a>
+          </ng-container>
+          
+          <!-- Siempre visible para administrador -->
+          <a mat-list-item *ngIf="isLoggedAsAdmin() && !isAdminRoute()" routerLink="/main/admin" (click)="sidenav.close()">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Panel Admin</span>
+          </a>
+          
+          <!-- Opciones específicas para el admin panel si estamos en esa ruta -->
+          <ng-container *ngIf="isAdminRoute()">
+            <!-- Se eliminó el div con clase admin-section que contenía "Administración" -->
+            <a mat-list-item routerLink="/main/admin" [class.active]="isActiveAdminSection('empresas')" (click)="sidenav.close()">
+              <mat-icon>business</mat-icon>
+              <span>Empresas</span>
+            </a>
+            <!-- <a mat-list-item routerLink="/main/admin/ofertas" [class.active]="isActiveAdminSection('ofertas')" (click)="sidenav.close()">
+              <mat-icon>work</mat-icon>
+              <span>Ofertas</span>
+            </a>
+            <a mat-list-item routerLink="/main/admin/candidatos" [class.active]="isActiveAdminSection('candidatos')" (click)="sidenav.close()">
+              <mat-icon>person</mat-icon>
+              <span>Candidatos</span>
+            </a> -->
+          </ng-container>
+        </mat-nav-list>
+      </mat-sidenav>
+
+      <mat-sidenav-content>
+        <div class="main-content">
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   </div>
+  
+  <!-- Footer fuera del sidenav-content pero dentro del layout general -->
   <app-footer></app-footer>
 </div>

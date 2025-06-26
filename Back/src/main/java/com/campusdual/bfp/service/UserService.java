@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Lazy
@@ -79,6 +81,15 @@ public class UserService implements UserDetailsService {
             return null;
         }
     }
+
+    public List<String> getRolesByUsername(String username) {
+        User user = userDao.findByLogin(username);
+        if (user == null) return Collections.emptyList();
+        return user.getUserRoles().stream()
+                .map(userRole -> userRole.getRole().getRoleName())
+                .collect(Collectors.toList());
+    }
+
 
     // Para registrar un usuario necesitamos sus datos como Candidate
     // Ahora registerNewUser recibe como parámetro un objeto signupDTO
