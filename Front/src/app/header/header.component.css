@@ -52,7 +52,7 @@ mat-toolbar img {
   font-weight: bold;
   font-size: 1.6rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  margin-bottom: 20px;
+  margin-bottom: 0; /* Cambiar de 20px a 0 */
   position: relative;
   z-index: 1;
   max-width: 100%;
