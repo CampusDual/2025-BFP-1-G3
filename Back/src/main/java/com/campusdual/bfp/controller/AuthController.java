@@ -71,9 +71,15 @@ public class AuthController {
 
             // Obtener el nombre de la empresa
             String nombreEmpresa = userService.getCompanyNameByUsername(userDetails.getUsername());
+            //Obtener el rol
+            String username = authentication.getName();
+            String roles = userService.getRolesByUsername(username).get(0);
+
 
             response.put("token", token);
             response.put("empresa", nombreEmpresa);
+            response.put("roles",roles);
+
 
             return ResponseEntity.ok(response);
 
@@ -104,14 +110,12 @@ public class AuthController {
         String companyName = userService.getCompanyNameByUsername(username);
         Integer companyId = userService.getCompanyIdByUsername(username);
         Integer candidateId = userService.getCandidateIdByUsername(username);
-        String roles = userService.getRolesByUsername(username).get(0);
 
         Map<String, Object> profile = new HashMap<>();
         profile.put("username", username);
         profile.put("companyName", companyName);
         profile.put("companyId", companyId);
         profile.put("candidateId", candidateId);
-        profile.put("roles",roles);
 
         return ResponseEntity.ok(profile);
     }
