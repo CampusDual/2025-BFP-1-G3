@@ -104,7 +104,7 @@ public class AuthController {
         String companyName = userService.getCompanyNameByUsername(username);
         Integer companyId = userService.getCompanyIdByUsername(username);
         Integer candidateId = userService.getCandidateIdByUsername(username);
-        List roles = userService.getRolesByUsername(username);
+        String roles = userService.getRolesByUsername(username).get(0);
 
         Map<String, Object> profile = new HashMap<>();
         profile.put("username", username);
