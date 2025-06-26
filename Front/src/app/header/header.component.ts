@@ -1,7 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { LoginService } from '../services/login.service';
 import { filter } from 'rxjs/operators';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-header',
@@ -37,6 +37,7 @@ export class HeaderComponent implements OnInit {
   isLoggedAsCandidate(): boolean {
     return this.loginService.isLoggedAsCandidate();
   }
+  
   isLoggedAsAdmin(): boolean {
     return this.loginService.isLoggedAsAdmin();
   }
@@ -47,7 +48,8 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.loginService.logout();
-    this.router.navigate(['/main']);
+    // Modificación aquí: siempre redirigir a /main/ofertas independientemente del rol
+    this.router.navigate(['/main/ofertas']);
   }
 
   private setCurrentSectionTitle(): void {

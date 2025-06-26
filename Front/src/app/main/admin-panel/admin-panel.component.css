@@ -46,6 +46,9 @@ th.mat-header-cell {
 td.mat-cell {
   padding: 12px 8px;
 }
+.mat-mdc-table .mdc-data-table__row {
+  height: max-content;
+}
 
 .mat-column-actions {
   width: 120px;
@@ -105,14 +108,15 @@ tr.mat-row:hover {
 }
 
 /* Tamaño y padding de los botones */
-.admin-edit-button, .admin-delete-button {
+.admin-edit-button,
+.admin-delete-button {
   width: 36px;
   height: 36px;
   padding: 0;
 }
 
 /* Centrado perfecto de los iconos dentro de los botones */
-.admin-edit-button .mat-icon, 
+.admin-edit-button .mat-icon,
 .admin-delete-button .mat-icon {
   display: flex;
   align-items: center;
@@ -166,6 +170,9 @@ tr.mat-row:hover {
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
+}
+.actions-cell {
+  display: flex;
 }
 
 /* Responsive */

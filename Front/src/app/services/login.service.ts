@@ -113,7 +113,9 @@ export class LoginService {
     console.log('Sesión cerrada correctamente');
 
     //Fuerzo que se recargue la página
-    // window.location.reload();
+    if (window.location.pathname === '/main/ofertas') {
+      window.location.reload();
+    }
   }
 
   loadUserProfile(): Observable<{ companyId: number, candidateId: number }> {

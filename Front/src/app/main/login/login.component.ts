@@ -16,27 +16,30 @@ export class LoginComponent implements OnInit {
   loginError: string = '';
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
-  
+
   ngOnInit() {
     this.loginService.loadUserProfile();
   }
-  
+
   login(user: string, password: string) {
     console.log("Datos recogidos del formulario:", user, password);
     this.loginError = '';
 
     this.loginService.login(user, password).subscribe(
       response => {
-        // Aquí es donde decidimos qué hacer después del login
-        if (response.empresa === "" && this.loginService.clickedApplyOffer) {
-          // Si intentó aplicar a una oferta, manejamos eso primero y NO navegamos aún
+        // Comprobar primero si es admin - esto tiene prioridad sobre todo lo demás
+        if (response.roles === 'role_admin') {
+          // Si es admin, cancelar cualquier intento de aplicación pendiente
+          this.loginService.clickedApplyOffer = false;
+          this.router.navigate(['/main/admin']);
+        }
+        // Si no es admin, seguir con la lógica normal
+        else if (response.empresa === "" && this.loginService.clickedApplyOffer) {
+          // Si intentó aplicar a una oferta, manejamos eso primero
           this.applyOfferAfterLogIn();
-          // No hacemos router.navigate aquí - lo haremos después de aplicar
           this.loginService.clickedApplyOffer = false;
         } else if (response.roles === 'role_candidate') {
           this.router.navigate(['/main/candidato']);
-        } else if (response.roles === 'role_admin') {
-          this.router.navigate(['/main/admin']);
         } else {
           this.router.navigate(['/main/empresa']);
         }
@@ -79,7 +82,7 @@ export class LoginComponent implements OnInit {
             },
             error: (error) => {
               console.log('Error detallado:', error);
-              
+
               // Lógica mejorada para detectar si ya estaba inscrito
               if (this.isAlreadyAppliedError(error)) {
                 // Mensaje informativo de ya inscrito
@@ -126,32 +129,32 @@ export class LoginComponent implements OnInit {
 
     // Verificar en error.error (string)
     if (error.error && typeof error.error === 'string') {
-      if (error.error.includes('ya inscrito') || 
-          error.error.includes('already applied') || 
-          error.error.includes('duplicate') ||
-          error.error.includes('Internal Server Error')) {
+      if (error.error.includes('ya inscrito') ||
+        error.error.includes('already applied') ||
+        error.error.includes('duplicate') ||
+        error.error.includes('Internal Server Error')) {
         return true;
       }
     }
-    
+
     // Verificar en error.error.message
     if (error.error && error.error.message) {
-      if (error.error.message.includes('ya inscrito') || 
-          error.error.message.includes('already applied') ||
-          error.error.message.includes('duplicate')) {
+      if (error.error.message.includes('ya inscrito') ||
+        error.error.message.includes('already applied') ||
+        error.error.message.includes('duplicate')) {
         return true;
       }
     }
-    
+
     // Verificar en error.message
     if (error.message) {
-      if (error.message.includes('ya inscrito') || 
-          error.message.includes('already applied') ||
-          error.message.includes('duplicate')) {
+      if (error.message.includes('ya inscrito') ||
+        error.message.includes('already applied') ||
+        error.message.includes('duplicate')) {
         return true;
       }
     }
-    
+
     return false;
   }
 }
