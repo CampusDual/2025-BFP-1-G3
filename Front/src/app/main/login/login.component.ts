@@ -48,19 +48,19 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  applyOfferAfterLogIn(): void {
+    applyOfferAfterLogIn(): void {
     this.loginService.loadUserProfile().subscribe({
       next: () => {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         });
-
+  
         const applicationData = {
           id_candidate: this.loginService.candidateId,
           id_offer: this.loginService.idOffer
         };
-        console.log(applicationData)
+        
         this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
           .subscribe({
             next: (response) => {
@@ -73,12 +73,29 @@ export class LoginComponent implements OnInit {
               this.router.navigate(['/main/ofertas']);
             },
             error: (error) => {
-              this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
-                duration: 3000,
-                horizontalPosition: 'center',
-                verticalPosition: 'bottom',
-                panelClass: ['snackbar-failed'],
-              });
+              // Verificar si el error es porque ya está inscrito
+              if (error.status === 409 || 
+                  (error.error && error.error.message && 
+                   (error.error.message.includes("ya inscrito") || 
+                    error.error.message.includes("already applied")))) {
+                
+                // Mostrar mensaje informativo en lugar de error
+                this.snackBar.open('No puedes volver a inscribirte a la misma oferta', 'Cerrar', {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-info'],
+                });
+              } else {
+                // Mostrar mensaje de error genérico para otros errores
+                this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
+                  duration: 3000,
+                  horizontalPosition: 'center',
+                  verticalPosition: 'bottom',
+                  panelClass: ['snackbar-failed'],
+                });
+              }
+              this.router.navigate(['/main/ofertas']);
             }
           });
       },

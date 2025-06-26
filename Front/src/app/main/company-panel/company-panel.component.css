@@ -133,3 +133,93 @@ mat-card-subtitle {
   padding: 60px;
   color: #999;
 }
+
+/* === TARJETA DE OFERTA === */
+.offer-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 16px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.offer-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* === TÍTULO Y EMPRESA === */
+mat-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 4px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+mat-card-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.company-name {
+  color: #e61b15;
+  font-weight: bold;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* === DESCRIPCIÓN DE LA OFERTA === */
+.offer-description {
+  font-size: 0.95rem;
+  color: #333;
+  margin-top: 16px;
+  min-height: 60px;
+  /* Solución para texto largo */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+/* Para elementos mat-card específicos */
+::ng-deep .mat-mdc-card-content {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+}
+
+/* Para URLs y correos electrónicos */
+.offer-card a, 
+.offer-card span,
+.offer-card p,
+.offer-card h1,
+.offer-card h2,
+.offer-card h3,
+.offer-card h4,
+.offer-card h5,
+.offer-card h6 {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}

@@ -1,16 +1,110 @@
 * {
   box-sizing: border-box;
-  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body, html {
+  height: 100%;
   background-color: #D6D6D6; /* BLANCO MEDIO */
 }
  
 .content {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100dvh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #D6D6D6; /* BLANCO MEDIO */
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
- 
+
+.sidenav-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-sidenav {
+  width: 250px;
+  background-color: #333333;
+  color: white;
+}
+
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Encabezado del sidenav */
+.sidenav-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #333333;
+  text-align: center;
+}
+
+.sidenav-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+  background-color: transparent;
+}
+
+/* Admin section styling */
+.admin-section {
+  padding: 16px 16px 8px 16px;
+  background-color: rgba(255, 255, 255, 0.05);
+  margin-top: 16px;
+}
+
+.admin-section h3 {
+  color: white;
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: transparent;
+}
+
+/* Styling for nav items */
+mat-nav-list a {
+  color: white !important;
+  background-color: transparent !important;
+}
+
+mat-nav-list a mat-icon {
+  color: #e61b15 !important;
+  background-color: transparent !important;
+  margin-right: 16px;
+}
+
+mat-nav-list a.active {
+  background-color: rgba(230, 27, 21, 0.15) !important;
+  border-left: 4px solid #e61b15;
+}
+
+mat-nav-list a:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+mat-nav-list a span {
+  color: white;
+  background-color: transparent;
+  transform: translateY(-0.25rem); /* Eleva el texto */
+  display: inline-block;
+}

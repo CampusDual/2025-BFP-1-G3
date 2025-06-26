@@ -4,7 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-admin-panel',
@@ -14,13 +13,11 @@ import { MatSidenav } from '@angular/material/sidenav';
 export class AdminPanelComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'actions'];
   dataSource!: MatTableDataSource<any>;
-  sidenavOpened = true;
   isLoading = false;
   errorMessage = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   constructor(
     private http: HttpClient,
@@ -81,20 +78,12 @@ export class AdminPanelComponent implements OnInit {
     }
   }
 
-  toggleSidenav(): void {
-    this.sidenavOpened = !this.sidenavOpened;
-  }
-
   editCompany(company: any): void {
-    // Implementar lógica para editar empresa
     console.log('Editar empresa:', company);
-    // Aquí podrías abrir un dialog para editar la empresa
   }
 
   deleteCompany(company: any): void {
-    // Implementar lógica para eliminar empresa
     if (confirm(`¿Estás seguro de que deseas eliminar la empresa ${company.name}?`)) {
-      // Aquí va la lógica para eliminar la empresa del backend
       console.log('Eliminar empresa:', company);
     }
   }

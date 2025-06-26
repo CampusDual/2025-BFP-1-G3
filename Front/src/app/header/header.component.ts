@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { LoginService } from '../services/login.service';
 import { filter } from 'rxjs/operators';
@@ -9,13 +9,8 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-menuOpen = false;
-
-closeMenu(): void {
-  this.menuOpen = false;
-}
-
-
+  @Output() sidenavToggle = new EventEmitter<void>();
+  
   currentSectionTitle: string = '';
 
   constructor(private loginService: LoginService, private router: Router) {}
@@ -43,6 +38,9 @@ closeMenu(): void {
     return this.loginService.isLoggedAsCandidate();
   }
 
+  toggleSidenav(): void {
+    this.sidenavToggle.emit();
+  }
 
   logout(): void {
     this.loginService.logout();
@@ -60,6 +58,8 @@ closeMenu(): void {
       this.currentSectionTitle = 'Publicar oferta';
     } else if (path.includes('/main/candidato')) {
       this.currentSectionTitle = 'Mi perfil';
+    } else if (path.includes('/main/admin')) {
+      this.currentSectionTitle = 'Panel de Administración';
     } else {
       this.currentSectionTitle = '';
     }

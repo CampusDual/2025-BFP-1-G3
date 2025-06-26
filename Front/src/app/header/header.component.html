@@ -1,49 +1,25 @@
 <mat-toolbar>
+  <!-- Botón de sidenav -->
+  <button mat-icon-button class="sidenav-toggle" (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  
   <a [routerLink]="['/main/ofertas']" class="logo-link">
     <img src="assets/img/logo-clustertic.png" alt="Logo" />
   </a>
   
   <span class="fill-remaining-space"></span>
 
-  <!-- Botón del menú tipo ASUS -->
-  <div class="menu-wrapper" (mouseleave)="menuOpen = false">
-    <button mat-icon-button class="menu-button" (mouseenter)="menuOpen = true">
-      <mat-icon>menu</mat-icon>
-    </button>
-
-    <!-- Menú personalizado -->
-    <div *ngIf="menuOpen" class="custom-asus-menu" (mouseenter)="menuOpen = true">
-      <a routerLink="/main" (click)="closeMenu()">
-        <mat-icon>home</mat-icon>
-        <span>Inicio</span>
-      </a>
-
-      <a *ngIf="isLoggedAsCompany()" routerLink="/main/empresa" (click)="closeMenu()">
-        <mat-icon>business</mat-icon>
-        <span>Panel Empresa</span>
-      </a>
-
-      <a *ngIf="isLoggedAsCandidate()" routerLink="/main/candidato" (click)="closeMenu()">
-        <mat-icon>person</mat-icon>
-        <span>Panel Usuario</span>
-      </a>
-
-      <a *ngIf="!isLoggedIn()" routerLink="/main/login" (click)="closeMenu()">
-        <mat-icon>login</mat-icon>
-        <span>Login</span>
-      </a>
-
-      <a *ngIf="isLoggedIn()" (click)="logout(); closeMenu()">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-      </a>
-
-      <a *ngIf="!isLoggedIn()" routerLink="/main/registrarse" (click)="closeMenu()">
-        <mat-icon>person_add</mat-icon>
-        <span>Registrarse</span>
-      </a>
-    </div>
-  </div>
+  <!-- Botones de autenticación -->
+  <button mat-button *ngIf="!isLoggedIn()" routerLink="/main/login" class="auth-button">
+    <mat-icon>login</mat-icon>
+    <span>Login</span>
+  </button>
+  
+  <button mat-button *ngIf="isLoggedIn()" (click)="logout()" class="auth-button">
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
 </mat-toolbar>
 
 <!-- Banner dinámico -->
