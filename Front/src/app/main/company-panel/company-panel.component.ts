@@ -33,28 +33,35 @@ export class CompanyPanelComponent implements OnInit {
     this.companyName = sessionStorage.getItem('empresa') || '';
   }
 
+  //Comprobamos si el token es valido
   isLoggedIn(): boolean {
-    return sessionStorage.getItem('token') !== null;
+    if (this.loginService.isTokenValid()) {
+      console.log('Token válido');
+      return true;
+    } else {
+      console.log('Token expirado o inválido');
+      return false;
+    }
   }
 
 
   loadOffersByCompany(): void {
     this.loginService.loadUserProfile().subscribe(response => {
-    const companyId = response.companyId;
-    console.log('ID de la empresa:', companyId);
-    this.loginService.getOffersByCompanyId(companyId).subscribe(offers => {
-      this.offers = offers;
-      console.log('Ofertas cargadas:', this.offers);
-      console.log('Cantidad de ofertas:', this.offers.length);
-      if (this.offers.length > 0) {
-        console.log('Primera oferta:', this.offers[0]);
-      }
-    },
-    error => {
-      console.error('Error al cargar ofertas:', error);
+      const companyId = response.companyId;
+      console.log('ID de la empresa:', companyId);
+      this.loginService.getOffersByCompanyId(companyId).subscribe(offers => {
+        this.offers = offers;
+        console.log('Ofertas cargadas:', this.offers);
+        console.log('Cantidad de ofertas:', this.offers.length);
+        if (this.offers.length > 0) {
+          console.log('Primera oferta:', this.offers[0]);
+        }
+      },
+        error => {
+          console.error('Error al cargar ofertas:', error);
+        });
     });
-  });
-}
+  }
 
   publicar(): void {
     if (this.loginService.loadUserProfile()) {
@@ -64,5 +71,5 @@ export class CompanyPanelComponent implements OnInit {
     }
   }
 
- 
+
 }
