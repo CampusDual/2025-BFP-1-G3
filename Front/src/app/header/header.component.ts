@@ -10,10 +10,10 @@ import { filter } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
   @Output() sidenavToggle = new EventEmitter<void>();
-  
+
   currentSectionTitle: string = '';
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) { }
 
   ngOnInit(): void {
     this.router.events.pipe(
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
     });
 
     // por si ya hay una ruta al cargar
-    this.setCurrentSectionTitle(); 
+    this.setCurrentSectionTitle();
   }
 
   isLoggedIn(): boolean {
@@ -36,6 +36,9 @@ export class HeaderComponent implements OnInit {
 
   isLoggedAsCandidate(): boolean {
     return this.loginService.isLoggedAsCandidate();
+  }
+  isLoggedAsAdmin(): boolean {
+    return this.loginService.isLoggedAsAdmin();
   }
 
   toggleSidenav(): void {

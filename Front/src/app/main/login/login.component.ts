@@ -31,8 +31,10 @@ export class LoginComponent implements OnInit {
           this.applyOfferAfterLogIn();
           this.router.navigate(['/main/ofertas']);
           this.loginService.clickedApplyOffer = false;
-        } else if (response.empresa === "") {
+        } else if (response.roles === 'role_candidate') {
           this.router.navigate(['/main/candidato']);
+        } else if (response.roles === 'role_admin') {
+          this.router.navigate(['/main/admin']);
         } else {
           this.router.navigate(['/main/empresa']);
         }
@@ -48,19 +50,19 @@ export class LoginComponent implements OnInit {
     );
   }
 
-    applyOfferAfterLogIn(): void {
+  applyOfferAfterLogIn(): void {
     this.loginService.loadUserProfile().subscribe({
       next: () => {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         });
-  
+
         const applicationData = {
           id_candidate: this.loginService.candidateId,
           id_offer: this.loginService.idOffer
         };
-        
+
         this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
           .subscribe({
             next: (response) => {
@@ -74,11 +76,11 @@ export class LoginComponent implements OnInit {
             },
             error: (error) => {
               // Verificar si el error es porque ya está inscrito
-              if (error.status === 409 || 
-                  (error.error && error.error.message && 
-                   (error.error.message.includes("ya inscrito") || 
+              if (error.status === 409 ||
+                (error.error && error.error.message &&
+                  (error.error.message.includes("ya inscrito") ||
                     error.error.message.includes("already applied")))) {
-                
+
                 // Mostrar mensaje informativo en lugar de error
                 this.snackBar.open('No puedes volver a inscribirte a la misma oferta', 'Cerrar', {
                   duration: 3000,

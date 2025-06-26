@@ -99,10 +99,9 @@ export class LoginService {
   }
 
   isLoggedAsAdmin(): boolean {
-    if (sessionStorage.getItem('token') && this.role === 'role_admin') {
-      return true;
-    }
-    return false;
+    // if (sessionStorage.getItem('token') && this.role === 'role_admin') {
+    const token = sessionStorage.getItem('token');
+    return token !== null && this.role === 'role_admin';
   }
 
   logout(): void {
@@ -139,11 +138,11 @@ export class LoginService {
     );
   }
 
-  isLoggedAsAdmin(): boolean {
-    // Esta implementación es de ejemplo, ajústala según tu lógica de autenticación
-    const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role'); // Asegúrate de guardar el rol en el sessionStorage
-    return token !== null && role === 'admin';
-  }
+  // isLoggedAsAdmin(): boolean {
+  //   // Esta implementación es de ejemplo, ajústala según tu lógica de autenticación
+  //   const token = sessionStorage.getItem('token');
+  //   const role = sessionStorage.getItem('role'); // Asegúrate de guardar el rol en el sessionStorage
+  //   return token !== null && role === 'admin';
+  // }
 
 }

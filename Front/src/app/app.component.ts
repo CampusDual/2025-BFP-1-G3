@@ -12,9 +12,9 @@ import { filter } from 'rxjs/operators';
 export class AppComponent {
   title = 'projectTrials';
   currentAdminSection: string = 'empresas';
-  
+
   @ViewChild('sidenav') sidenav!: MatSidenav;
-  
+
   constructor(private router: Router, private loginService: LoginService) {
     // Detectar cambios de ruta para actualizar la sección activa
     this.router.events.pipe(
@@ -23,41 +23,41 @@ export class AppComponent {
       this.updateAdminSection();
     });
   }
-  
+
   // Añadir este método para solucionar el error
   toggleSidenav() {
     this.sidenav.toggle();
   }
-  
+
   isAdminRoute(): boolean {
     return this.router.url.includes('/main/admin');
   }
-  
+
   isLoggedIn(): boolean {
     return this.loginService.isAuthenticated();
   }
-  
+
   isLoggedAsCompany(): boolean {
     return this.loginService.isLoggedAsCompany();
   }
-  
+
   isLoggedAsCandidate(): boolean {
     return this.loginService.isLoggedAsCandidate();
   }
-  
+
   isLoggedAsAdmin(): boolean {
     // Implementa este método en tu servicio o crea una implementación aquí
-    return this.loginService.isAuthenticated() && 
-           sessionStorage.getItem('role') === 'admin';
+    return this.loginService.isAuthenticated() &&
+      this.loginService.isLoggedAsAdmin();
   }
-  
+
   isActiveAdminSection(section: string): boolean {
     return this.currentAdminSection === section;
   }
-  
+
   private updateAdminSection(): void {
     const url = this.router.url;
-    
+
     if (url.includes('/main/admin/ofertas')) {
       this.currentAdminSection = 'ofertas';
     } else if (url.includes('/main/admin/candidatos')) {
