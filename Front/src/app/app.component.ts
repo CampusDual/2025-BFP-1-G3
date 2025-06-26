@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { LoginService } from './services/login.service';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { LoginService } from './services/login.service';
+import { TokenWatcherService } from './services/token-watcher.service';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +16,24 @@ export class AppComponent {
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  constructor(private router: Router, private loginService: LoginService) {
+  constructor(
+    private router: Router, 
+    private loginService: LoginService,
+    private tokenWatcher: TokenWatcherService
+  ) {
     // Detectar cambios de ruta para actualizar la sección activa
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateAdminSection();
+      
+      // Iniciar vigilancia del token si el usuario está autenticado
+      if (this.loginService.isAuthenticated()) {
+        this.tokenWatcher.startWatching();
+      }
     });
   }
 
-  // Añadir este método para solucionar el error
   toggleSidenav() {
     this.sidenav.toggle();
   }
@@ -46,9 +55,8 @@ export class AppComponent {
   }
 
   isLoggedAsAdmin(): boolean {
-    // Implementa este método en tu servicio o crea una implementación aquí
-    return this.loginService.isAuthenticated() &&
-      this.loginService.isLoggedAsAdmin();
+    return this.loginService.isAuthenticated() && 
+           this.loginService.isLoggedAsAdmin();
   }
 
   isActiveAdminSection(section: string): boolean {

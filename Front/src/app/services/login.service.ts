@@ -146,11 +146,13 @@ export class LoginService {
     if (!token) return false;
 
     try {
+      // Decodificar el token JWT para obtener el payload
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp;
       const now = Math.floor(Date.now() / 1000);
-
-      return exp > now;
+      
+      // Verificar expiración con un margen de 10 segundos
+      return exp > (now + 10);
     } catch (error) {
       console.error('Error decodificando token:', error);
       return false;
