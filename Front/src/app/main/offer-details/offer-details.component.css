@@ -57,7 +57,7 @@ mat-card-header {
 
 /* Indicador de edición */
 .editing-header .editing-indicator {
-  color: #ff9800;
+  color: black;
   font-size: 1.8rem;
 }
 
