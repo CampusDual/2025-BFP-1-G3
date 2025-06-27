@@ -20,8 +20,30 @@ export class LoginService {
   private urlEndPoint: string = 'http://localhost:30030'
 
   constructor(private http: HttpClient, private router: Router) { 
-    // Recuperar el rol del sessionStorage al inicializar el servicio
-    this.role = sessionStorage.getItem('role') || '';
+    // Inicializar el rol desde el token si existe
+    this.role = this.getRoleFromToken();
+  }
+
+  // Método para extraer el rol del token JWT
+  private getRoleFromToken(): string {
+    const token = sessionStorage.getItem('token');
+    if (!token) return '';
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el rol del campo 'role' del payload
+      return payload.role || '';
+    } catch (error) {
+      console.error('Error decodificando token para obtener rol:', error);
+      return '';
+    }
+  }
+
+  // Método para obtener el rol (ahora solo del token)
+  private getRole(): string {
+    return this.getRoleFromToken();
   }
 
   login(user: string, password: string) {
@@ -37,7 +59,8 @@ export class LoginService {
           // sessionStorage.setItem('password', password);
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
-          sessionStorage.setItem('role', response.roles); // Guardar rol en sessionStorage
+          // Ya no guardamos el rol en sessionStorage, se obtiene del token
+          
           this.role = response.roles;
         }),
         catchError(e => {
@@ -90,20 +113,26 @@ export class LoginService {
 
   isLoggedAsCompany(): boolean {
     const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
-    return token !== null && role === 'role_company';
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_company';
   }
 
   isLoggedAsCandidate(): boolean {
     const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
-    return token !== null && role === 'role_candidate';
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_candidate';
   }
 
   isLoggedAsAdmin(): boolean {
     const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
-    return token !== null && role === 'role_admin';
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_admin';
   }
 
   logout(): void {
@@ -111,8 +140,8 @@ export class LoginService {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('empresa');
-    sessionStorage.removeItem('role'); // Eliminar rol del sessionStorage
-    this.role = ''; // Limpiar la variable de instancia
+    // No necesitamos limpiar 'role' de sessionStorage porque ya no lo usamos
+    this.role = '';
 
     console.log('Sesión cerrada correctamente');
 

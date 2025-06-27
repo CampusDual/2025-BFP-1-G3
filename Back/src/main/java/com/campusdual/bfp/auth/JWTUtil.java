@@ -36,12 +36,32 @@ public class JWTUtil {
                 .compact();
     }
 
+    // Método sobrecargado para incluir el rol en el token
+    public String generateJWTToken(String username, String role){
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role) // Agregar el rol como claim personalizado
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + this.jwtExpiration))
+                .signWith(this.key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(this.key).build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    // Método para extraer el rol del token
+    public String getRoleFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.key).build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
     public boolean validateJwtToken(String token) {
