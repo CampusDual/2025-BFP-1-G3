@@ -155,6 +155,12 @@ mat-card-subtitle {
   font-weight: bold;
 }
 
+mat-icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* === DESCRIPCIÓN DE LA OFERTA === */
 /* Definición movida más abajo con estilos de truncado */
 
