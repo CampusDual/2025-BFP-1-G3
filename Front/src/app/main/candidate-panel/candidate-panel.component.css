@@ -31,3 +31,37 @@ h3 {
   font-size: 2rem;
   align-items: baseline;
 }
+
+/* New styles for candidate profile form */
+
+.profile-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+button[type="submit"] {
+  margin-top: 12px;
+}
+
+.success-message {
+  color: #4caf50;
+  font-weight: 600;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.error-message {
+  color: #f44336;
+  font-weight: 600;
+  margin-top: 16px;
+  text-align: center;
+}
