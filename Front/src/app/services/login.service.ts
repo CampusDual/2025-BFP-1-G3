@@ -19,7 +19,10 @@ export class LoginService {
 
   private urlEndPoint: string = 'http://localhost:30030'
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { 
+    // Recuperar el rol del sessionStorage al inicializar el servicio
+    this.role = sessionStorage.getItem('role') || '';
+  }
 
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
@@ -34,6 +37,7 @@ export class LoginService {
           // sessionStorage.setItem('password', password);
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
+          sessionStorage.setItem('role', response.roles); // Guardar rol en sessionStorage
           this.role = response.roles;
         }),
         catchError(e => {
@@ -85,23 +89,21 @@ export class LoginService {
   }
 
   isLoggedAsCompany(): boolean {
-    if (sessionStorage.getItem('token') !== null && this.role === 'role_company') {
-      return true
-    }
-    return false;
+    const token = sessionStorage.getItem('token');
+    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
+    return token !== null && role === 'role_company';
   }
 
   isLoggedAsCandidate(): boolean {
-    if (sessionStorage.getItem('token') && this.role === 'role_candidate') {
-      return true;
-    }
-    return false;
+    const token = sessionStorage.getItem('token');
+    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
+    return token !== null && role === 'role_candidate';
   }
 
   isLoggedAsAdmin(): boolean {
-    // if (sessionStorage.getItem('token') && this.role === 'role_admin') {
     const token = sessionStorage.getItem('token');
-    return token !== null && this.role === 'role_admin';
+    const role = sessionStorage.getItem('role') || this.role; // Priorizar sessionStorage
+    return token !== null && role === 'role_admin';
   }
 
   logout(): void {
@@ -109,6 +111,8 @@ export class LoginService {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('empresa');
+    sessionStorage.removeItem('role'); // Eliminar rol del sessionStorage
+    this.role = ''; // Limpiar la variable de instancia
 
     console.log('Sesión cerrada correctamente');
 

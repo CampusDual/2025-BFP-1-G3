@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { TokenWatcherService } from './services/token-watcher.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'projectTrials';
   currentAdminSection: string = 'empresas';
 
@@ -19,7 +19,8 @@ export class AppComponent {
   constructor(
     private router: Router, 
     private loginService: LoginService,
-    private tokenWatcher: TokenWatcherService
+    private tokenWatcher: TokenWatcherService,
+    private cdr: ChangeDetectorRef
   ) {
     // Detectar cambios de ruta para actualizar la sección activa
     this.router.events.pipe(
@@ -31,7 +32,20 @@ export class AppComponent {
       if (this.loginService.isAuthenticated()) {
         this.tokenWatcher.startWatching();
       }
+      
+      // Forzar detección de cambios para actualizar la vista
+      this.cdr.detectChanges();
     });
+  }
+
+  ngOnInit(): void {
+    // Verificar estado de autenticación al inicializar
+    if (this.loginService.isAuthenticated()) {
+      this.tokenWatcher.startWatching();
+    }
+    
+    // Forzar detección de cambios inicial
+    this.cdr.detectChanges();
   }
 
   toggleSidenav() {
