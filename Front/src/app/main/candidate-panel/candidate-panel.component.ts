@@ -93,13 +93,13 @@ export class CandidatePanelComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
-            duration: 1000,
+            duration: 10000,
             horizontalPosition: 'center',
             verticalPosition: 'bottom',
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil actualizado exitosamente');
-          this.successMessage = 'Perfil actualizado con éxito.';
+          // this.successMessage = 'Perfil actualizado con éxito.';
           this.submitting = false;
         },
         error: (error) => {

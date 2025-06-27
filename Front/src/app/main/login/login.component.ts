@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
           this.applyOfferAfterLogIn();
           this.loginService.clickedApplyOffer = false;
         } else if (response.roles === 'role_candidate') {
-          this.router.navigate(['/main/candidato']);
+          this.router.navigate(['/main/ofertas']);
         } else {
           this.router.navigate(['/main/empresa']);
         }
