@@ -34,10 +34,16 @@
       <input matInput formControlName="email" />
     </mat-form-field>
 
+<div *ngIf="signUpError" class="error-message">{{ signUpError }}</div>
+
     <button mat-raised-button color="primary" type="submit" [disabled]="submitting">Guardar cambios</button>
+      
+  
   </div>
+
+
 </form>
 
 <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-<div *ngIf="signUpError" class="error-message">{{ signUpError }}</div>
+
 

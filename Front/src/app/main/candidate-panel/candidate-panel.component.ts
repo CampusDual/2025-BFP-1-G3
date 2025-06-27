@@ -99,7 +99,7 @@ export class CandidatePanelComponent implements OnInit {
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil actualizado exitosamente');
-          // this.successMessage = 'Perfil actualizado con éxito.';
+          this.signUpError = '';
           this.submitting = false;
         },
         error: (error) => {

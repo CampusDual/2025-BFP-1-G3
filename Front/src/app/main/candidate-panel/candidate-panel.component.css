@@ -41,17 +41,27 @@ h3 {
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Added to prevent vertical scroll */
+  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 mat-form-field {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 button[type="submit"] {
   margin-top: 12px;
+  /* Center the button */
+  align-self: center;
 }
 
+/* Success and error messages */
 .success-message {
   color: #4caf50;
   font-weight: 600;
@@ -62,6 +72,5 @@ button[type="submit"] {
 .error-message {
   color: #f44336;
   font-weight: 600;
-  margin-top: 16px;
   text-align: center;
 }
