@@ -158,13 +158,4 @@ export class LoginService {
       return false;
     }
   }
-
-
-  // isLoggedAsAdmin(): boolean {
-  //   // Esta implementación es de ejemplo, ajústala según tu lógica de autenticación
-  //   const token = sessionStorage.getItem('token');
-  //   const role = sessionStorage.getItem('role'); // Asegúrate de guardar el rol en el sessionStorage
-  //   return token !== null && role === 'admin';
-  // }
-
 }

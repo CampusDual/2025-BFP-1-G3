@@ -1,0 +1,230 @@
+.offer-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header de la oferta */
+.offer-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+  margin-right: 16px;
+  color: #e61b15;
+}
+
+.offer-title-section h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.offer-company {
+  margin: 8px 0 0 0;
+  font-size: 1.2rem;
+  color: #e61b15;
+  font-weight: 500;
+}
+
+/* Pestañas */
+.offer-tabs {
+  margin-top: 20px;
+}
+
+.tab-content {
+  padding: 24px;
+}
+
+/* Tarjeta de detalles */
+.details-card {
+  margin-bottom: 20px;
+}
+
+.offer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 16px;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item strong {
+  color: #333;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.detail-item p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Sección de candidatos */
+.candidates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e61b15;
+}
+
+.candidates-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.candidates-count {
+  background-color: #e61b15;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Lista de candidatos */
+.candidates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.candidate-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.candidate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.candidate-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.candidate-basic h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.candidate-email {
+  margin: 4px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.candidate-phone {
+  margin: 4px 0 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.candidate-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.candidate-actions button {
+  min-width: 120px;
+}
+
+/* Estados sin contenido */
+.no-candidates {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-candidates mat-icon {
+  font-size: 4rem;
+  height: 4rem;
+  width: 4rem;
+  margin-bottom: 16px;
+  color: #ccc;
+}
+
+.no-candidates p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Estados de carga y error */
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-container mat-spinner {
+  margin: 0 auto 20px auto;
+}
+
+.loading-container p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error-container mat-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  color: #f44336;
+  margin-bottom: 16px;
+}
+
+.error-container p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .offer-details-container {
+    padding: 16px;
+  }
+  
+  .offer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .offer-title-section h1 {
+    font-size: 1.5rem;
+  }
+  
+  .candidate-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .candidates-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

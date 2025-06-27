@@ -13,7 +13,7 @@
 <!-- Diseño de tarjetas -->
 <div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
   <div class="cards-grid">
-    <mat-card class="offer-card" *ngFor="let offer of offers">
+    <mat-card class="offer-card clickable-card" *ngFor="let offer of offers" (click)="viewOfferDetails(offer)">
       <mat-card-header>
         <div class="header-content">
           <mat-card-title>{{ offer.title }}</mat-card-title>
@@ -25,7 +25,8 @@
       </mat-card-content>
 
       <mat-card-actions class="card-actions">
-        
+        <mat-icon class="view-details-icon">visibility</mat-icon>
+        <span class="view-details-text">Ver detalles</span>
       </mat-card-actions>
     </mat-card>
   </div>

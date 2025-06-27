@@ -51,6 +51,8 @@ export class CompanyPanelComponent implements OnInit {
       console.log('ID de la empresa:', companyId);
       this.loginService.getOffersByCompanyId(companyId).subscribe(offers => {
         this.offers = offers;
+        // Guardar ofertas en sessionStorage para acceso desde offer-details
+        sessionStorage.setItem('company_offers', JSON.stringify(offers));
         console.log('Ofertas cargadas:', this.offers);
         console.log('Cantidad de ofertas:', this.offers.length);
         if (this.offers.length > 0) {
@@ -71,5 +73,10 @@ export class CompanyPanelComponent implements OnInit {
     }
   }
 
-
+  viewOfferDetails(offer: Offer): void {
+    // Pasar la oferta completa como estado de navegación
+    this.router.navigate(['/main/offer-details', offer.id], {
+      state: { offer: offer }
+    });
+  }
 }
