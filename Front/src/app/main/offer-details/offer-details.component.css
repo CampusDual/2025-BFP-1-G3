@@ -8,6 +8,7 @@
 .offer-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 30px;
   padding: 20px;
   background-color: #f8f9fa;
@@ -37,6 +38,66 @@ mat-card-header {
   font-size: 1.2rem;
   color: #e61b15;
   font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-actions button {
+  min-width: 100px;
+}
+
+/* Indicador de edición */
+.editing-header .editing-indicator {
+  color: #ff9800;
+  font-size: 1.8rem;
+}
+
+.editing-header {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos para el formulario de edición */
+.offer-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.offer-edit-form .full-width {
+  width: 100%;
+}
+
+.offer-edit-form mat-form-field {
+  font-size: 14px;
+}
+
+.offer-edit-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Mejorar la visualización de detalles */
+.detail-item h3 {
+  color: #e61b15;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.description-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
 
 /* Pestañas */
@@ -205,6 +266,34 @@ mat-card-header {
   margin-bottom: 20px;
 }
 
+/* Formulario de edición */
+.offer-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.description-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* Snackbar styles */
+.snackbar-success {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.snackbar-error {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .offer-details-container {
@@ -213,8 +302,8 @@ mat-card-header {
   
   .offer-header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 16px;
+    align-items: flex-start;
   }
   
   .offer-title-section h1 {
@@ -231,5 +320,15 @@ mat-card-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .edit-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }

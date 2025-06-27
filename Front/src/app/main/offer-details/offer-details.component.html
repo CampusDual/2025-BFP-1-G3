@@ -5,8 +5,38 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="offer-title-section">
-      <h1>{{ offer.title }}</h1>
-      <p class="offer-company">{{ offer.companyName }}</p>
+      <!-- Vista normal -->
+      <div *ngIf="!isEditing">
+        <h1>{{ offer.title }}</h1>
+        <p class="offer-company">{{ offer.companyName }}</p>
+      </div>
+      
+      <!-- Vista de edición para el título -->
+      <div *ngIf="isEditing" class="editing-header">
+        <h1 class="editing-indicator">Editando oferta</h1>
+        <p class="offer-company">{{ offer.companyName }}</p>
+      </div>
+    </div>
+    
+    <!-- Botones de acción para empresas -->
+    <div class="header-actions" *ngIf="canEdit()">
+      <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="startEditing()">
+        <mat-icon>edit</mat-icon>
+        Editar oferta
+      </button>
+      
+      <div *ngIf="isEditing" class="edit-actions">
+        <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
+          <mat-icon>cancel</mat-icon>
+          Cancelar
+        </button>
+        <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
+          <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+          <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+          <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar cambios</span>
+          <span *ngIf="isSubmitting">Guardando...</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -20,23 +50,41 @@
             <mat-card-title><h2>Oferta</h2></mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="offer-details">
+            <!-- Vista normal (no editando) -->
+            <div class="offer-details" *ngIf="!isEditing">
               <div class="detail-item">
                 <h3>Título:</h3>
                 <p>{{ offer.title }}</p>
               </div>
               <div class="detail-item">
                 <h3>Descripción:</h3>
-                <p>{{ offer.offerDescription }}</p>
+                <p class="description-text">{{ offer.offerDescription }}</p>
               </div>
-              <!-- <div class="detail-item">
-                <strong>Empresa:</strong>
-                <p>{{ offer.companyName }}</p>
-              </div>
-              <div class="detail-item">
-                <strong>ID de la Oferta:</strong>
-                <p>{{ offer.id }}</p>
-              </div> -->
+            </div>
+
+            <!-- Vista de edición -->
+            <div class="offer-edit-form" *ngIf="isEditing && editedOffer">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Título de la oferta</mat-label>
+                <input 
+                  matInput 
+                  [(ngModel)]="editedOffer.title" 
+                  placeholder="Ingresa el título de la oferta"
+                  required>
+                <mat-error *ngIf="!editedOffer.title">El título es requerido</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Descripción de la oferta</mat-label>
+                <textarea 
+                  matInput 
+                  [(ngModel)]="editedOffer.offerDescription" 
+                  placeholder="Describe los detalles de la oferta"
+                  rows="8"
+                  required>
+                </textarea>
+                <mat-error *ngIf="!editedOffer.offerDescription">La descripción es requerida</mat-error>
+              </mat-form-field>
             </div>
           </mat-card-content>
         </mat-card>

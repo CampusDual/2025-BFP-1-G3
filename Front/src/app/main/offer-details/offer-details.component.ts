@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { Offer } from 'src/app/model/offer';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,6 +23,11 @@ export class OfferDetailsComponent implements OnInit {
   headers: HttpHeaders = new HttpHeaders({
     'Authorization': 'Bearer ' + this.token
   });
+
+  // Propiedades para edición
+  isEditing: boolean = false;
+  editedOffer: Offer | null = null;
+  isSubmitting: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -110,5 +116,82 @@ export class OfferDetailsComponent implements OnInit {
     } else {
       this.snackBar.open('CV no disponible', 'Cerrar', { duration: 3000 });
     }
+  }
+
+  // Verificar de forma síncrona si puede editar (para uso en template)
+  canEdit(): boolean {
+    if (!this.offer || !this.loginService.isLoggedAsCompany()) {
+      return false;
+    }
+    
+    // Solo permitir edición si hay una oferta y el usuario es una empresa
+    // En una implementación más robusta, también se verificaría que la empresa
+    // sea la propietaria de la oferta comparando IDs
+    return true;
+  }
+
+  // Iniciar edición
+  startEditing(): void {
+    if (this.offer) {
+      this.editedOffer = { ...this.offer }; // Crear copia para editar
+      this.isEditing = true;
+    }
+  }
+
+  // Cancelar edición
+  cancelEditing(): void {
+    this.isEditing = false;
+    this.editedOffer = null;
+  }
+
+  // Guardar cambios
+  saveChanges(): void {
+    if (!this.editedOffer) return;
+
+    // Validar campos requeridos
+    if (!this.editedOffer.title || !this.editedOffer.offerDescription) {
+      this.snackBar.open('Por favor, completa todos los campos requeridos', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    this.loginService.updateOffer(this.editedOffer).subscribe({
+      next: (response) => {
+        this.snackBar.open('Oferta actualizada exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        
+        // Actualizar la oferta mostrada
+        this.offer = { ...this.editedOffer! };
+        
+        // Actualizar también en sessionStorage si existe
+        const storedOffers = sessionStorage.getItem('company_offers');
+        if (storedOffers) {
+          const offers: Offer[] = JSON.parse(storedOffers);
+          const index = offers.findIndex(o => o.id === this.offer!.id);
+          if (index !== -1) {
+            offers[index] = { ...this.offer! };
+            sessionStorage.setItem('company_offers', JSON.stringify(offers));
+          }
+        }
+        
+        this.isEditing = false;
+        this.editedOffer = null;
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error al actualizar la oferta:', error);
+        this.snackBar.open('Error al actualizar la oferta. Inténtalo de nuevo.', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        this.isSubmitting = false;
+      }
+    });
   }
 }

@@ -107,6 +107,26 @@ export class LoginService {
     );
   }
 
+  // Método para actualizar una oferta
+  updateOffer(offer: Offer): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http.put<any>(`${this.urlEndPoint}/offers/update`, offer, { headers }).pipe(
+      map(response => {
+        console.log('Oferta actualizada:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error actualizando oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
