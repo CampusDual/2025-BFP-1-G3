@@ -28,7 +28,8 @@ export class CandidateSignUpComponent {
       surname1: ['', Validators.required],
       surname2: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', Validators.required]
+      email: ['', Validators.required],
+      linkedin: null
     });
   }
 
@@ -44,7 +45,9 @@ export class CandidateSignUpComponent {
       surname1: String(this.signUpForm.value.surname1).trim(),
       surname2: String(this.signUpForm.value.surname2).trim(),
       phone: String(this.signUpForm.value.phone).trim(),
-      email: String(this.signUpForm.value.email).trim()
+      email: String(this.signUpForm.value.email).trim(),
+      linkedin: (String(this.signUpForm.value.linkedin).trim() !== '') ? 
+      String(this.signUpForm.value.linkedin).trim():null
     };
 
     this.submitting = true;

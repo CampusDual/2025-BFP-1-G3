@@ -7,6 +7,7 @@ public class CandidateDTO {
     private String surname2;
     private String phone;
     private String email;
+    private String linkedin;
 
 
     public int getId() {
@@ -57,5 +58,12 @@ public class CandidateDTO {
         this.email = email;
     }
 
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
 }
 

@@ -54,6 +54,11 @@
         <input matInput type="email" name="email" formControlName="email" />
       </mat-form-field>
 
+      <mat-form-field appearance="fill" class="input-field">
+      <mat-label>LinkedIn</mat-label>
+      <input matInput type="url" name="linkedin" formControlName="linkedin" />
+    </mat-form-field>
+
       <!-- ERROR MESSAGE -->
       <div *ngIf="signUpError" class="error-message">
         <mat-icon id="errorIcon">error</mat-icon>

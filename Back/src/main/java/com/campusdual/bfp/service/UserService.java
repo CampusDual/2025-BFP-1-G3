@@ -101,6 +101,7 @@ public class UserService implements UserDetailsService {
         candidateDTO.setSurname2(signupDTO.getSurname2());
         candidateDTO.setPhone(signupDTO.getPhone());
         candidateDTO.setEmail(signupDTO.getEmail());
+        candidateDTO.setLinkedin(signupDTO.getLinkedin());
 
         int candidateId = candidateService.insertCandidate(candidateDTO);
 

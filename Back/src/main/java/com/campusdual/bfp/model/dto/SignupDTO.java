@@ -11,6 +11,7 @@ public class SignupDTO {
     private String surname2;
     private String phone;
     private String email;
+    private String linkedin;
 
     public String getLogin() {
         return this.login;
@@ -67,5 +68,13 @@ public class SignupDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
     }
 }

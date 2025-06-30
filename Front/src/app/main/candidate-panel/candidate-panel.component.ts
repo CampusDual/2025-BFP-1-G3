@@ -1,3 +1,4 @@
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -30,7 +31,8 @@ export class CandidatePanelComponent implements OnInit {
       surname1: ['', Validators.required],
       surname2: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', Validators.required]
+      email: ['', Validators.required],
+      linkedin: null
     });
   }
 
@@ -50,7 +52,8 @@ export class CandidatePanelComponent implements OnInit {
             surname1: response.surname1,
             surname2: response.surname2,
             phone: response.phone,
-            email: response.email
+            email: response.email,
+            linkedin: response.linkedin
           });
         }
       }
@@ -80,7 +83,9 @@ export class CandidatePanelComponent implements OnInit {
       surname1: String(this.profileForm.value.surname1).trim(),
       surname2: String(this.profileForm.value.surname2).trim(),
       phone: String(this.profileForm.value.phone).trim(),
-      email: String(this.profileForm.value.email).trim()
+      email: String(this.profileForm.value.email).trim(),
+      linkedin: (String(this.profileForm.value.linkedin).trim() !== '') ? 
+      String(this.profileForm.value.linkedin).trim():null
     };
 
     this.submitting = true;
