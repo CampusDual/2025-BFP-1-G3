@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Offer } from 'src/app/model/offer';
+import { Candidate } from 'src/app/model/candidate';
+import { Application } from 'src/app/model/application';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
@@ -15,8 +17,9 @@ import { Location } from '@angular/common';
 export class OfferDetailsComponent implements OnInit {
 
   offer: Offer | null = null;
-  candidates: any[] = [];
+  candidates: Application[] = [];
   loading: boolean = true;
+  loadingCandidates: boolean = false;
   error: string = '';
   offerId: number = 0;
   token: string = sessionStorage.getItem('token') ?? '';
@@ -39,21 +42,32 @@ export class OfferDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Intentar obtener la oferta del estado de navegación
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state?.['offer']) {
-      this.offer = navigation.extras.state['offer'];
-      this.loading = false;
-      this.loadCandidates();
-      return;
-    }
-
-    // Si no hay oferta en el estado, intentar obtenerla de la URL
+    console.log('OfferDetailsComponent ngOnInit iniciado');
+    
+    // Primero, intentar obtener el ID de la URL
     this.route.params.subscribe(params => {
       this.offerId = Number(params['id']);
+      console.log('Parámetros de la ruta:', params);
+      console.log('OfferId obtenido de la URL:', this.offerId);
+      
       if (this.offerId) {
-        this.loadOfferFromList();
+        // Intentar obtener la oferta del estado de navegación
+        const navigation = this.router.getCurrentNavigation();
+        if (navigation?.extras.state?.['offer']) {
+          console.log('Oferta obtenida del estado de navegación');
+          this.offer = navigation.extras.state['offer'];
+          this.loading = false;
+        } else {
+          console.log('Cargando oferta desde la lista...');
+          this.loadOfferFromList();
+        }
+        
+        // Cargar candidatos después de tener el offerId
         this.loadCandidates();
+      } else {
+        console.error('No se pudo obtener el ID de la oferta de la URL');
+        this.error = 'No se pudo cargar la oferta';
+        this.loading = false;
       }
     });
   }
@@ -79,40 +93,43 @@ export class OfferDetailsComponent implements OnInit {
   }
 
   loadCandidates(): void {
-    // Por ahora, simular que no hay candidatos ya que el endpoint no está implementado
-    // En el futuro, cuando tengas el endpoint de candidatos, puedes usar:
-    // this.http.get<any[]>(`http://localhost:30030/api/offers/${this.offerId}/candidates`, { headers: this.headers })
+    if (!this.offerId) {
+      console.error('No hay offerId disponible para cargar candidatos');
+      return;
+    }
+
     console.log('Cargando candidatos para la oferta:', this.offerId);
-    this.candidates = []; // Simular lista vacía por ahora
+    this.loadingCandidates = true;
     
-    // Comentado hasta que el endpoint esté disponible:
-    /*
-    this.http.get<any[]>(`http://localhost:30030/api/offers/${this.offerId}/candidates`, { headers: this.headers })
-      .subscribe(
-        candidates => {
-          this.candidates = candidates;
-        },
-        error => {
-          console.error('Error al cargar candidatos:', error);
-          this.candidates = [];
-        }
-      );
-    */
+    this.loginService.getCandidatesByOfferId(this.offerId).subscribe(
+      (candidates: Application[]) => {
+        console.log('Candidatos cargados exitosamente:', candidates);
+        this.candidates = candidates;
+        this.loadingCandidates = false;
+      },
+      error => {
+        console.error('Error al cargar candidatos:', error);
+        this.candidates = [];
+        this.loadingCandidates = false;
+      }
+    );
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  viewCandidateProfile(candidate: any): void {
+  viewCandidateProfile(application: Application): void {
     // Implementar navegación al perfil del candidato
-    this.router.navigate(['/main/candidate-profile', candidate.id]);
+    if (application.candidate) {
+      this.router.navigate(['/main/candidate-profile', application.candidate.id]);
+    }
   }
 
-  downloadCV(candidate: any): void {
-    if (candidate.cvUrl) {
+  downloadCV(application: Application): void {
+    if (application.candidate?.cvUrl) {
       // Implementar descarga de CV
-      window.open(candidate.cvUrl, '_blank');
+      window.open(application.candidate.cvUrl, '_blank');
     } else {
       this.snackBar.open('CV no disponible', 'Cerrar', { duration: 3000 });
     }
@@ -193,5 +210,19 @@ export class OfferDetailsComponent implements OnInit {
         this.isSubmitting = false;
       }
     });
+  }
+
+  // Método para obtener el nombre completo del candidato
+  getCandidateFullName(candidate: Candidate | undefined): string {
+    if (!candidate) return 'Candidato no disponible';
+    
+    let fullName = candidate.name;
+    if (candidate.surname1) {
+      fullName += ' ' + candidate.surname1;
+    }
+    if (candidate.surname2) {
+      fullName += ' ' + candidate.surname2;
+    }
+    return fullName;
   }
 }

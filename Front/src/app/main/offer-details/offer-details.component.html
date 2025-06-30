@@ -98,21 +98,34 @@
           <h2>Candidatos inscritos</h2>
           <span class="candidates-count">{{ candidates.length }} candidatos</span>
         </div>
+
+        <div class="loading-candidates" *ngIf="loadingCandidates">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Cargando candidatos...</p>
+        </div>
         
-        <div class="candidates-list" *ngIf="candidates.length > 0; else noCandidates">
-          <mat-card class="candidate-card" *ngFor="let candidate of candidates">
+        <div class="candidates-list" *ngIf="!loadingCandidates && candidates.length > 0">
+          <mat-card class="candidate-card" *ngFor="let candidateApp of candidates">
             <mat-card-content>
               <div class="candidate-info">
                 <div class="candidate-basic">
-                  <h3>{{ candidate.firstName }} {{ candidate.lastName }}</h3>
-                  <p class="candidate-email">{{ candidate.email }}</p>
-                  <p class="candidate-phone" *ngIf="candidate.phone">{{ candidate.phone }}</p>
+                  <h3>{{ getCandidateFullName(candidateApp.candidate) }}</h3>
+                  <p class="candidate-email">
+                    <mat-icon>email</mat-icon>
+                    {{ candidateApp.candidate?.email }}
+                  </p>
+                  <p class="candidate-phone" *ngIf="candidateApp.candidate?.phone">
+                    <mat-icon>phone</mat-icon>
+                    {{ candidateApp.candidate?.phone }}
+                  </p>
                 </div>
                 <div class="candidate-actions">
-                  <button mat-button color="primary" (click)="viewCandidateProfile(candidate)">
+                  <button mat-raised-button color="primary" (click)="viewCandidateProfile(candidateApp)">
+                    <mat-icon>person</mat-icon>
                     Ver Perfil
                   </button>
-                  <button mat-button color="accent" (click)="downloadCV(candidate)" *ngIf="candidate.cvUrl">
+                  <button mat-raised-button color="accent" (click)="downloadCV(candidateApp)" *ngIf="candidateApp.candidate?.cvUrl">
+                    <mat-icon>download</mat-icon>
                     Descargar CV
                   </button>
                 </div>
@@ -121,8 +134,9 @@
           </mat-card>
         </div>
 
+        <!-- Mensaje cuando no hay candidatos -->
         <ng-template #noCandidates>
-          <div class="no-candidates">
+          <div class="no-candidates" *ngIf="!loadingCandidates">
             <mat-icon>person_off</mat-icon>
             <p>Aún no hay candidatos que hayan aplicado a esta oferta</p>
           </div>

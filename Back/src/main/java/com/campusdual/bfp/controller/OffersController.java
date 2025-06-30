@@ -1,7 +1,9 @@
 package com.campusdual.bfp.controller;
 
 import com.campusdual.bfp.api.IOfferService;
+import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.model.dto.OfferDTO;
+import com.campusdual.bfp.model.dto.ApplicationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,9 @@ import java.util.List;
 public class OffersController {
     @Autowired
     private IOfferService offersService;
+
+    @Autowired
+    private IApplicationService applicationService;
 
     @PostMapping(value = "/get")
     public OfferDTO queryOffer(@RequestBody OfferDTO offerDto) {
@@ -41,5 +46,10 @@ public class OffersController {
     @DeleteMapping(value = "/delete")
     public long deleteOffer(@RequestBody OfferDTO offerDto) {
         return offersService.deleteOffer(offerDto);
+    }
+
+    @GetMapping("/{offerId}/candidates")
+    public List<ApplicationDTO> getCandidatesByOfferId(@PathVariable int offerId) {
+        return applicationService.getCandidatesByOfferId(offerId);
     }
 }

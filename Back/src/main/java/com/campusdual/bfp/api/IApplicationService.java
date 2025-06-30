@@ -10,4 +10,5 @@ public interface IApplicationService {
     Long insertApplication(ApplicationDTO applicationDTO);
     Long updateApplication(ApplicationDTO applicationDTO);
     Long deleteApplication(ApplicationDTO applicationDTO);
+    List<ApplicationDTO> getCandidatesByOfferId(int offerId);
 }
