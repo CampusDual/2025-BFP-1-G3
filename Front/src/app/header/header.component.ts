@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from 'src/app/services/login.service';
@@ -13,17 +13,25 @@ export class HeaderComponent implements OnInit {
 
   currentSectionTitle: string = '';
 
-  constructor(private loginService: LoginService, private router: Router) { }
+  constructor(
+    private loginService: LoginService, 
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.setCurrentSectionTitle();
+      // Forzar detección de cambios cuando cambia la ruta
+      this.cdr.detectChanges();
     });
 
     // por si ya hay una ruta al cargar
     this.setCurrentSectionTitle();
+    // Forzar detección de cambios inicial
+    this.cdr.detectChanges();
   }
 
   isLoggedIn(): boolean {

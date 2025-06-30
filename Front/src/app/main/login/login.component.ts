@@ -33,13 +33,19 @@ export class LoginComponent implements OnInit {
           this.loginService.clickedApplyOffer = false;
           this.router.navigate(['/main/admin']);
         }
-        // Si no es admin, seguir con la lógica normal
+        // Comprobar si es empresa - también tiene prioridad
+        else if (response.roles === 'role_company') {
+          // Si es empresa, cancelar cualquier intento de aplicación pendiente
+          this.loginService.clickedApplyOffer = false;
+          this.router.navigate(['/main/empresa']);
+        }
+        // Si no es admin ni empresa, seguir con la lógica normal
         else if (response.empresa === "" && this.loginService.clickedApplyOffer) {
           // Si intentó aplicar a una oferta, manejamos eso primero
           this.applyOfferAfterLogIn();
           this.loginService.clickedApplyOffer = false;
         } else if (response.roles === 'role_candidate') {
-          this.router.navigate(['/main/candidato']);
+          this.router.navigate(['/main/ofertas']);
         } else {
           this.router.navigate(['/main/empresa']);
         }
@@ -63,46 +69,31 @@ export class LoginComponent implements OnInit {
           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         });
 
-        const applicationData = {
-          id_candidate: this.loginService.candidateId,
-          id_offer: this.loginService.idOffer
-        };
-
-        this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
+        const candidateId = this.loginService.candidateId;
+        const offerId = this.loginService.idOffer;
+        
+        // Primero verificar si ya está inscrito
+        this.http.get(`http://localhost:30030/applications/check/${candidateId}/${offerId}`, { headers })
           .subscribe({
-            next: (response) => {
-              this.snackBar.open('Inscripción recibida con éxito.', 'Cerrar', {
-                duration: 3000,
-                horizontalPosition: 'center',
-                verticalPosition: 'bottom',
-                panelClass: ['snackbar-success'],
-              });
-              // Navegamos a ofertas después de la aplicación exitosa
-              this.router.navigate(['/main/ofertas']);
-            },
-            error: (error) => {
-              console.log('Error detallado:', error);
-
-              // Lógica mejorada para detectar si ya estaba inscrito
-              if (this.isAlreadyAppliedError(error)) {
-                // Mensaje informativo de ya inscrito
+            next: (response: any) => {
+              if (response && response.exists) {
+                // Ya está inscrito, mostrar mensaje informativo
                 this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
-                  duration: 3000,
+                  duration: 5000,
                   horizontalPosition: 'center',
                   verticalPosition: 'bottom',
                   panelClass: ['snackbar-info'],
                 });
+                // Navegar a ofertas
+                this.router.navigate(['/main/ofertas']);
               } else {
-                // Mensaje de error genérico
-                this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
-                  duration: 3000,
-                  horizontalPosition: 'center',
-                  verticalPosition: 'bottom',
-                  panelClass: ['snackbar-failed'],
-                });
+                // No está inscrito, proceder con la inscripción
+                this.submitApplication(candidateId, offerId, headers);
               }
-              // Siempre navegamos a ofertas después de mostrar el mensaje
-              this.router.navigate(['/main/ofertas']);
+            },
+            error: () => {
+              // Si hay error en la verificación, intentar inscribir de todos modos
+              this.submitApplication(candidateId, offerId, headers);
             }
           });
       },
@@ -114,10 +105,51 @@ export class LoginComponent implements OnInit {
           verticalPosition: 'bottom',
           panelClass: ['snackbar-failed'],
         });
-        // Navegamos a ofertas incluso en caso de error
+        // Navegar a ofertas incluso en caso de error
         this.router.navigate(['/main/ofertas']);
       }
     });
+  }
+
+  // Método auxiliar para enviar la solicitud de inscripción
+  private submitApplication(candidateId: number, offerId: number, headers: HttpHeaders): void {
+    const applicationData = {
+      id_candidate: candidateId,
+      id_offer: offerId
+    };
+    
+    this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open('Inscripción recibida con éxito.', 'Cerrar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-success'],
+          });
+          // Navegar después de completar la inscripción
+          this.router.navigate(['/main/ofertas']);
+        },
+        error: (error) => {
+          if (this.isAlreadyAppliedError(error)) {
+            this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['snackbar-info'],
+            });
+          } else {
+            this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['snackbar-failed'],
+            });
+          }
+          // Navegar a ofertas incluso en caso de error
+          this.router.navigate(['/main/ofertas']);
+        }
+      });
   }
 
   // Método auxiliar para detectar si el error es por ya estar inscrito
@@ -136,7 +168,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-
+    
     // Verificar en error.error.message
     if (error.error && error.error.message) {
       if (error.error.message.includes('ya inscrito') ||
@@ -145,7 +177,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-
+    
     // Verificar en error.message
     if (error.message) {
       if (error.message.includes('ya inscrito') ||
@@ -154,7 +186,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-
+    
     return false;
   }
 }

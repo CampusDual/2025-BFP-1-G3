@@ -19,7 +19,32 @@ export class LoginService {
 
   private urlEndPoint: string = 'http://localhost:30030'
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { 
+    // Inicializar el rol desde el token si existe
+    this.role = this.getRoleFromToken();
+  }
+
+  // Método para extraer el rol del token JWT
+  private getRoleFromToken(): string {
+    const token = sessionStorage.getItem('token');
+    if (!token) return '';
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el rol del campo 'role' del payload
+      return payload.role || '';
+    } catch (error) {
+      console.error('Error decodificando token para obtener rol:', error);
+      return '';
+    }
+  }
+
+  // Método para obtener el rol (ahora solo del token)
+  private getRole(): string {
+    return this.getRoleFromToken();
+  }
 
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
@@ -34,6 +59,8 @@ export class LoginService {
           // sessionStorage.setItem('password', password);
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
+          // Ya no guardamos el rol en sessionStorage, se obtiene del token
+          
           this.role = response.roles;
         }),
         catchError(e => {
@@ -80,28 +107,52 @@ export class LoginService {
     );
   }
 
+  // Método para actualizar una oferta
+  updateOffer(offer: Offer): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http.put<any>(`${this.urlEndPoint}/offers/update`, offer, { headers }).pipe(
+      map(response => {
+        console.log('Oferta actualizada:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error actualizando oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
 
   isLoggedAsCompany(): boolean {
-    if (sessionStorage.getItem('token') !== null && this.role === 'role_company') {
-      return true
-    }
-    return false;
+    const token = sessionStorage.getItem('token');
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_company';
   }
 
   isLoggedAsCandidate(): boolean {
-    if (sessionStorage.getItem('token') && this.role === 'role_candidate') {
-      return true;
-    }
-    return false;
+    const token = sessionStorage.getItem('token');
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_candidate';
   }
 
   isLoggedAsAdmin(): boolean {
-    // if (sessionStorage.getItem('token') && this.role === 'role_admin') {
     const token = sessionStorage.getItem('token');
-    return token !== null && this.role === 'role_admin';
+    if (!token) return false;
+    
+    const role = this.getRole();
+    return role === 'role_admin';
   }
 
   logout(): void {
@@ -109,6 +160,8 @@ export class LoginService {
     sessionStorage.removeItem('password');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('empresa');
+    // No necesitamos limpiar 'role' de sessionStorage porque ya no lo usamos
+    this.role = '';
 
     console.log('Sesión cerrada correctamente');
 
@@ -146,23 +199,16 @@ export class LoginService {
     if (!token) return false;
 
     try {
+      // Decodificar el token JWT para obtener el payload
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp;
       const now = Math.floor(Date.now() / 1000);
-
-      return exp > now;
+      
+      // Verificar expiración con un margen de 10 segundos
+      return exp > (now + 10);
     } catch (error) {
       console.error('Error decodificando token:', error);
       return false;
     }
   }
-
-
-  // isLoggedAsAdmin(): boolean {
-  //   // Esta implementación es de ejemplo, ajústala según tu lógica de autenticación
-  //   const token = sessionStorage.getItem('token');
-  //   const role = sessionStorage.getItem('role'); // Asegúrate de guardar el rol en el sessionStorage
-  //   return token !== null && role === 'admin';
-  // }
-
 }

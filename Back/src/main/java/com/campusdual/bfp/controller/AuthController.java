@@ -67,13 +67,16 @@ public class AuthController {
             );
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtils.generateJWTToken(userDetails.getUsername());
+            
+            // Obtener el rol
+            String username = authentication.getName();
+            String roles = userService.getRolesByUsername(username).get(0);
+            
+            // Generar token incluyendo el rol
+            String token = jwtUtils.generateJWTToken(userDetails.getUsername(), roles);
 
             // Obtener el nombre de la empresa
             String nombreEmpresa = userService.getCompanyNameByUsername(userDetails.getUsername());
-            //Obtener el rol
-            String username = authentication.getName();
-            String roles = userService.getRolesByUsername(username).get(0);
 
 
             response.put("token", token);

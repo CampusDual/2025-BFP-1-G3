@@ -4,3 +4,46 @@
     <h3>Bienvenido, <span class="companyName">{{username}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
   </div>
 </div>
+
+
+<!-- Formulario para editar datos de perfil -->
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <div class="profile-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Primer apellido</mat-label>
+      <input matInput formControlName="surname1" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Segundo apellido</mat-label>
+      <input matInput formControlName="surname2" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Correo</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+<div *ngIf="signUpError" class="error-message">{{ signUpError }}</div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">Guardar cambios</button>
+      
+  
+  </div>
+
+
+</form>
+
+<div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+
+

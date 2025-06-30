@@ -8,17 +8,21 @@ import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.
 import { CompanyPanelComponent } from './company-panel/company-panel.component';
 import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { OfferDetailsComponent } from './offer-details/offer-details.component';
+import { AuthGuard } from '../guards/auth.guard';
+import { noAuthGuard } from '../guards/no-auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'index', component: IndexComponent },
-  { path: 'publicar', component: PublishOfferComponent },
+  { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
+  // { path: 'index', component: IndexComponent },
+  { path: 'publicar', component: PublishOfferComponent, canActivate: [AuthGuard] },
   { path: 'ofertas', component: DisplayOffersComponent },
-  { path: 'registrarse', component: CandidateSignUpComponent },
-  { path: 'empresa', component: CompanyPanelComponent },
-  { path: 'candidato', component: CandidatePanelComponent },
-  { path: 'admin', component: AdminPanelComponent }
+  { path: 'registrarse', component: CandidateSignUpComponent, canActivate: [noAuthGuard] },
+  { path: 'empresa', component: CompanyPanelComponent, canActivate: [AuthGuard] },
+  { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
+  { path: 'offer-details/:id', component: OfferDetailsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

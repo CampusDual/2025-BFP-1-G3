@@ -1,30 +1,53 @@
-import { Component, ViewChild } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { LoginService } from './services/login.service';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { LoginService } from './services/login.service';
+import { TokenWatcherService } from './services/token-watcher.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'projectTrials';
   currentAdminSection: string = 'empresas';
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  constructor(private router: Router, private loginService: LoginService) {
+  constructor(
+    private router: Router, 
+    private loginService: LoginService,
+    private tokenWatcher: TokenWatcherService,
+    private cdr: ChangeDetectorRef
+  ) {
     // Detectar cambios de ruta para actualizar la sección activa
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateAdminSection();
+      
+      // Iniciar vigilancia del token si el usuario está autenticado
+      if (this.loginService.isAuthenticated()) {
+        this.tokenWatcher.startWatching();
+      }
+      
+      // Forzar detección de cambios para actualizar la vista
+      this.cdr.detectChanges();
     });
   }
 
-  // Añadir este método para solucionar el error
+  ngOnInit(): void {
+    // Verificar estado de autenticación al inicializar
+    if (this.loginService.isAuthenticated()) {
+      this.tokenWatcher.startWatching();
+    }
+    
+    // Forzar detección de cambios inicial
+    this.cdr.detectChanges();
+  }
+
   toggleSidenav() {
     this.sidenav.toggle();
   }
@@ -46,9 +69,8 @@ export class AppComponent {
   }
 
   isLoggedAsAdmin(): boolean {
-    // Implementa este método en tu servicio o crea una implementación aquí
-    return this.loginService.isAuthenticated() &&
-      this.loginService.isLoggedAsAdmin();
+    return this.loginService.isAuthenticated() && 
+           this.loginService.isLoggedAsAdmin();
   }
 
   isActiveAdminSection(section: string): boolean {

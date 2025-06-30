@@ -102,6 +102,54 @@ button:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* === TARJETA CLICKABLE === */
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  color: #e61b15;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  /* Fijar en la parte inferior */
+  margin-top: auto;
+  border-top: 1px solid #f0f0f0;
+}
+
+.view-details-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.view-details-text {
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.clickable-card:hover .card-actions {
+  opacity: 1;
+  color: #333333;
+}
+
+.clickable-card:hover .view-details-icon {
+  transform: scale(1.1);
+}
+
+.clickable-card:hover .view-details-text {
+  font-weight: 600;
+}
+
 /* === TÍTULO Y EMPRESA === */
 mat-card-title {
   font-size: 1.2rem;
@@ -120,13 +168,14 @@ mat-card-subtitle {
   font-weight: bold;
 }
 
-/* === DESCRIPCIÓN DE LA OFERTA === */
-.offer-description {
-  font-size: 0.95rem;
-  color: #333;
-  margin-top: 16px;
-  min-height: 60px;
+mat-icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* === DESCRIPCIÓN DE LA OFERTA === */
+/* Definición movida más abajo con estilos de truncado */
 
 .no-offers {
   text-align: center;
@@ -143,6 +192,8 @@ mat-card-subtitle {
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   padding: 16px;
+  /* Altura fija para mantener consistencia */
+  height: 280px;
   /* Solución para texto largo */
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -192,13 +243,25 @@ mat-card-subtitle {
   font-size: 0.95rem;
   color: #333;
   margin-top: 16px;
-  min-height: 60px;
-  /* Solución para texto largo */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  white-space: normal;
+  /* Limitar a 3 líneas con puntos suspensivos para aprovechar el espacio */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  /* Altura fija para tres líneas */
+  height: calc(1.4em * 3);
   max-width: 100%;
+}
+
+/* Asegurar que el contenido de la tarjeta ocupe el espacio disponible */
+mat-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Para elementos mat-card específicos */
@@ -206,6 +269,23 @@ mat-card-subtitle {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
   word-break: break-word !important;
+  white-space: normal !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Forzar estilos para la descripción de ofertas */
+::ng-deep .offer-description {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.4 !important;
+  height: calc(1.4em * 3) !important;
+  max-width: 100% !important;
   white-space: normal !important;
 }
 
@@ -222,4 +302,49 @@ mat-card-subtitle {
   word-break: break-all;
   overflow-wrap: break-word;
   max-width: 100%;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 16px;
+  }
+  
+  .offer-card {
+    height: 240px; /* Altura ligeramente menor en móviles */
+  }
+  
+  .offers-container {
+    padding: 16px;
+  }
+  
+  .top-row {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .action-buttons-top-right {
+    justify-content: center;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .offer-card {
+    height: 220px; /* Altura aún menor en pantallas muy pequeñas */
+  }
+  
+  mat-card-title {
+    font-size: 1.1rem;
+  }
+  
+  .offer-description {
+    font-size: 0.9rem;
+    -webkit-line-clamp: 2; /* Menos líneas en pantallas pequeñas */
+    line-clamp: 2;
+    height: calc(1.4em * 2);
+  }
 }
