@@ -18,7 +18,7 @@ const routes: Routes = [
   // { path: 'index', component: IndexComponent },
   { path: 'publicar', component: PublishOfferComponent, canActivate: [AuthGuard] },
   { path: 'ofertas', component: DisplayOffersComponent },
-  { path: 'registrarse', component: CandidateSignUpComponent },
+  { path: 'registrarse', component: CandidateSignUpComponent, canActivate: [noAuthGuard] },
   { path: 'empresa', component: CompanyPanelComponent, canActivate: [AuthGuard] },
   { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
