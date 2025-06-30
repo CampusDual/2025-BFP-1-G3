@@ -71,10 +71,10 @@ La aplicación consta de dos partes principales:
 
 ## Ejemplos de Usuarios
 
-### Usuario Empresa
+### Usuario de una empresa
 
-- **Nombre de usuario:** demo
-- **Contraseña:** demo
+- **Nombre de usuario:** martin
+- **Contraseña:** qwerty
 - **Rol:** Empresa
 
 ### Usuario Candidato
@@ -82,6 +82,12 @@ La aplicación consta de dos partes principales:
 - **Nombre de usuario:** brandonsanderson
 - **Contraseña:** 1234
 - **Rol:** Candidato
+
+### Usuario Admin
+
+- **Nombre de usuario:** demo
+- **Contraseña:** demo
+- **Rol:** Admin
 
 ---
 
