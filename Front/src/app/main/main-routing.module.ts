@@ -15,13 +15,13 @@ import { noAuthGuard } from '../guards/no-auth.guard';
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
-  { path: 'index', component: IndexComponent },
+  // { path: 'index', component: IndexComponent },
   { path: 'publicar', component: PublishOfferComponent, canActivate: [AuthGuard] },
   { path: 'ofertas', component: DisplayOffersComponent },
   { path: 'registrarse', component: CandidateSignUpComponent },
-  { path: 'empresa', component: CompanyPanelComponent },
-  { path: 'candidato', component: CandidatePanelComponent },
-  { path: 'admin', component: AdminPanelComponent },
+  { path: 'empresa', component: CompanyPanelComponent, canActivate: [AuthGuard] },
+  { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
   { path: 'offer-details/:id', component: OfferDetailsComponent, canActivate: [AuthGuard] }
 ];
 
