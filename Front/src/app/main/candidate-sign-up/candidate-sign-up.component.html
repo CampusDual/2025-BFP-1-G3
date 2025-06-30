@@ -10,7 +10,7 @@
       <mat-card-title>REGISTRARSE</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content #cardContent [class.grid-ready]="isGridReady">
 
       <!-- USERNAME -->
       <mat-form-field appearance="fill" class="input-field">
