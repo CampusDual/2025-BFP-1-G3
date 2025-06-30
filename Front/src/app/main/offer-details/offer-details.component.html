@@ -157,17 +157,18 @@
                 <a *ngIf="candidateApp.candidate?.linkedin" 
                    [href]="candidateApp.candidate?.linkedin" 
                    target="_blank" 
-                   mat-button 
-                   color="primary"
-                   class="linkedin-link">
-                  <mat-icon>link</mat-icon>
-                  Ver perfil
+                   class="linkedin-link active"
+                   matTooltip="Ver perfil de LinkedIn">
+                  <i class="fa-brands fa-linkedin"></i>
                 </a>
-                <span *ngIf="!candidateApp.candidate?.linkedin" class="no-data">-</span>
+                <i *ngIf="!candidateApp.candidate?.linkedin" 
+                   class="fa-brands fa-linkedin linkedin-disabled" 
+                   matTooltip="Sin perfil de LinkedIn"></i>
               </td>
             </ng-container>
 
-            <!-- Actions Column -->
+            <!-- Actions Column - Comentado temporalmente -->
+            <!--
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>
               <td mat-cell *matCellDef="let candidateApp" class="actions-cell">
@@ -182,13 +183,14 @@
                 </button>
               </td>
             </ng-container>
+            -->
             
             <tr mat-header-row *matHeaderRowDef="candidatesDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: candidatesDisplayedColumns;"></tr>
             
             <!-- Row cuando no hay resultados filtrados -->
             <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" colspan="5">No se encontraron candidatos que coincidan con el filtro</td>
+              <td class="mat-cell" colspan="4">No se encontraron candidatos que coincidan con el filtro</td>
             </tr>
           </table>
         </div>

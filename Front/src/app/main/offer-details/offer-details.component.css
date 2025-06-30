@@ -314,6 +314,15 @@ mat-card-header {
   width: 100%;
 }
 
+/* Estilos para centrar columnas en la tabla de candidatos */
+.centered-header {
+  text-align: center !important;
+}
+
+.centered-cell {
+  text-align: center !important;
+}
+
 .email-cell, .phone-cell {
   display: flex;
   align-items: center;
@@ -328,17 +337,41 @@ mat-card-header {
 }
 
 .linkedin-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   text-decoration: none;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
-.linkedin-link mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+.linkedin-link.active {
+  color: #0077b5; /* Color oficial de LinkedIn */
+  cursor: pointer;
+}
+
+.linkedin-link.active:hover {
+  color: #005885; /* Color más oscuro al hacer hover */
+  transform: scale(1.1);
+}
+
+.linkedin-link i, .linkedin-disabled {
+  font-size: 24px;
+  transition: all 0.3s ease;
+}
+
+.linkedin-disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.linkedin-link.active i {
+  color: #0077b5;
+}
+
+.linkedin-link.active:hover i {
+  color: #005885;
 }
 
 .actions-cell {

@@ -36,7 +36,7 @@ export class OfferDetailsComponent implements OnInit {
   isSubmitting: boolean = false;
 
   // Propiedades para la tabla de candidatos
-  candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin', 'actions'];
+  candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin']; // 'actions' comentado temporalmente
   candidatesDataSource!: MatTableDataSource<Application>;
 
   @ViewChild(MatSort) sort!: MatSort;
