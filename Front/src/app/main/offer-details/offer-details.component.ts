@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -8,6 +8,9 @@ import { Application } from 'src/app/model/application';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-offer-details',
@@ -31,6 +34,13 @@ export class OfferDetailsComponent implements OnInit {
   isEditing: boolean = false;
   editedOffer: Offer | null = null;
   isSubmitting: boolean = false;
+
+  // Propiedades para la tabla de candidatos
+  candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin', 'actions'];
+  candidatesDataSource!: MatTableDataSource<Application>;
+
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private route: ActivatedRoute,
@@ -105,11 +115,26 @@ export class OfferDetailsComponent implements OnInit {
       (candidates: Application[]) => {
         console.log('Candidatos cargados exitosamente:', candidates);
         this.candidates = candidates;
+        
+        // Inicializar la tabla de candidatos
+        this.candidatesDataSource = new MatTableDataSource(candidates);
+        
+        // Configurar sorting y paginación cuando esté disponible
+        setTimeout(() => {
+          if (this.sort) {
+            this.candidatesDataSource.sort = this.sort;
+          }
+          if (this.paginator) {
+            this.candidatesDataSource.paginator = this.paginator;
+          }
+        });
+        
         this.loadingCandidates = false;
       },
       error => {
         console.error('Error al cargar candidatos:', error);
         this.candidates = [];
+        this.candidatesDataSource = new MatTableDataSource<Application>([]);
         this.loadingCandidates = false;
       }
     );
@@ -224,5 +249,22 @@ export class OfferDetailsComponent implements OnInit {
       fullName += ' ' + candidate.surname2;
     }
     return fullName;
+  }
+
+  // Método para filtrar la tabla de candidatos
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    if (this.candidatesDataSource) {
+      this.candidatesDataSource.filter = filterValue.trim().toLowerCase();
+
+      if (this.candidatesDataSource.paginator) {
+        this.candidatesDataSource.paginator.firstPage();
+      }
+    }
+  }
+
+  // Método para abrir email en aplicación predeterminada
+  openEmailClient(email: string): void {
+    window.location.href = `mailto:${email}`;
   }
 }
