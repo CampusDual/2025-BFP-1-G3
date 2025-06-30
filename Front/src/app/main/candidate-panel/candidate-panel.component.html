@@ -34,6 +34,11 @@
       <input matInput formControlName="email" />
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+      <mat-label>LinkedIn</mat-label>
+      <input matInput formControlName="linkedin" />
+    </mat-form-field>
+
 <div *ngIf="signUpError" class="error-message">{{ signUpError }}</div>
 
     <button mat-raised-button color="primary" type="submit" [disabled]="submitting">Guardar cambios</button>

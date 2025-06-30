@@ -10,7 +10,7 @@
       <mat-card-title>REGISTRARSE</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content #cardContent [class.grid-ready]="isGridReady">
 
       <!-- USERNAME -->
       <mat-form-field appearance="fill" class="input-field">
@@ -53,6 +53,11 @@
         <mat-label>Correo</mat-label>
         <input matInput type="email" name="email" formControlName="email" />
       </mat-form-field>
+
+      <mat-form-field appearance="fill" class="input-field">
+      <mat-label>LinkedIn</mat-label>
+      <input matInput type="url" name="linkedin" formControlName="linkedin" />
+    </mat-form-field>
 
       <!-- ERROR MESSAGE -->
       <div *ngIf="signUpError" class="error-message">

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -9,18 +9,22 @@ import { Router } from '@angular/router';
   templateUrl: './candidate-sign-up.component.html',
   styleUrls: ['./candidate-sign-up.component.css']
 })
-export class CandidateSignUpComponent {
+export class CandidateSignUpComponent implements OnInit, AfterViewInit {
+  @ViewChild('cardContent', { static: false }) cardContent!: ElementRef;
+  
   hide = true;
   signUpForm!: FormGroup;
   signUpError: string = '';
   submitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
+  isGridReady: boolean = false;
 
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private http: HttpClient,
-    private router: Router) {
+    private router: Router,
+    private cdr: ChangeDetectorRef) {
     this.signUpForm = this.fb.group({
       login: ['', Validators.required],
       password: ['', Validators.required],
@@ -28,8 +32,34 @@ export class CandidateSignUpComponent {
       surname1: ['', Validators.required],
       surname2: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', Validators.required]
+      email: ['', Validators.required],
+      linkedin: null
     });
+  }
+
+  ngOnInit(): void {
+    // Inicialización del componente
+    setTimeout(() => {
+      this.isGridReady = true;
+      this.cdr.detectChanges();
+    }, 1);
+  }
+
+  ngAfterViewInit(): void {
+    // Forzar detección de cambios después de que la vista se inicialice
+    // Esto ayuda a resolver problemas con los estilos de Angular Material
+    setTimeout(() => {
+      this.isGridReady = true;
+      this.cdr.detectChanges();
+      
+      // Aplicar estilos grid manualmente si es necesario
+      if (this.cardContent && this.cardContent.nativeElement) {
+        const element = this.cardContent.nativeElement;
+        element.style.display = 'grid';
+        element.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        element.style.gap = '8px';
+      }
+    }, 100);
   }
 
   onSubmit(): void {
@@ -44,7 +74,9 @@ export class CandidateSignUpComponent {
       surname1: String(this.signUpForm.value.surname1).trim(),
       surname2: String(this.signUpForm.value.surname2).trim(),
       phone: String(this.signUpForm.value.phone).trim(),
-      email: String(this.signUpForm.value.email).trim()
+      email: String(this.signUpForm.value.email).trim(),
+      linkedin: (String(this.signUpForm.value.linkedin).trim() !== '') ? 
+      String(this.signUpForm.value.linkedin).trim():null
     };
 
     this.submitting = true;

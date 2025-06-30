@@ -4,6 +4,8 @@ import { Observable, throwError } from "rxjs";
 import { map, catchError, tap } from 'rxjs/operators'
 import { OResponse } from "../model/response";
 import { Offer } from "../model/offer";
+import { Candidate } from "../model/candidate";
+import { Application } from "../model/application";
 import { Router } from "@angular/router";
 
 @Injectable({
@@ -210,5 +212,24 @@ export class LoginService {
       console.error('Error decodificando token:', error);
       return false;
     }
+  }
+
+  // Método para obtener candidatos inscritos en una oferta específica
+  getCandidatesByOfferId(offerId: number): Observable<Application[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.get<Application[]>(`${this.urlEndPoint}/offers/${offerId}/candidates`, { headers }).pipe(
+      map(response => {
+        console.log('Candidatos obtenidos para la oferta:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo candidatos:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

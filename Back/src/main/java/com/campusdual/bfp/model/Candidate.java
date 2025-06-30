@@ -20,17 +20,21 @@ public class Candidate {
     private String phone;
     @Column
     private String email;
+    @Column
+    private String linkedin;
+
 
     public Candidate() {
     }
 
-    public Candidate(int id, String name, String surname1, String surname2, String phone, String email) {
+    public Candidate(int id, String name, String surname1, String surname2, String phone, String email, String linkedin) {
         this.id = id;
         this.name = name;
         this.surname1 = surname1;
         this.surname2 = surname2;
         this.phone = phone;
         this.email = email;
+        this.linkedin = linkedin;
     }
 
     public int getId() {
@@ -81,4 +85,11 @@ public class Candidate {
         this.email = email;
     }
 
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
 }

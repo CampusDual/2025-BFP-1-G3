@@ -65,14 +65,51 @@ mat-card-title {
 
 }
 
-mat-card-content{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+/* == PANEL FORM: CONTENIDO == */
+mat-card-content {
+    /* Usar flexbox como fallback inicial */
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+    min-height: 400px;
+    contain: layout style;
 }
-.input-field {
+
+/* Solo aplicar grid cuando esté listo */
+mat-card-content.grid-ready {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(4, auto) !important;
+    gap: 8px !important;
+    align-items: start;
+    justify-items: stretch;
+    flex-wrap: nowrap !important;
+}
+
+/* Estilos para el layout flexbox inicial */
+mat-card-content:not(.grid-ready) .input-field {
+    flex: 0 0 calc(50% - 4px);
+    min-height: 56px;
+    box-sizing: border-box;
+}
+
+mat-card-content:not(.grid-ready) #buttonLogin {
+    flex: 0 0 100%;
+    margin-top: 16px;
+}
+
+mat-card-content:not(.grid-ready) .error-message {
+    flex: 0 0 100%;
+    margin-top: 16px;
+}
+
+/* Estilos para el grid cuando está listo */
+mat-card-content.grid-ready .input-field {
   width: 100%;
+  min-height: 56px;
+  box-sizing: border-box;
+  grid-column: span 1;
+  flex-shrink: 0;
 }
 
 input.mat-input-element {
@@ -148,6 +185,19 @@ input::placeholder {
     padding: 2rem 1.5rem;
     flex: 1;
   }
+  
+  /* Cambiar a una sola columna en dispositivos móviles */
+  mat-card-content.grid-ready {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    gap: 12px !important;
+    min-height: auto !important;
+  }
+
+  mat-card-content:not(.grid-ready) .input-field {
+    flex: 0 0 100% !important;
+  }
+  
   mat-label {
     font-size: x-small;
   }
