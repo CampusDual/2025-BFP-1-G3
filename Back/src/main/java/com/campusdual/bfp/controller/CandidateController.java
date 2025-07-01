@@ -37,69 +37,85 @@ public class CandidateController {
 
     /**
      * Endpoint seguro para que un candidato obtenga su propio perfil
+     * Solo candidatos autenticados pueden acceder a SUS PROPIOS datos
      */
     @GetMapping(value = "/profile")
     public ResponseEntity<CandidateDTO> getCandidateProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
-            // Extraer el token del header
-            String token = authHeader.substring(7); // Remover "Bearer "
+            // 1. Extraer el token del header "Authorization: Bearer <token>"
+            String token = authHeader.substring(7); // Remover "Bearer " para obtener solo el token
+            
+            // 2. Usar JWT para obtener el nombre de usuario del token (sin consultar la BD)
             String username = jwtUtil.getUsernameFromToken(token);
+            
+            // 3. Usar JWT para obtener el rol del usuario del token
             String role = jwtUtil.getRoleFromToken(token);
             
-            // Debug: Imprimir los valores para diagnosticar
+            // 4. Log de debug para ver qué usuario está intentando acceder
             logger.debug("DEBUG - Username: {}", username);
             logger.debug("DEBUG - Role: '{}'", role);
             logger.debug("DEBUG - Role length: {}", (role != null ? role.length() : "null"));
             
-            // Verificar que sea un candidato
+            // 5. SEGURIDAD: Verificar que el usuario tenga rol de candidato
             if (role == null || !role.equals("role_candidate")) {
+                // Si no es candidato, denegar acceso y registrar intento sospechoso
                 logger.warn("User {} with role '{}' attempted to access candidate profile", username, role);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             
-            // Obtener el candidateId del usuario autenticado
+            // 6. Obtener el ID del candidato asociado al usuario autenticado
+            // Esto busca en la tabla User la relación con Candidate
             Integer candidateId = userService.getCandidateIdByUsername(username);
             
-            // Si no encuentra la relación User->Candidate, intentar buscar por email
+            // 7. FALLBACK: Si no encuentra la relación User->Candidate, intentar buscar por email
+            // (Esto es para casos donde el login del usuario es el email del candidato)
             if (candidateId == null) {
                 logger.warn("No candidate found for user via User relationship: {}, trying by email", username);
                 
-                // Buscar candidato por email (método alternativo similar a ApplicationService)
+                // Buscar en la lista de todos los candidatos uno que tenga el email igual al username
                 CandidateDTO candidateByEmail = null;
                 try {
+                    // Obtener todos los candidatos del sistema
                     List<CandidateDTO> allCandidates = candidateService.queryAllCandidates();
+                    // Filtrar para encontrar el que tiene email = username
                     candidateByEmail = allCandidates.stream()
                         .filter(c -> username.equals(c.getEmail()))
                         .findFirst()
                         .orElse(null);
                 } catch (Exception e) {
+                    // Manejo de errores si no se puede buscar por email
                     logger.error("Error searching candidate by email: {}", e.getMessage());
                 }
                 
+                // 8. Si encontramos candidato por email, usar ese ID
                 if (candidateByEmail != null) {
                     candidateId = candidateByEmail.getId();
                     logger.info("Found candidate by email: {} -> candidateId: {}", username, candidateId);
                 } else {
+                    // 9. Si no encontramos candidato ni por User ni por email, denegar acceso
                     logger.warn("No candidate found for user by email either: {}", username);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
                 }
             }
             
-            // Crear DTO con el ID para consultar
+            // 10. Crear un DTO con el ID del candidato para la consulta
             CandidateDTO candidateDTO = new CandidateDTO();
             candidateDTO.setId(candidateId);
             
-            // Obtener y devolver los datos del candidato usando método seguro
+            // 11. Obtener los datos completos del candidato usando método seguro
+            // Este método usa findById() en lugar de getReferenceById() para evitar errores
             CandidateDTO result = getCandidateSafely(candidateId);
             if (result == null) {
                 logger.warn("No candidate found with ID: {}", candidateId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             
+            // 12. Log de auditoría y retornar los datos
             logger.info("Candidate {} accessed their own profile", username);
             return ResponseEntity.ok(result);
             
         } catch (Exception e) {
+            // 13. Manejo de errores generales (token inválido, etc.)
             logger.error("Error getting candidate profile: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -107,34 +123,38 @@ public class CandidateController {
 
     /**
      * Endpoint seguro para que un candidato actualice su propio perfil
+     * Solo permite actualizar SUS PROPIOS datos, no los de otros candidatos
      */
     @PutMapping(value = "/profile")
     public ResponseEntity<Integer> updateCandidateProfile(@RequestBody CandidateDTO candidateDTO, 
                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
-            // Extraer el token del header
-            String token = authHeader.substring(7); // Remover "Bearer "
+            // 1. Extraer el token del header "Authorization: Bearer <token>"
+            String token = authHeader.substring(7); // Remover "Bearer " para obtener solo el token
+            
+            // 2. Usar JWT para obtener el nombre de usuario y rol del token
             String username = jwtUtil.getUsernameFromToken(token);
             String role = jwtUtil.getRoleFromToken(token);
             
-            // Debug: Imprimir los valores para diagnosticar
+            // 3. Log de debug para diagnóstico
             logger.debug("DEBUG - Username: {}", username);
             logger.debug("DEBUG - Role: '{}'", role);
             
-            // Verificar que sea un candidato
+            // 4. SEGURIDAD: Verificar que el usuario sea un candidato
             if (role == null || !role.equals("role_candidate")) {
+                // Si no es candidato, denegar acceso
                 logger.warn("User {} with role '{}' attempted to update candidate profile", username, role);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(-1);
             }
             
-            // Obtener el candidateId del usuario autenticado
+            // 5. Obtener el ID del candidato del usuario autenticado
             Integer candidateId = userService.getCandidateIdByUsername(username);
             
-            // Si no encuentra la relación User->Candidate, intentar buscar por email
+            // 6. FALLBACK: Si no encuentra la relación, buscar por email
             if (candidateId == null) {
                 logger.warn("No candidate found for user via User relationship: {}, trying by email", username);
                 
-                // Buscar candidato por email (método alternativo similar a ApplicationService)
+                // Buscar candidato por email como método alternativo
                 CandidateDTO candidateByEmail = null;
                 try {
                     List<CandidateDTO> allCandidates = candidateService.queryAllCandidates();
@@ -155,10 +175,11 @@ public class CandidateController {
                 }
             }
             
-            // Asegurar que el candidato solo puede actualizar su propio perfil
+            // 7. SEGURIDAD CRÍTICA: Forzar que el DTO use el ID del usuario autenticado
+            // Esto previene que el usuario envíe un ID diferente y modifique otros perfiles
             candidateDTO.setId(candidateId);
             
-            // Actualizar el perfil usando método seguro
+            // 8. Actualizar el perfil usando el servicio
             try {
                 int result = candidateService.updateCandidate(candidateDTO);
                 logger.info("Candidate {} updated their own profile", username);
@@ -278,53 +299,67 @@ public class CandidateController {
     // Los siguientes endpoints están disponibles solo para administradores
     // Se mantienen por compatibilidad pero con validación de rol administrativa
 
+    /**
+     * Endpoint POST /get - MODIFICADO para ser seguro
+     * ANTES: Cualquier usuario podía enviar cualquier candidateId y ver otros perfiles
+     * DESPUÉS: Solo candidatos pueden ver SUS PROPIOS datos, admins pueden ver todos
+     */
     @PostMapping(value = "/get")
     public ResponseEntity<CandidateDTO> queryCandidate(@RequestBody CandidateDTO candidateDTO, 
                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
+            // 1. Extraer token y obtener información del usuario autenticado
             String token = authHeader.substring(7);
             String username = jwtUtil.getUsernameFromToken(token);
             String role = jwtUtil.getRoleFromToken(token);
             
-            // Permitir a administradores acceso completo
+            // 2. CASO 1: Si es admin, permitir acceso completo (para funciones administrativas)
             if ("ROLE_ADMIN".equals(role)) {
+                // Los admins pueden consultar cualquier candidato por ID
                 return ResponseEntity.ok(candidateService.queryCandidate(candidateDTO));
             }
             
-            // Permitir a candidatos acceder a SUS PROPIOS datos
+            // 3. CASO 2: Si es candidato, solo permitir acceso a SUS PROPIOS datos
             if ("role_candidate".equals(role)) {
-                // Obtener el candidateId del usuario autenticado
+                // 3a. Obtener el ID del candidato del usuario autenticado
                 Integer authenticatedCandidateId = userService.getCandidateIdByUsername(username);
                 
+                // 3b. Verificar que existe la relación User->Candidate
                 if (authenticatedCandidateId == null) {
                     logger.warn("User {} has role_candidate but no candidate relationship found", username);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
                 }
                 
-                // Verificar que el candidato solo puede acceder a sus propios datos
+                // 3c. SEGURIDAD CRÍTICA: Verificar que no está intentando acceder a otros datos
+                // Si el frontend envía un ID diferente al suyo, denegar acceso
                 if (candidateDTO.getId() > 0 && candidateDTO.getId() != authenticatedCandidateId.intValue()) {
                     logger.warn("User {} attempted to access candidate data for ID {} but owns ID {}", 
                               username, candidateDTO.getId(), authenticatedCandidateId);
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
                 
-                // Forzar el ID del candidato autenticado
+                // 3d. FORZAR el ID correcto: siempre usar el ID del usuario autenticado
+                // Esto previene cualquier manipulación desde el frontend
                 candidateDTO.setId(authenticatedCandidateId);
                 
+                // 3e. Obtener los datos usando el ID autenticado
                 CandidateDTO result = candidateService.queryCandidate(candidateDTO);
                 if (result == null) {
                     logger.warn("No candidate found for authenticated user {} with ID {}", username, authenticatedCandidateId);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
                 }
                 
+                // 3f. Log de auditoría y retornar datos
                 logger.info("Candidate {} accessed their own data via /get endpoint", username);
                 return ResponseEntity.ok(result);
             }
             
+            // 4. CASO 3: Cualquier otro rol - denegar acceso
             logger.warn("User {} with role '{}' attempted unauthorized access to candidate data", username, role);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             
         } catch (Exception e) {
+            // 5. Manejo de errores (token inválido, errores de BD, etc.)
             logger.error("Error in queryCandidate: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

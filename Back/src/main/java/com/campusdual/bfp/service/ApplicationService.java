@@ -70,43 +70,54 @@ public class ApplicationService implements IApplicationService {
         return application.getId();
     }
 
+    /**
+     * MÉTODO SEGURO AGREGADO: insertSecureApplication()
+     * 
+     * DIFERENCIA CON insertApplication():
+     * - insertApplication() confiaba en el candidateId enviado desde el frontend (VULNERABLE)
+     * - insertSecureApplication() obtiene el candidateId del usuario autenticado (SEGURO)
+     */
     @Override
     public Long insertSecureApplication(ApplicationDTO applicationDTO, String username) {
         try {
-            // Buscar el usuario por username
+            // 1. Buscar el usuario en la BD usando el username del token JWT
             User user = userDao.findByLogin(username);
             if (user == null) {
                 throw new RuntimeException("Usuario no encontrado");
             }
 
-            // Obtener el candidato desde la relación User -> Candidate
+            // 2. PASO CRÍTICO: Obtener el candidato real del usuario autenticado
             Candidate candidate = user.getCandidate();
             if (candidate == null) {
-                // Si no hay relación User-Candidate directa, buscar por email
+                // 3. FALLBACK: Si no hay relación User->Candidate directa, buscar por email
+                // Esto es para casos donde el login del usuario es el email del candidato
                 candidate = candidateDao.findByEmail(username);
                 if (candidate == null) {
                     throw new RuntimeException("Candidato no encontrado para este usuario");
                 }
             }
 
+            // 4. Obtener los IDs necesarios para crear la aplicación
             Long offerId = applicationDTO.getId_offer().longValue();
-            int candidateId = candidate.getId();
+            int candidateId = candidate.getId(); // ESTE ES EL ID SEGURO, NO del frontend
 
-            // Verificar si ya está aplicado
+            // 5. VALIDACIÓN: Verificar si ya aplicó a esta oferta
             boolean alreadyExists = applicationDao.existsByCandidateIdAndOfferId(candidateId, offerId);
             if (alreadyExists) {
                 throw new RuntimeException("Ya has aplicado a esta oferta anteriormente");
             }
 
-            // Crear la aplicación con el candidateId seguro obtenido del token
+            // 6. Crear la aplicación con los datos seguros
             Application application = new Application();
-            application.setCandidate(candidate);
-            application.setOffer(offerDao.getReferenceById(offerId));
+            application.setCandidate(candidate);           // Candidato del usuario autenticado
+            application.setOffer(offerDao.getReferenceById(offerId)); // Oferta del request
 
+            // 7. Guardar en BD y devolver ID
             applicationDao.saveAndFlush(application);
             return application.getId();
             
         } catch (Exception e) {
+            // 8. Manejo de errores con mensaje descriptivo
             throw new RuntimeException("Error al procesar la aplicación: " + e.getMessage());
         }
     }

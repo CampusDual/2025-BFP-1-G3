@@ -15,6 +15,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * COMPANYCONTROLLER - CORREGIDO PARA USAR ROLES CORRECTOS
+ * 
+ * PROBLEMA IDENTIFICADO: Usaba "ROLE_ADMIN" pero el sistema usa "role_admin"
+ * CORRECCIÓN APLICADA: Cambiados todos los endpoints para usar el formato correcto
+ * 
+ * ENDPOINTS CORREGIDOS:
+ * - /company/get: Acceso para admin y propia empresa  
+ * - /company/getAll: Acceso para admin y candidatos
+ * - /company/add: Solo admin
+ * - /company/update: Admin y propia empresa
+ * - /company/delete: Solo admin
+ */
+
 @RestController()
 @RequestMapping("/company")
 public class CompanyController {
@@ -71,15 +85,22 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        // 1. Obtener el rol del usuario autenticado desde las autoridades de Spring Security
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("");
 
-        // Solo permitir acceso a administradores y candidatos (para ver ofertas disponibles)
+        // 2. CORRECCIÓN APLICADA: Cambiar "ROLE_ADMIN" por "role_admin"
+        // PROBLEMA: El sistema usa roles como "role_admin" pero aquí se buscaba "ROLE_ADMIN"
+        // SOLUCIÓN: Usar el formato correcto de roles del sistema
+        // - role_admin: permite administrar empresas
+        // - role_candidate: permite ver empresas para postularse a ofertas
         if ("role_admin".equals(role) || "role_candidate".equals(role)) {
+            // 3. Si tiene rol autorizado, devolver lista completa de empresas
             return ResponseEntity.ok(companyService.queryAllCompanies());
         } else {
+            // 4. Si no tiene rol autorizado, denegar acceso y registrar intento
             logger.warn("User {} with role {} attempted to access all companies list", authentication.getName(), role);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
