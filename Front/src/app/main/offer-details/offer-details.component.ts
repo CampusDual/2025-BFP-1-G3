@@ -27,8 +27,11 @@ export class OfferDetailsComponent implements OnInit {
   offerId: number = 0;
   token: string = sessionStorage.getItem('token') ?? '';
   headers: HttpHeaders = new HttpHeaders({
-    'Authorization': 'Bearer ' + this.token
+    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
   });
+
+  // Propiedades Toggle
+  isActive: boolean = false;
 
   // Propiedades para edición
   isEditing: boolean = false;
@@ -53,13 +56,13 @@ export class OfferDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('OfferDetailsComponent ngOnInit iniciado');
-    
+
     // Primero, intentar obtener el ID de la URL
     this.route.params.subscribe(params => {
       this.offerId = Number(params['id']);
       console.log('Parámetros de la ruta:', params);
       console.log('OfferId obtenido de la URL:', this.offerId);
-      
+
       if (this.offerId) {
         // Intentar obtener la oferta del estado de navegación
         const navigation = this.router.getCurrentNavigation();
@@ -71,7 +74,7 @@ export class OfferDetailsComponent implements OnInit {
           console.log('Cargando oferta desde la lista...');
           this.loadOfferFromList();
         }
-        
+
         // Cargar candidatos después de tener el offerId
         this.loadCandidates();
       } else {
@@ -96,7 +99,7 @@ export class OfferDetailsComponent implements OnInit {
         return;
       }
     }
-    
+
     // Si no se encuentra en el storage, mostrar error
     this.error = 'Oferta no encontrada';
     this.loading = false;
@@ -110,15 +113,15 @@ export class OfferDetailsComponent implements OnInit {
 
     console.log('Cargando candidatos para la oferta:', this.offerId);
     this.loadingCandidates = true;
-    
+
     this.loginService.getCandidatesByOfferId(this.offerId).subscribe(
       (candidates: Application[]) => {
         console.log('Candidatos cargados exitosamente:', candidates);
         this.candidates = candidates;
-        
+
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
-        
+
         // Configurar sorting y paginación cuando esté disponible
         setTimeout(() => {
           if (this.sort) {
@@ -128,7 +131,7 @@ export class OfferDetailsComponent implements OnInit {
             this.candidatesDataSource.paginator = this.paginator;
           }
         });
-        
+
         this.loadingCandidates = false;
       },
       error => {
@@ -165,7 +168,7 @@ export class OfferDetailsComponent implements OnInit {
     if (!this.offer || !this.loginService.isLoggedAsCompany()) {
       return false;
     }
-    
+
     // Solo permitir edición si hay una oferta y el usuario es una empresa
     // En una implementación más robusta, también se verificaría que la empresa
     // sea la propietaria de la oferta comparando IDs
@@ -207,10 +210,10 @@ export class OfferDetailsComponent implements OnInit {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
-        
+
         // Actualizar la oferta mostrada
         this.offer = { ...this.editedOffer! };
-        
+
         // Actualizar también en sessionStorage si existe
         const storedOffers = sessionStorage.getItem('company_offers');
         if (storedOffers) {
@@ -221,7 +224,7 @@ export class OfferDetailsComponent implements OnInit {
             sessionStorage.setItem('company_offers', JSON.stringify(offers));
           }
         }
-        
+
         this.isEditing = false;
         this.editedOffer = null;
         this.isSubmitting = false;
@@ -240,7 +243,7 @@ export class OfferDetailsComponent implements OnInit {
   // Método para obtener el nombre completo del candidato
   getCandidateFullName(candidate: Candidate | undefined): string {
     if (!candidate) return 'Candidato no disponible';
-    
+
     let fullName = candidate.name;
     if (candidate.surname1) {
       fullName += ' ' + candidate.surname1;
@@ -251,7 +254,11 @@ export class OfferDetailsComponent implements OnInit {
     return fullName;
   }
 
-  // Método para filtrar la tabla de candidatos
+
+  // == LÓGICA BÚSQUEDA CANDIDATOS
+
+  // Método: recibe un evento 
+  // Filtrar la tabla de candidatos
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     if (this.candidatesDataSource) {
@@ -263,8 +270,43 @@ export class OfferDetailsComponent implements OnInit {
     }
   }
 
-  // Método para abrir email en aplicación predeterminada
-  openEmailClient(email: string): void {
-    window.location.href = `mailto:${email}`;
+
+  // == NO USADO ACUTLAMENTE ==
+
+  // Método: Recibe un string email
+  // Abrir un email en la aplicación predeterminada
+  // openEmailClient(email: string): void {
+  //   window.location.href = `mailto:${email}`;
+  // }
+
+
+  // == LÓGICA TOGGLE ==
+
+  // Método: Recibe un booleano declarado (isActive)
+  // Cambia el valor dependiendo de su posición 
+
+  toggleActive(offerId: number) {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Authorization': 'Bearer ' + this.token
+    });
+    // this.http.put('http://localhost:30030/offers/toggleActive{offerId}', { headers })
+    //   .subscribe({
+    //     next: (response) => {
+    //       //     this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
+    //       //       duration: 10000,
+    //       //       horizontalPosition: 'center',
+    //       //       verticalPosition: 'bottom',
+    //       //       panelClass: ['snackbar-success'],
+    //       //     });
+    //       //     console.log('Perfil actualizado exitosamente');
+    //       //     this.signUpError = '';
+    //       //     this.submitting = false;
+    //       //   },
+    //       //   error: (error) => {
+    //       //     this.signUpError = 'Error al actualizar el perfil.';
+    //     }
+    //   });
+      console.log('Id de la oferta: ' + offerId);
+      return this.http.put(`http://localhost:30030/offers/toggleActive/${offerId}`, null, { headers });
   }
 }

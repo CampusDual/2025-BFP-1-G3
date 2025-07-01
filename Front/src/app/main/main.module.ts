@@ -28,6 +28,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { OfferDetailsComponent } from './offer-details/offer-details.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { OfferDetailsComponent } from './offer-details/offer-details.component';
     MatListModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSlideToggleModule
   ]
 })
 export class MainModule { }

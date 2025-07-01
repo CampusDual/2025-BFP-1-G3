@@ -174,13 +174,15 @@ mat-icon{
   justify-content: center;
 }
 
-/* === DESCRIPCIÓN DE LA OFERTA === */
-/* Definición movida más abajo con estilos de truncado */
-
+/* === MENSAJE NO HAY OFERTAS === */
 .no-offers {
-  text-align: center;
-  padding: 60px;
-  color: #999;
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  font-size: larger;
+  font-weight: bold;
+
+  color: #858585;
 }
 
 /* === TARJETA DE OFERTA === */
@@ -303,6 +305,12 @@ mat-card-content {
   overflow-wrap: break-word;
   max-width: 100%;
 }
+
+
+
+
+
+
 
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {

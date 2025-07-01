@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("OfferService")
 @Lazy
@@ -121,5 +122,16 @@ public class OfferService implements IOfferService {
         Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
         offerDao.delete(offer);
         return id;
+    }
+
+    public boolean toggleActiveStatus(Long id) {
+        Optional<Offer> optionalOffer = offerDao.findById(id);
+        if (optionalOffer.isPresent()) {
+            Offer offer = optionalOffer.get();
+            offer.setActive(offer.getActive() == 1 ? 0 : 1); // Alternamos
+            offerDao.saveAndFlush(offer);
+            return true;
+        }
+        return false;
     }
 }

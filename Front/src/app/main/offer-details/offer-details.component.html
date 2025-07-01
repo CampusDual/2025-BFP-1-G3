@@ -42,14 +42,17 @@
 
   <!-- Pestañas con Material Tabs -->
   <mat-tab-group class="offer-tabs" *ngIf="offer">
+
     <!-- Pestaña de Detalles de la Oferta -->
     <mat-tab label="Detalles de la oferta">
       <div class="tab-content">
         <mat-card class="details-card">
           <mat-card-header>
             <mat-card-title><h2>Oferta</h2></mat-card-title>
+            <mat-slide-toggle (toggleChange)="toggleActive(offer.id)" color="primary" >Activ</mat-slide-toggle>
           </mat-card-header>
           <mat-card-content>
+
             <!-- Vista normal (no editando) -->
             <div class="offer-details" *ngIf="!isEditing">
               <div class="detail-item">

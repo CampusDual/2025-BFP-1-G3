@@ -3,5 +3,6 @@ export class Offer{
     title!: string;
     offerDescription!: string;
     companyId!: number;
-    companyName!: string; // Nuevo campo para el nombre de la compañía
+    companyName!: string; 
+    active!: boolean;
 }
