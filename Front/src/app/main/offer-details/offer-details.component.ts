@@ -66,12 +66,12 @@ export class OfferDetailsComponent implements OnInit {
         const navigation = this.router.getCurrentNavigation();
         if (navigation?.extras.state?.['offer']) {
           console.log('Oferta obtenida del estado de navegación');
-this.offer = navigation.extras.state['offer'];
-// Convertir active de int a boolean
-if (this.offer && typeof this.offer.active === 'number') {
-  this.offer.active = this.offer.active === 1;
-}
-this.loading = false;
+          this.offer = navigation.extras.state['offer'];
+          // Convertir active de int a boolean
+          if (this.offer && typeof this.offer.active === 'number') {
+            this.offer.active = this.offer.active === 1;
+          }
+          this.loading = false;
         } else {
           console.log('Cargando oferta desde la lista...');
           this.loadOfferFromList();
@@ -204,9 +204,15 @@ this.loading = false;
       return;
     }
 
+    // Crear copia para enviar al backend con active como número
+    const offerToUpdate = { ...this.editedOffer };
+    if (typeof offerToUpdate.active === 'boolean') {
+      (offerToUpdate.active as any) = offerToUpdate.active ? 1 : 0;
+    }
+
     this.isSubmitting = true;
 
-    this.loginService.updateOffer(this.editedOffer).subscribe({
+    this.loginService.updateOffer(offerToUpdate).subscribe({
       next: (response) => {
         this.snackBar.open('Oferta actualizada exitosamente', 'Cerrar', {
           duration: 3000,
@@ -282,32 +288,32 @@ this.loading = false;
   // }
 
 
-// == LÓGICA TOGGLE ==
+  // == LÓGICA TOGGLE ==
 
-toggleActive(newState: boolean): void {
-  if (!this.offer) return;
+  toggleActive(newState: boolean): void {
+    if (!this.offer) return;
 
-  this.isSubmitting = true;
-  this.loginService.toggleOfferActive(this.offer.id).subscribe({
-    next: () => {
-      // Actualizar el estado activo localmente según newState
-      this.offer!.active = newState;
+    this.isSubmitting = true;
+    this.loginService.toggleOfferActive(this.offer.id).subscribe({
+      next: () => {
+        // Actualizar el estado activo localmente según newState
+        this.offer!.active = newState;
 
-      this.snackBar.open('Estado de la oferta actualizado correctamente', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-success']
-      });
-      this.isSubmitting = false;
-    },
-    error: (error) => {
-      console.error('Error al actualizar estado de la oferta:', error);
-      this.snackBar.open('Error al actualizar el estado de la oferta. Inténtalo de nuevo.', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
-      });
-      this.isSubmitting = false;
-    }
-  });
-}
+        this.snackBar.open('Estado de la oferta actualizado correctamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error al actualizar estado de la oferta:', error);
+        this.snackBar.open('Error al actualizar el estado de la oferta. Inténtalo de nuevo.', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        this.isSubmitting = false;
+      }
+    });
+  }
 
 }
