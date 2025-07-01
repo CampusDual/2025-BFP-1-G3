@@ -17,6 +17,8 @@ public class Offer {
     @Column(name = "description")
     private String offerDescription;
 
+    @Column(name = "active")
+    private int active;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_company", nullable = false, foreignKey = @ForeignKey(name = "FK_OFFER_COMPANY"))
@@ -25,11 +27,12 @@ public class Offer {
     public Offer() {
     }
 
-    public Offer(Long id, String title, String offerDescription, Company company) {
+    public Offer(Long id, String title, String offerDescription, Company company, int active) {
         this.id = id;
         this.title = title;
         this.offerDescription = offerDescription;
         this.company = company;
+        this.active = active;
     }
 
     public Long getId() {
@@ -62,5 +65,13 @@ public class Offer {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 }
