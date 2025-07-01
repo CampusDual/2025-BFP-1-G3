@@ -1,5 +1,5 @@
 <!-- Fila superior con mensaje de bienvenida y botón -->
- <div class="top-row">
+<div class="top-row">
   <div class="welcome-message" *ngIf="isLoggedIn()">
     <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
   </div>
@@ -10,27 +10,65 @@
   </div>
 </div>
 
-<!-- Diseño de tarjetas -->
-<div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
-  <div class="cards-grid">
-    <mat-card class="offer-card clickable-card" *ngFor="let offer of offers" (click)="viewOfferDetails(offer)">
-      <mat-card-header>
-        <div class="header-content">
-          <mat-card-title>{{ offer.title }}</mat-card-title>
-        </div>
-      </mat-card-header>
+<mat-tab-group>
+  <mat-tab label="Activas">
+    <div class="offers-container" *ngIf="offersActive && offersActive.length > 0; else noActiveOffers">
+      <div class="cards-grid">
+        <mat-card class="offer-card clickable-card" *ngFor="let offer of offersActive" (click)="viewOfferDetails(offer)">
+          <mat-card-header>
+            <div class="header-content">
+              <mat-card-title>{{ offer.title }}</mat-card-title>
+            </div>
+          </mat-card-header>
 
-      <mat-card-content>
-        <p class="offer-description">{{ offer.offerDescription }}</p>
-      </mat-card-content>
+          <mat-card-content>
+            <p class="offer-description">{{ offer.offerDescription }}</p>
+          </mat-card-content>
 
-      <mat-card-actions class="card-actions">
-        <mat-icon class="view-details-icon">visibility</mat-icon>
-        <span class="view-details-text">Ver detalles</span>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-</div>
+          <mat-card-actions class="card-actions">
+            <mat-icon class="view-details-icon">visibility</mat-icon>
+            <span class="view-details-text">Ver detalles</span>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+    <ng-template #noActiveOffers>
+      <div class="no-offers">
+        <mat-icon>info</mat-icon>
+        <p>No hay ofertas activas disponibles en este momento</p>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab label="Inactivas">
+    <div class="offers-container" *ngIf="offersInactive && offersInactive.length > 0; else noInactiveOffers">
+      <div class="cards-grid">
+        <mat-card class="offer-card clickable-card" *ngFor="let offer of offersInactive" (click)="viewOfferDetails(offer)">
+          <mat-card-header>
+            <div class="header-content">
+              <mat-card-title>{{ offer.title }}</mat-card-title>
+            </div>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="offer-description">{{ offer.offerDescription }}</p>
+          </mat-card-content>
+
+          <mat-card-actions class="card-actions">
+            <mat-icon class="view-details-icon">visibility</mat-icon>
+            <span class="view-details-text">Ver detalles</span>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+    <ng-template #noInactiveOffers>
+      <div class="no-offers">
+        <mat-icon>info</mat-icon>
+        <p>No hay ofertas inactivas disponibles en este momento</p>
+      </div>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
 
 <!-- Mensaje cuando no hay ofertas -->
 <ng-template #noOffers>

@@ -51,7 +51,6 @@ h3 {
   border-radius: 100%;
 }
 
-
 button {
   display: flex;
   width: fit-content;
@@ -168,19 +167,21 @@ mat-card-subtitle {
   font-weight: bold;
 }
 
-mat-icon{
+mat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* === DESCRIPCIÓN DE LA OFERTA === */
-/* Definición movida más abajo con estilos de truncado */
-
+/* === MENSAJE NO HAY OFERTAS === */
 .no-offers {
-  text-align: center;
-  padding: 60px;
-  color: #999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: larger;
+  font-weight: bold;
+  color: #858585;
+  margin-top: 5rem;
 }
 
 /* === TARJETA DE OFERTA === */
@@ -290,7 +291,7 @@ mat-card-content {
 }
 
 /* Para URLs y correos electrónicos */
-.offer-card a, 
+.offer-card a,
 .offer-card span,
 .offer-card p,
 .offer-card h1,
@@ -311,21 +312,21 @@ mat-card-content {
     gap: 16px;
     padding: 0 16px;
   }
-  
+
   .offer-card {
     height: 240px; /* Altura ligeramente menor en móviles */
   }
-  
+
   .offers-container {
     padding: 16px;
   }
-  
+
   .top-row {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
   }
-  
+
   .action-buttons-top-right {
     justify-content: center;
     margin: 0;
@@ -336,11 +337,11 @@ mat-card-content {
   .offer-card {
     height: 220px; /* Altura aún menor en pantallas muy pequeñas */
   }
-  
+
   mat-card-title {
     font-size: 1.1rem;
   }
-  
+
   .offer-description {
     font-size: 0.9rem;
     -webkit-line-clamp: 2; /* Menos líneas en pantallas pequeñas */

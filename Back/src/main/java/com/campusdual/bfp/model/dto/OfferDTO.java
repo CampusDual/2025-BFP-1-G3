@@ -7,6 +7,7 @@ public class OfferDTO {
     private String offerDescription;
     private Integer companyId;
     private String companyName;
+    private int active;
 
     public OfferDTO() {
     }
@@ -17,6 +18,8 @@ public class OfferDTO {
         this.offerDescription = offerDescription;
         this.companyId = companyId;
         this.companyName = companyName;
+        //Oferta por defecto desactivada
+        this.active = 0;
     }
 
     public Long getId() {
@@ -57,5 +60,13 @@ public class OfferDTO {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 }

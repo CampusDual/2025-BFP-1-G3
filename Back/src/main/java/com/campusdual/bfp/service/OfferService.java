@@ -2,8 +2,11 @@ package com.campusdual.bfp.service;
 
 import com.campusdual.bfp.api.IOfferService;
 import com.campusdual.bfp.model.Offer;
+import com.campusdual.bfp.model.User;
+import com.campusdual.bfp.model.Company;
 import com.campusdual.bfp.model.dao.CompanyDao;
 import com.campusdual.bfp.model.dao.OfferDao;
+import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dto.OfferDTO;
 import com.campusdual.bfp.model.dto.dtomapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("OfferService")
 @Lazy
@@ -22,6 +26,9 @@ public class OfferService implements IOfferService {
 
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public OfferDTO queryOffer(OfferDTO offerDto) {
@@ -63,8 +70,47 @@ public class OfferService implements IOfferService {
     }
 
     @Override
+    public long insertSecureOffer(OfferDTO offerDto, String username) {
+        try {
+            // Buscar el usuario por username
+            User user = userDao.findByLogin(username);
+            if (user == null) {
+                throw new RuntimeException("Usuario no encontrado");
+            }
+
+            // Obtener la empresa desde la relación User -> Company
+            Company company = user.getCompany();
+            if (company == null) {
+                throw new RuntimeException("Usuario no está asociado a ninguna empresa");
+            }
+
+            Integer authenticatedCompanyId = company.getId();
+            
+            // Debug: Imprimir los valores para diagnosticar
+            System.out.println("DEBUG - Username: " + username);
+            System.out.println("DEBUG - Authenticated Company ID: " + authenticatedCompanyId);
+            System.out.println("DEBUG - Requested Company ID: " + offerDto.getCompanyId());
+
+            // SEGURIDAD: Ignorar cualquier companyId enviado desde el frontend
+            // y usar solo el de la empresa autenticada
+            offerDto.setCompanyId(authenticatedCompanyId);
+            
+            // Verificar que la empresa existe (redundante pero por seguridad)
+            if (!companyDao.existsById(authenticatedCompanyId)) {
+                throw new RuntimeException("La empresa autenticada no existe en la base de datos");
+            }
+
+            Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
+            offerDao.saveAndFlush(offer);
+            return offer.getId();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear la oferta: " + e.getMessage());
+        }
+    }
+
+    @Override
     public long updateOffer(OfferDTO offerDto) {
-        Long id = offerDto.getId();
         Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
         offerDao.saveAndFlush(offer);
         return offer.getId();
@@ -76,5 +122,16 @@ public class OfferService implements IOfferService {
         Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
         offerDao.delete(offer);
         return id;
+    }
+
+    public boolean toggleActiveStatus(Long id) {
+        Optional<Offer> optionalOffer = offerDao.findById(id);
+        if (optionalOffer.isPresent()) {
+            Offer offer = optionalOffer.get();
+            offer.setActive(offer.getActive() == 1 ? 0 : 1); // Alternamos
+            offerDao.saveAndFlush(offer);
+            return true;
+        }
+        return false;
     }
 }

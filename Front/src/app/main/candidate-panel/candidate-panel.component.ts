@@ -19,7 +19,7 @@ export class CandidatePanelComponent implements OnInit {
   submitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
-  candidateId: number = this.loginService.candidateId;
+  // candidateId ya no es necesario - se obtiene del token en el backend
 
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -41,13 +41,14 @@ export class CandidatePanelComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    this.http.post('http://localhost:30030/candidate/get' , {id: this.candidateId}, {headers: headers}).subscribe(
+    // El endpoint /candidate/get ahora es seguro y obtiene el candidateId del token
+    // No necesitamos enviar el ID en el cuerpo
+    this.http.post('http://localhost:30030/candidate/get', {}, {headers: headers}).subscribe(
       (response: any) =>
       {
-        console.log(response);
+        console.log('Datos del candidato obtenidos:', response);
         if (response) {
           this.profileForm.patchValue({
-            login: response.login,
             name: response.name,
             surname1: response.surname1,
             surname2: response.surname2,
@@ -56,20 +57,18 @@ export class CandidatePanelComponent implements OnInit {
             linkedin: response.linkedin
           });
         }
+      },
+      (error) => {
+        console.error('Error obteniendo datos del candidato:', error);
+        this.errorMessage = 'Error al cargar los datos del perfil';
       }
     )
   }
 
   ngOnInit(): void {
-    this.loginService.loadUserProfile().subscribe({
-      next: (response) => {
-        this.candidateId = response.candidateId;
-        this.retrieveCandidateData();
-      },
-      error: (error) => {
-        console.error('Error loading user profile:', error);
-      }
-    });
+    // Directamente cargar los datos del candidato autenticado
+    // El endpoint /candidate/get es ahora seguro y obtiene los datos del token
+    this.retrieveCandidateData();
   }
 
   onSubmit(): void {
@@ -78,7 +77,7 @@ export class CandidatePanelComponent implements OnInit {
       return;
     }
     const registerData = {
-      id: this.candidateId,
+      // No enviamos ID - el backend lo obtiene del token de forma segura
       name: String(this.profileForm.value.name).trim(),
       surname1: String(this.profileForm.value.surname1).trim(),
       surname2: String(this.profileForm.value.surname2).trim(),
@@ -94,7 +93,8 @@ export class CandidatePanelComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    this.http.put('http://localhost:30030/candidate/update', registerData, { headers })
+    // Usar el endpoint seguro /candidate/profile para PUT
+    this.http.put('http://localhost:30030/candidate/profile', registerData, { headers })
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
@@ -108,6 +108,7 @@ export class CandidatePanelComponent implements OnInit {
           this.submitting = false;
         },
         error: (error) => {
+          console.error('Error al actualizar perfil:', error);
           this.signUpError = 'Error al actualizar el perfil.';
           this.submitting = false;
         }

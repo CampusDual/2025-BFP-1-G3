@@ -27,8 +27,9 @@ export class OfferDetailsComponent implements OnInit {
   offerId: number = 0;
   token: string = sessionStorage.getItem('token') ?? '';
   headers: HttpHeaders = new HttpHeaders({
-    'Authorization': 'Bearer ' + this.token
+    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
   });
+
 
   // Propiedades para edición
   isEditing: boolean = false;
@@ -53,25 +54,29 @@ export class OfferDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('OfferDetailsComponent ngOnInit iniciado');
-    
+
     // Primero, intentar obtener el ID de la URL
     this.route.params.subscribe(params => {
       this.offerId = Number(params['id']);
       console.log('Parámetros de la ruta:', params);
       console.log('OfferId obtenido de la URL:', this.offerId);
-      
+
       if (this.offerId) {
         // Intentar obtener la oferta del estado de navegación
         const navigation = this.router.getCurrentNavigation();
         if (navigation?.extras.state?.['offer']) {
           console.log('Oferta obtenida del estado de navegación');
           this.offer = navigation.extras.state['offer'];
+          // Convertir active de int a boolean
+          if (this.offer && typeof this.offer.active === 'number') {
+            this.offer.active = this.offer.active === 1;
+          }
           this.loading = false;
         } else {
           console.log('Cargando oferta desde la lista...');
           this.loadOfferFromList();
         }
-        
+
         // Cargar candidatos después de tener el offerId
         this.loadCandidates();
       } else {
@@ -96,7 +101,7 @@ export class OfferDetailsComponent implements OnInit {
         return;
       }
     }
-    
+
     // Si no se encuentra en el storage, mostrar error
     this.error = 'Oferta no encontrada';
     this.loading = false;
@@ -110,15 +115,15 @@ export class OfferDetailsComponent implements OnInit {
 
     console.log('Cargando candidatos para la oferta:', this.offerId);
     this.loadingCandidates = true;
-    
+
     this.loginService.getCandidatesByOfferId(this.offerId).subscribe(
       (candidates: Application[]) => {
         console.log('Candidatos cargados exitosamente:', candidates);
         this.candidates = candidates;
-        
+
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
-        
+
         // Configurar sorting y paginación cuando esté disponible
         setTimeout(() => {
           if (this.sort) {
@@ -128,7 +133,7 @@ export class OfferDetailsComponent implements OnInit {
             this.candidatesDataSource.paginator = this.paginator;
           }
         });
-        
+
         this.loadingCandidates = false;
       },
       error => {
@@ -165,7 +170,7 @@ export class OfferDetailsComponent implements OnInit {
     if (!this.offer || !this.loginService.isLoggedAsCompany()) {
       return false;
     }
-    
+
     // Solo permitir edición si hay una oferta y el usuario es una empresa
     // En una implementación más robusta, también se verificaría que la empresa
     // sea la propietaria de la oferta comparando IDs
@@ -199,18 +204,24 @@ export class OfferDetailsComponent implements OnInit {
       return;
     }
 
+    // Crear copia para enviar al backend con active como número
+    const offerToUpdate = { ...this.editedOffer };
+    if (typeof offerToUpdate.active === 'boolean') {
+      (offerToUpdate.active as any) = offerToUpdate.active ? 1 : 0;
+    }
+
     this.isSubmitting = true;
 
-    this.loginService.updateOffer(this.editedOffer).subscribe({
+    this.loginService.updateOffer(offerToUpdate).subscribe({
       next: (response) => {
         this.snackBar.open('Oferta actualizada exitosamente', 'Cerrar', {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
-        
+
         // Actualizar la oferta mostrada
         this.offer = { ...this.editedOffer! };
-        
+
         // Actualizar también en sessionStorage si existe
         const storedOffers = sessionStorage.getItem('company_offers');
         if (storedOffers) {
@@ -221,7 +232,7 @@ export class OfferDetailsComponent implements OnInit {
             sessionStorage.setItem('company_offers', JSON.stringify(offers));
           }
         }
-        
+
         this.isEditing = false;
         this.editedOffer = null;
         this.isSubmitting = false;
@@ -240,7 +251,7 @@ export class OfferDetailsComponent implements OnInit {
   // Método para obtener el nombre completo del candidato
   getCandidateFullName(candidate: Candidate | undefined): string {
     if (!candidate) return 'Candidato no disponible';
-    
+
     let fullName = candidate.name;
     if (candidate.surname1) {
       fullName += ' ' + candidate.surname1;
@@ -251,7 +262,11 @@ export class OfferDetailsComponent implements OnInit {
     return fullName;
   }
 
-  // Método para filtrar la tabla de candidatos
+
+  // == LÓGICA BÚSQUEDA CANDIDATOS
+
+  // Método: recibe un evento 
+  // Filtrar la tabla de candidatos
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     if (this.candidatesDataSource) {
@@ -263,8 +278,42 @@ export class OfferDetailsComponent implements OnInit {
     }
   }
 
-  // Método para abrir email en aplicación predeterminada
-  openEmailClient(email: string): void {
-    window.location.href = `mailto:${email}`;
+
+  // == NO USADO ACUTLAMENTE ==
+
+  // Método: Recibe un string email
+  // Abrir un email en la aplicación predeterminada
+  // openEmailClient(email: string): void {
+  //   window.location.href = `mailto:${email}`;
+  // }
+
+
+  // == LÓGICA TOGGLE ==
+
+  toggleActive(newState: boolean): void {
+    if (!this.offer) return;
+
+    this.isSubmitting = true;
+    this.loginService.toggleOfferActive(this.offer.id).subscribe({
+      next: () => {
+        // Actualizar el estado activo localmente según newState
+        this.offer!.active = newState;
+
+        this.snackBar.open('Estado de la oferta actualizado correctamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error al actualizar estado de la oferta:', error);
+        this.snackBar.open('Error al actualizar el estado de la oferta. Inténtalo de nuevo.', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        this.isSubmitting = false;
+      }
+    });
   }
+
 }

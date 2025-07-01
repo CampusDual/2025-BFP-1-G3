@@ -113,8 +113,8 @@ export class LoginComponent implements OnInit {
 
   // Método auxiliar para enviar la solicitud de inscripción
   private submitApplication(candidateId: number, offerId: number, headers: HttpHeaders): void {
+    // Ya no enviamos id_candidate por seguridad - se obtiene del token en el backend
     const applicationData = {
-      id_candidate: candidateId,
       id_offer: offerId
     };
     

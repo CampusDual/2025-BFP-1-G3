@@ -3,9 +3,11 @@ package com.campusdual.bfp.service;
 import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.model.Application;
 import com.campusdual.bfp.model.Candidate;
+import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.dao.ApplicationDao;
 import com.campusdual.bfp.model.dao.CandidateDao;
 import com.campusdual.bfp.model.dao.OfferDao;
+import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
 import com.campusdual.bfp.model.dto.CandidateDTO;
 import com.campusdual.bfp.model.dto.dtomapper.ApplicationMapper;
@@ -34,6 +36,13 @@ public class ApplicationService implements IApplicationService {
     @Autowired
     private OfferDao offerDao;
 
+    //Añadimos UserDao para seguridad
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private UserService userService;
+
     @Override
     public ApplicationDTO queryApplication(ApplicationDTO applicationDTO) {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
@@ -59,6 +68,58 @@ public class ApplicationService implements IApplicationService {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
         applicationDao.saveAndFlush(application);
         return application.getId();
+    }
+
+    /**
+     * MÉTODO SEGURO AGREGADO: insertSecureApplication()
+     * 
+     * DIFERENCIA CON insertApplication():
+     * - insertApplication() confiaba en el candidateId enviado desde el frontend (VULNERABLE)
+     * - insertSecureApplication() obtiene el candidateId del usuario autenticado (SEGURO)
+     */
+    @Override
+    public Long insertSecureApplication(ApplicationDTO applicationDTO, String username) {
+        try {
+            // 1. Buscar el usuario en la BD usando el username del token JWT
+            User user = userDao.findByLogin(username);
+            if (user == null) {
+                throw new RuntimeException("Usuario no encontrado");
+            }
+
+            // 2. PASO CRÍTICO: Obtener el candidato real del usuario autenticado
+            Candidate candidate = user.getCandidate();
+            if (candidate == null) {
+                // 3. FALLBACK: Si no hay relación User->Candidate directa, buscar por email
+                // Esto es para casos donde el login del usuario es el email del candidato
+                candidate = candidateDao.findByEmail(username);
+                if (candidate == null) {
+                    throw new RuntimeException("Candidato no encontrado para este usuario");
+                }
+            }
+
+            // 4. Obtener los IDs necesarios para crear la aplicación
+            Long offerId = applicationDTO.getId_offer().longValue();
+            int candidateId = candidate.getId(); // ESTE ES EL ID SEGURO, NO del frontend
+
+            // 5. VALIDACIÓN: Verificar si ya aplicó a esta oferta
+            boolean alreadyExists = applicationDao.existsByCandidateIdAndOfferId(candidateId, offerId);
+            if (alreadyExists) {
+                throw new RuntimeException("Ya has aplicado a esta oferta anteriormente");
+            }
+
+            // 6. Crear la aplicación con los datos seguros
+            Application application = new Application();
+            application.setCandidate(candidate);           // Candidato del usuario autenticado
+            application.setOffer(offerDao.getReferenceById(offerId)); // Oferta del request
+
+            // 7. Guardar en BD y devolver ID
+            applicationDao.saveAndFlush(application);
+            return application.getId();
+            
+        } catch (Exception e) {
+            // 8. Manejo de errores con mensaje descriptivo
+            throw new RuntimeException("Error al procesar la aplicación: " + e.getMessage());
+        }
     }
 
     @Override

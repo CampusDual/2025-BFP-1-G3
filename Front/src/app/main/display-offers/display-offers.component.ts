@@ -47,11 +47,13 @@ export class DisplayOffersComponent implements OnInit {
     console.log('Iniciando carga de ofertas...');
     this.loginService.getOffers().subscribe(
       getOffers => {
-        this.offers = getOffers;
-        console.log('Ofertas cargadas:', this.offers);
-        console.log('Cantidad de ofertas:', this.offers.length);
+        console.log('Ofertas recibidas:', getOffers);
+        // Filtrar solo ofertas activas (active puede ser boolean o number)
+        this.offers = getOffers.filter(offer => (offer.active as any) == 1);
+        console.log('Ofertas activas filtradas:', this.offers);
+        console.log('Cantidad de ofertas activas:', this.offers.length);
         if (this.offers.length > 0) {
-          console.log('Primera oferta:', this.offers[0]);
+          console.log('Primera oferta activa:', this.offers[0]);
         }
       },
       error => {
@@ -84,8 +86,8 @@ export class DisplayOffersComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
+    // Ya no enviamos id_candidate por seguridad - se obtiene del token en el backend
     const applicationData = {
-      id_candidate: this.loginService.candidateId,
       id_offer: idOffer
     };
 

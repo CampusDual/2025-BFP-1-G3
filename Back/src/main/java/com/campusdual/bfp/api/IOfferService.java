@@ -9,6 +9,8 @@ public interface IOfferService {
     List<OfferDTO> queryAllOffers();
     List<OfferDTO> getOffersByCompanyId(int companyId);
     long insertOffer(OfferDTO offerDto);
+    long insertSecureOffer(OfferDTO offerDto, String username);  // Método seguro
     long updateOffer(OfferDTO offerDto);
     long deleteOffer(OfferDTO offerDto);
+    boolean toggleActiveStatus(Long id);
 }

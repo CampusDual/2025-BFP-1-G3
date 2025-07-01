@@ -20,10 +20,23 @@ public class CandidateService implements ICandidateService {
     @Autowired
     private CandidateDao candidateDao;
 
+    /**
+     * MÉTODO MODIFICADO: queryCandidate()
+     * 
+     * PROBLEMA ORIGINAL: Usaba getReferenceById() que causaba LazyInitializationException
+     * SOLUCIÓN: Cambió a findById() que es más seguro y devuelve Optional
+     */
     @Override
     public CandidateDTO queryCandidate(CandidateDTO candidateDTO) {
+        // 1. Convertir DTO a entidad para obtener el ID
         Candidate candidate = CandidateMapper.INSTANCE.toEntity(candidateDTO);
-        return CandidateMapper.INSTANCE.toDTO(candidateDao.getReferenceById(candidate.getId()));
+        
+        // 2. CORRECCIÓN: Usar findById() en lugar de getReferenceById()
+        // findById() carga la entidad completa inmediatamente
+        // getReferenceById() devuelve un proxy que puede causar errores lazy loading
+        return candidateDao.findById(candidate.getId())
+                .map(CandidateMapper.INSTANCE::toDTO)  // 3. Si existe, convertir a DTO
+                .orElse(null);                         // 4. Si no existe, devolver null
     }
 
     @Override
