@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Service
 @Lazy
@@ -46,7 +47,12 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(), Collections.emptyList());
+        // Obtener los roles del usuario y convertirlos a autoridades
+        List<SimpleGrantedAuthority> authorities = user.getUserRoles().stream()
+                .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getRoleName()))
+                .collect(Collectors.toList());
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
     //CAMBIO: Implementar el métod. para obtener el nombre de la empresa

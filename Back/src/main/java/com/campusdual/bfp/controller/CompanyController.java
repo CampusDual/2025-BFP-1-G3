@@ -48,7 +48,7 @@ public class CompanyController {
         logger.debug("User {} with role {} attempting to get company data for ID: {}", username, role, companyDTO.getId());
 
         // Solo permitir acceso a admin o a la propia empresa
-        if ("ROLE_ADMIN".equals(role)) {
+        if ("role_admin".equals(role)) {
             return ResponseEntity.ok(companyService.queryCompany(companyDTO));
         } else if ("role_company".equals(role)) {
             Integer userCompanyId = userService.getCompanyIdByUsername(username);
@@ -77,7 +77,7 @@ public class CompanyController {
                 .orElse("");
 
         // Solo permitir acceso a administradores y candidatos (para ver ofertas disponibles)
-        if ("ROLE_ADMIN".equals(role) || "role_candidate".equals(role)) {
+        if ("role_admin".equals(role) || "role_candidate".equals(role)) {
             return ResponseEntity.ok(companyService.queryAllCompanies());
         } else {
             logger.warn("User {} with role {} attempted to access all companies list", authentication.getName(), role);
@@ -98,7 +98,7 @@ public class CompanyController {
                 .orElse("");
 
         // Solo permitir a administradores crear empresas directamente
-        if (!"ROLE_ADMIN".equals(role)) {
+        if (!"role_admin".equals(role)) {
             logger.warn("User {} with role {} attempted to add company directly", authentication.getName(), role);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(-1);
         }
@@ -124,7 +124,7 @@ public class CompanyController {
         logger.debug("User {} with role {} attempting to update company ID: {}", username, role, companyDTO.getId());
 
         // Permitir acceso a admin o a la propia empresa
-        if ("ROLE_ADMIN".equals(role)) {
+        if ("role_admin".equals(role)) {
             int result = companyService.updateCompany(companyDTO);
             logger.info("Admin {} updated company with ID: {}", username, companyDTO.getId());
             return ResponseEntity.ok(result);
@@ -160,7 +160,7 @@ public class CompanyController {
         logger.debug("User {} with role {} attempting to delete company ID: {}", username, role, companyDTO.getId());
 
         // Solo permitir a administradores eliminar empresas
-        if (!"ROLE_ADMIN".equals(role)) {
+        if (!"role_admin".equals(role)) {
             logger.warn("User {} with role {} attempted to delete company", username, role);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(-1);
         }
