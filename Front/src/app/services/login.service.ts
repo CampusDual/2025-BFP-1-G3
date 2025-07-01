@@ -13,6 +13,24 @@ import { Router } from "@angular/router";
 })
 export class LoginService {
 
+  // Nuevo método para alternar estado activo de oferta
+  toggleOfferActive(id: number): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put(`${this.urlEndPoint}/offers/toggleActive/${id}`, null, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Estado activo de oferta alternado:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error alternando estado activo de oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   clickedApplyOffer: boolean = false;
   idOffer!: number;
   companyId!: number;

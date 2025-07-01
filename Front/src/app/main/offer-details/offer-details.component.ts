@@ -30,8 +30,6 @@ export class OfferDetailsComponent implements OnInit {
     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
   });
 
-  // Propiedades Toggle
-  isActive: boolean = false;
 
   // Propiedades para edición
   isEditing: boolean = false;
@@ -68,8 +66,12 @@ export class OfferDetailsComponent implements OnInit {
         const navigation = this.router.getCurrentNavigation();
         if (navigation?.extras.state?.['offer']) {
           console.log('Oferta obtenida del estado de navegación');
-          this.offer = navigation.extras.state['offer'];
-          this.loading = false;
+this.offer = navigation.extras.state['offer'];
+// Convertir active de int a boolean
+if (this.offer && typeof this.offer.active === 'number') {
+  this.offer.active = this.offer.active === 1;
+}
+this.loading = false;
         } else {
           console.log('Cargando oferta desde la lista...');
           this.loadOfferFromList();
@@ -280,33 +282,32 @@ export class OfferDetailsComponent implements OnInit {
   // }
 
 
-  // == LÓGICA TOGGLE ==
+// == LÓGICA TOGGLE ==
 
-  // Método: Recibe un booleano declarado (isActive)
-  // Cambia el valor dependiendo de su posición 
+toggleActive(newState: boolean): void {
+  if (!this.offer) return;
 
-  toggleActive(offerId: number) {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Authorization': 'Bearer ' + this.token
-    });
-    // this.http.put('http://localhost:30030/offers/toggleActive{offerId}', { headers })
-    //   .subscribe({
-    //     next: (response) => {
-    //       //     this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
-    //       //       duration: 10000,
-    //       //       horizontalPosition: 'center',
-    //       //       verticalPosition: 'bottom',
-    //       //       panelClass: ['snackbar-success'],
-    //       //     });
-    //       //     console.log('Perfil actualizado exitosamente');
-    //       //     this.signUpError = '';
-    //       //     this.submitting = false;
-    //       //   },
-    //       //   error: (error) => {
-    //       //     this.signUpError = 'Error al actualizar el perfil.';
-    //     }
-    //   });
-      console.log('Id de la oferta: ' + offerId);
-      return this.http.put(`http://localhost:30030/offers/toggleActive/${offerId}`, null, { headers });
-  }
+  this.isSubmitting = true;
+  this.loginService.toggleOfferActive(this.offer.id).subscribe({
+    next: () => {
+      // Actualizar el estado activo localmente según newState
+      this.offer!.active = newState;
+
+      this.snackBar.open('Estado de la oferta actualizado correctamente', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      });
+      this.isSubmitting = false;
+    },
+    error: (error) => {
+      console.error('Error al actualizar estado de la oferta:', error);
+      this.snackBar.open('Error al actualizar el estado de la oferta. Inténtalo de nuevo.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      this.isSubmitting = false;
+    }
+  });
+}
+
 }

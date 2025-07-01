@@ -49,7 +49,7 @@
         <mat-card class="details-card">
           <mat-card-header>
             <mat-card-title><h2>Oferta</h2></mat-card-title>
-            <mat-slide-toggle (toggleChange)="toggleActive(offer.id)" color="primary" >Activ</mat-slide-toggle>
+<mat-slide-toggle [checked]="offer.active" (change)="toggleActive($event.checked)" color="primary">Activo</mat-slide-toggle>
           </mat-card-header>
           <mat-card-content>
 
