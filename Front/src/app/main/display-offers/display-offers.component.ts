@@ -84,8 +84,8 @@ export class DisplayOffersComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
+    // Ya no enviamos id_candidate por seguridad - se obtiene del token en el backend
     const applicationData = {
-      id_candidate: this.loginService.candidateId,
       id_offer: idOffer
     };
 

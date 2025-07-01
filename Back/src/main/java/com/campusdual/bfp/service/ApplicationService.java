@@ -3,9 +3,11 @@ package com.campusdual.bfp.service;
 import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.model.Application;
 import com.campusdual.bfp.model.Candidate;
+import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.dao.ApplicationDao;
 import com.campusdual.bfp.model.dao.CandidateDao;
 import com.campusdual.bfp.model.dao.OfferDao;
+import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
 import com.campusdual.bfp.model.dto.CandidateDTO;
 import com.campusdual.bfp.model.dto.dtomapper.ApplicationMapper;
@@ -34,6 +36,13 @@ public class ApplicationService implements IApplicationService {
     @Autowired
     private OfferDao offerDao;
 
+    //Añadimos UserDao para seguridad
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private UserService userService;
+
     @Override
     public ApplicationDTO queryApplication(ApplicationDTO applicationDTO) {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
@@ -59,6 +68,47 @@ public class ApplicationService implements IApplicationService {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
         applicationDao.saveAndFlush(application);
         return application.getId();
+    }
+
+    @Override
+    public Long insertSecureApplication(ApplicationDTO applicationDTO, String username) {
+        try {
+            // Buscar el usuario por username
+            User user = userDao.findByLogin(username);
+            if (user == null) {
+                throw new RuntimeException("Usuario no encontrado");
+            }
+
+            // Obtener el candidato desde la relación User -> Candidate
+            Candidate candidate = user.getCandidate();
+            if (candidate == null) {
+                // Si no hay relación User-Candidate directa, buscar por email
+                candidate = candidateDao.findByEmail(username);
+                if (candidate == null) {
+                    throw new RuntimeException("Candidato no encontrado para este usuario");
+                }
+            }
+
+            Long offerId = applicationDTO.getId_offer().longValue();
+            int candidateId = candidate.getId();
+
+            // Verificar si ya está aplicado
+            boolean alreadyExists = applicationDao.existsByCandidateIdAndOfferId(candidateId, offerId);
+            if (alreadyExists) {
+                throw new RuntimeException("Ya has aplicado a esta oferta anteriormente");
+            }
+
+            // Crear la aplicación con el candidateId seguro obtenido del token
+            Application application = new Application();
+            application.setCandidate(candidate);
+            application.setOffer(offerDao.getReferenceById(offerId));
+
+            applicationDao.saveAndFlush(application);
+            return application.getId();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al procesar la aplicación: " + e.getMessage());
+        }
     }
 
     @Override

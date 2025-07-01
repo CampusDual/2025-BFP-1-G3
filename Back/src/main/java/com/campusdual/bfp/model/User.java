@@ -29,12 +29,24 @@ public class User implements UserDetails {
     @JoinColumn(name = "id_company")
     private Company company;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_candidate")
+    private Candidate candidate;
+
     public Company getCompany() {
         return company;
     }
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public Candidate getCandidate() {
+        return candidate;
+    }
+
+    public void setCandidate(Candidate candidate) {
+        this.candidate = candidate;
     }
 
 
@@ -112,18 +124,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    //Relacion User con Candidate
-    @OneToOne
-    @JoinColumn(name = "id_candidate")
-    private Candidate candidate;
-
-    public Candidate getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(Candidate candidate) {
-        this.candidate = candidate;
     }
 }

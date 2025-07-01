@@ -19,10 +19,8 @@ public class Candidate {
     @Column
     private String phone;
     @Column
-    private String email;
-    @Column
+    private String email;    @Column
     private String linkedin;
-
 
     public Candidate() {
     }
