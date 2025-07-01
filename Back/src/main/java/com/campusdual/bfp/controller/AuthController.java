@@ -110,15 +110,28 @@ public class AuthController {
         }
 
         String username = authentication.getName();
-        String companyName = userService.getCompanyNameByUsername(username);
-        Integer companyId = userService.getCompanyIdByUsername(username);
-        Integer candidateId = userService.getCandidateIdByUsername(username);
+        
+        // Obtener el rol del usuario
+        String role = authentication.getAuthorities().stream()
+                .map(auth -> auth.getAuthority())
+                .findFirst()
+                .orElse("");
 
         Map<String, Object> profile = new HashMap<>();
         profile.put("username", username);
-        profile.put("companyName", companyName);
-        profile.put("companyId", companyId);
-        profile.put("candidateId", candidateId);
+        profile.put("role", role);
+
+        // Solo devolver información específica según el rol del usuario
+        if ("role_company".equals(role)) {
+            String companyName = userService.getCompanyNameByUsername(username);
+            Integer companyId = userService.getCompanyIdByUsername(username);
+            profile.put("companyName", companyName);
+            profile.put("companyId", companyId);
+        } else if ("role_candidate".equals(role)) {
+            Integer candidateId = userService.getCandidateIdByUsername(username);
+            profile.put("candidateId", candidateId);
+        }
+        // Para ROLE_ADMIN u otros roles, solo devolver username y role
 
         return ResponseEntity.ok(profile);
     }

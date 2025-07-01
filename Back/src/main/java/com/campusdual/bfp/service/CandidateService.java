@@ -23,7 +23,9 @@ public class CandidateService implements ICandidateService {
     @Override
     public CandidateDTO queryCandidate(CandidateDTO candidateDTO) {
         Candidate candidate = CandidateMapper.INSTANCE.toEntity(candidateDTO);
-        return CandidateMapper.INSTANCE.toDTO(candidateDao.getReferenceById(candidate.getId()));
+        return candidateDao.findById(candidate.getId())
+                .map(CandidateMapper.INSTANCE::toDTO)
+                .orElse(null);
     }
 
     @Override
