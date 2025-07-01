@@ -13,6 +13,8 @@ import { LoginService } from 'src/app/services/login.service';
 export class CompanyPanelComponent implements OnInit {
 
   offers: Offer[] = [];
+  offersActive: Offer[] = [];
+  offersInactive: Offer[] = [];
   submitting: boolean = false;
   companyId: number | null = null;
   companyName: string = '';
@@ -51,6 +53,9 @@ export class CompanyPanelComponent implements OnInit {
       console.log('ID de la empresa:', companyId);
       this.loginService.getOffersByCompanyId(companyId).subscribe(offers => {
         this.offers = offers;
+        // Filtrar ofertas activas e inactivas
+        this.offersActive = offers.filter(offer => (offer.active as any) == 1);
+        this.offersInactive = offers.filter(offer => (offer.active as any) == 0);
         // Guardar ofertas en sessionStorage para acceso desde offer-details
         sessionStorage.setItem('company_offers', JSON.stringify(offers));
         console.log('Ofertas cargadas:', this.offers);
