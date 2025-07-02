@@ -174,6 +174,28 @@ mat-card-content {
   overflow: hidden;
 }
 
+.labels-container .tech-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #e61b15;
+  color: #f2f2f2;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #ef5c57;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+
+.labels-container .tech-chip:hover {
+  background-color: #1f1f1f;
+  border: #1f1f1f;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .cards-grid {
