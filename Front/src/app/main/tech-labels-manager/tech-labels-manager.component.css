@@ -1,5 +1,5 @@
 .tech-labels-container {
-  padding: 20px;
+  padding: 20px 0 0 20px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #fafafa;
@@ -10,9 +10,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #e61b15;
-  padding-bottom: 8px;
+  /* margin-bottom: 16px; */
+  /* border-bottom: 2px solid #e61b15; */
+  /* padding-bottom: 8px; */
 }
 
 .labels-header h3 {
