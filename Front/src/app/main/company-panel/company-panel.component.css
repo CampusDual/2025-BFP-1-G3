@@ -404,7 +404,8 @@ mat-card-header {
   padding: 12px 0 8px 0; /* Espaciado superior e inferior */
   border-top: 1px solid #f0f0f0;
   grid-row: 3; /* Tercera fila del grid */
-  align-self: end; /* Alinearse al final de su área */
+  align-self: stretch; /* Ocupar todo el ancho disponible */
+  width: 100%; /* Asegurar que ocupe todo el ancho */
 }
 
 .labels-container {
@@ -412,7 +413,9 @@ mat-card-header {
   flex-wrap: wrap;
   gap: 4px;
   align-items: flex-start;
+  justify-content: flex-start; /* Forzar alineación a la izquierda */
   padding: 4px 0; /* Espaciado interno adicional */
+  width: 100%; /* Ocupar todo el ancho disponible */
 }
 
 .tech-chip {
