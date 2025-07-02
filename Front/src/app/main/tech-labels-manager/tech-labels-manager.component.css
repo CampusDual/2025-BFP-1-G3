@@ -1,9 +1,11 @@
 .tech-labels-container {
-  padding: 20px 0 0 20px;
+  padding: 10px 0 0 10px; /* Reduced padding */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #fafafa;
-  margin: 16px 0;
+  margin: 8px 0; /* Reduced margin */
+  max-height: 180px; /* Added max height */
+  overflow-y: auto; /* Enable vertical scroll */
 }
 
 .labels-header {
@@ -65,14 +67,14 @@
 
 .selected-labels,
 .available-labels {
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Reduced margin */
 }
 
 .selected-labels h4,
 .available-labels h4 {
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0; /* Reduced margin */
   color: #555;
-  font-size: 1rem;
+  font-size: 0.85rem; /* Reduced font size */
 }
 
 .labels-chips {
@@ -95,9 +97,9 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
+  padding: 4px 8px; /* Reduced padding */
   border-radius: 16px;
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Reduced font size */
   font-weight: 500;
   border: 1px solid #ddd;
   background-color: white;
@@ -222,21 +224,21 @@
 /* Responsivo */
 @media (max-width: 768px) {
   .tech-labels-container {
-    padding: 16px;
+    padding: 10px;
   }
   
   .labels-header {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     align-items: flex-start;
   }
   
   .chip-container {
-    gap: 6px;
+    gap: 4px;
   }
   
   .chip {
-    font-size: 0.8rem;
-    padding: 4px 10px;
+    font-size: 0.7rem;
+    padding: 3px 6px;
   }
 }

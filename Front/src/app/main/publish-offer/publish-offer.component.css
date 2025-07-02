@@ -1,36 +1,38 @@
 .form-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 80vh; /* Usar 80% de la altura de la ventana */
-  margin: 0; /* Eliminar márgenes existentes */
+  /* Removed vertical centering to reduce scroll */
+  /* align-items: center; */
+  margin: 20px 0 0 0; /* Added top margin */
 }
 
 form {
-  width: 30vw;
+  width: 90%;
+  max-width: 400px;
   background-color: #3d3d3d; /*NEGRO CLARO*/
-  padding: 25px 30px;
+  padding: 15px 20px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0; /* Asegurar que no haya márgenes interfiriendo */
+  margin: 0 0 20px 0; /* Added bottom margin */
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   color: #f2f2f2;
+  font-size: 1.5rem;
 }
 
 mat-form-field {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 button {
   width: 100%;
-  padding: 12px 0;
-  font-size: 16px;
+  padding: 10px 0;
+  font-size: 14px;
   font-weight: 600;
   border-radius: 6px;
   background-color: #e61b15;
@@ -45,10 +47,10 @@ button:hover {
 }
 
 .success-message {
-  /* color: #28a745; */
   font-weight: 600;
   margin-top: 15px;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .error-message {
@@ -56,6 +58,7 @@ button:hover {
   font-weight: 600;
   margin-top: 15px;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .warn-limit {
@@ -66,12 +69,13 @@ button:hover {
 mat-hint {
   transition: color 0.3s ease;
   color: #e61b15;
+  font-size: 0.8rem;
 }
 
 textarea {
   resize: none !important;
-  min-height: 12.5rem !important; /* Aproximadamente 16 líneas (20px por línea) */
-  height: 12.5rem !important;
+  min-height: 8rem !important; /* Reduced height */
+  height: 8rem !important;
   overflow-y: auto;
 }
 
@@ -83,5 +87,5 @@ textarea {
 }
 
 .tech-labels-section {
-  margin: 20px 0;
+  margin: 15px 0;
 }
