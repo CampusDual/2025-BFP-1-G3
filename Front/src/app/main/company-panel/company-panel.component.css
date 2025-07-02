@@ -1,35 +1,30 @@
-.top-row {
+.main-content{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 1%;
 }
 
 .welcome-message {
-  font-family: sans-serif;
-  color: #333333;
-  font-weight: 500;
   display: flex;
   align-items: center;
+  color: #1f1f1f;
 }
 
 .companyName {
+  font-weight: bolder;
   color: #e61b15;
-  font-weight: bold;
-}
-
-.welcome-message h3 {
-  margin: 0;
-}
-
-h3 {
-  align-items: center;
 }
 
 .person_emoji {
-  color: #333333;
-  font-size: 2rem;
-  align-items: baseline;
+  align-items: center;
+  margin-left: 0.5rem;
+  font-size: 1.8rem;
+  background-image: linear-gradient(270deg, #1f1f1f, #e61b15);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
 }
 
 .action-buttons {
@@ -44,7 +39,7 @@ h3 {
   margin: 16px 16px 0 0;
 }
 
-.buttonadd {
+#buttonAdd {
   width: 2dvw;
   height: 2dvw;
   padding: 0.6%;
@@ -348,6 +343,8 @@ mat-card-header {
   .offer-card {
     min-height: 280px; /* Altura ligeramente menor en móviles */
     max-height: 320px;
+    height: 240px;
+    /* Altura ligeramente menor en móviles */
   }
 
   .offers-container {
@@ -377,6 +374,8 @@ mat-card-header {
   .offer-card {
     min-height: 260px; /* Altura aún menor en pantallas muy pequeñas */
     max-height: 300px;
+    height: 220px;
+    /* Altura aún menor en pantallas muy pequeñas */
   }
 
   mat-card-title {
@@ -387,7 +386,8 @@ mat-card-header {
 
   .offer-description {
     font-size: 0.9rem;
-    -webkit-line-clamp: 2; /* Menos líneas en pantallas pequeñas */
+    -webkit-line-clamp: 2;
+    /* Menos líneas en pantallas pequeñas */
     line-clamp: 2;
     max-height: 2.8em; /* 2 líneas × 1.4 line-height */
     min-height: 2.8em;
