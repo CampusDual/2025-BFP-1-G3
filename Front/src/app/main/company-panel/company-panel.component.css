@@ -367,16 +367,17 @@ mat-card-content {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: #e61b15;
+  color: #f2f2f2;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #bbdefb;
+  border: 1px solid #ef5c57;
   transition: all 0.2s ease;
 }
 
 .tech-chip:hover {
-  background-color: #bbdefb;
+  background-color: #1f1f1f;
+  border: #1f1f1f;
   transform: scale(1.05);
 }
