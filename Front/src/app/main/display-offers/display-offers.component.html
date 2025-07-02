@@ -12,6 +12,15 @@
 
       <mat-card-content>
         <p class="offer-description">{{ offer.offerDescription }}</p>
+        
+        <!-- Etiquetas técnicas -->
+        <div class="tech-labels" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+          <div class="labels-container">
+            <span *ngFor="let label of offer.techLabels" class="tech-chip">
+              {{ label.name }}
+            </span>
+          </div>
+        </div>
       </mat-card-content>
 
       <mat-card-actions class="card-actions">

@@ -91,6 +91,40 @@
             </div>
           </mat-card-content>
         </mat-card>
+
+        <!-- Sección de Etiquetas Técnicas -->
+        <mat-card class="details-card">
+          <mat-card-header>
+            <mat-card-title><h2>Etiquetas Técnicas</h2></mat-card-title>
+            <div class="labels-actions" *ngIf="canEdit()">
+              <button *ngIf="!isEditingLabels" 
+                      mat-button 
+                      color="primary" 
+                      (click)="startEditingLabels()">
+                <mat-icon>edit</mat-icon>
+                Editar etiquetas
+              </button>
+              <div *ngIf="isEditingLabels" class="edit-actions">
+                <button mat-button (click)="cancelEditingLabels()">
+                  <mat-icon>cancel</mat-icon>
+                  Cancelar
+                </button>
+                <button mat-raised-button color="primary" (click)="saveLabels()">
+                  <mat-icon>save</mat-icon>
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <app-tech-labels-manager 
+              [selectedLabels]="offer.techLabels || []"
+              [maxLabels]="5"
+              [readonly]="!isEditingLabels"
+              (labelsChanged)="onLabelsChanged($event)">
+            </app-tech-labels-manager>
+          </mat-card-content>
+        </mat-card>
       </div>
     </mat-tab>
 

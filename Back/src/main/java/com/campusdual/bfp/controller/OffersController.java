@@ -5,11 +5,12 @@ import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.auth.JWTUtil;
 import com.campusdual.bfp.model.dto.OfferDTO;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
+import com.campusdual.bfp.model.dto.TechLabelsDTO;
+import com.campusdual.bfp.model.dto.UpdateOfferLabelsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -94,6 +95,42 @@ public class OffersController {
             return ResponseEntity.ok("Estado 'active' cambiado con éxito.");
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Nuevos endpoints para manejar etiquetas de ofertas
+    @PostMapping("/{offerId}/labels/{labelId}")
+    public ResponseEntity<String> addLabelToOffer(@PathVariable Long offerId, @PathVariable Long labelId) {
+        boolean success = offersService.addLabelToOffer(offerId, labelId);
+        if (success) {
+            return ResponseEntity.ok("Etiqueta agregada exitosamente");
+        } else {
+            return ResponseEntity.badRequest().body("Error al agregar etiqueta (máximo 5 etiquetas por oferta)");
+        }
+    }
+
+    @DeleteMapping("/{offerId}/labels/{labelId}")
+    public ResponseEntity<String> removeLabelFromOffer(@PathVariable Long offerId, @PathVariable Long labelId) {
+        boolean success = offersService.removeLabelFromOffer(offerId, labelId);
+        if (success) {
+            return ResponseEntity.ok("Etiqueta removida exitosamente");
+        } else {
+            return ResponseEntity.badRequest().body("Error al remover etiqueta");
+        }
+    }
+
+    @GetMapping("/{offerId}/labels")
+    public List<TechLabelsDTO> getOfferLabels(@PathVariable Long offerId) {
+        return offersService.getOfferLabels(offerId);
+    }
+
+    @PutMapping("/{offerId}/labels")
+    public ResponseEntity<String> updateOfferLabels(@PathVariable Long offerId, @RequestBody UpdateOfferLabelsDTO updateDto) {
+        boolean success = offersService.updateOfferLabels(offerId, updateDto.getLabelIds());
+        if (success) {
+            return ResponseEntity.ok("Etiquetas actualizadas exitosamente");
+        } else {
+            return ResponseEntity.badRequest().body("Error al actualizar etiquetas (máximo 5 etiquetas por oferta)");
         }
     }
 }

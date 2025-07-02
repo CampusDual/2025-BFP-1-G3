@@ -81,3 +81,7 @@ textarea {
     width: 90vw; /* Ancho más amplio en móviles */
   }
 }
+
+.tech-labels-section {
+  margin: 20px 0;
+}

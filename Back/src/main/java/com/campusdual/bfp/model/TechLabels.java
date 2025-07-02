@@ -11,6 +11,9 @@ public class TechLabels {
     @Column(name = "name", nullable = false)
     private String name;
 
+    public TechLabels() {
+    }
+
     public TechLabels(Long id, String name) {
         this.id = id;
         this.name = name;

@@ -29,6 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-manager.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     CandidatePanelComponent,
     CompanyPanelComponent,
     AdminPanelComponent,
-    OfferDetailsComponent
+    OfferDetailsComponent,
+    TechLabelsManagerComponent
   ],
   imports: [
     CommonModule,

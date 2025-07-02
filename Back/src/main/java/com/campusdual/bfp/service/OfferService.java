@@ -4,11 +4,15 @@ import com.campusdual.bfp.api.IOfferService;
 import com.campusdual.bfp.model.Offer;
 import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.Company;
+import com.campusdual.bfp.model.TechLabels;
 import com.campusdual.bfp.model.dao.CompanyDao;
 import com.campusdual.bfp.model.dao.OfferDao;
 import com.campusdual.bfp.model.dao.UserDao;
+import com.campusdual.bfp.model.dao.TechLabelsDao;
 import com.campusdual.bfp.model.dto.OfferDTO;
+import com.campusdual.bfp.model.dto.TechLabelsDTO;
 import com.campusdual.bfp.model.dto.dtomapper.OfferMapper;
+import com.campusdual.bfp.model.dto.dtomapper.TechLabelsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Service("OfferService")
 @Lazy
@@ -29,6 +36,9 @@ public class OfferService implements IOfferService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private TechLabelsDao techLabelsDao;
 
     @Override
     public OfferDTO queryOffer(OfferDTO offerDto) {
@@ -133,5 +143,97 @@ public class OfferService implements IOfferService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean addLabelToOffer(Long offerId, Long labelId) {
+        try {
+            Optional<Offer> offerOpt = offerDao.findById(offerId);
+            Optional<TechLabels> labelOpt = techLabelsDao.findById(labelId);
+            
+            if (offerOpt.isPresent() && labelOpt.isPresent()) {
+                Offer offer = offerOpt.get();
+                TechLabels label = labelOpt.get();
+                
+                // Verificar el límite máximo de 5 etiquetas
+                if (offer.getTechLabels().size() >= 5) {
+                    return false;
+                }
+                
+                offer.addTechLabel(label);
+                offerDao.saveAndFlush(offer);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeLabelFromOffer(Long offerId, Long labelId) {
+        try {
+            Optional<Offer> offerOpt = offerDao.findById(offerId);
+            Optional<TechLabels> labelOpt = techLabelsDao.findById(labelId);
+            
+            if (offerOpt.isPresent() && labelOpt.isPresent()) {
+                Offer offer = offerOpt.get();
+                TechLabels label = labelOpt.get();
+                
+                offer.removeTechLabel(label);
+                offerDao.saveAndFlush(offer);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public List<TechLabelsDTO> getOfferLabels(Long offerId) {
+        Optional<Offer> offerOpt = offerDao.findById(offerId);
+        if (offerOpt.isPresent()) {
+            Offer offer = offerOpt.get();
+            return offer.getTechLabels().stream()
+                    .map(TechLabelsMapper.INSTANCE::toDTO)
+                    .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    @Override
+    public boolean updateOfferLabels(Long offerId, List<Long> labelIds) {
+        try {
+            Optional<Offer> offerOpt = offerDao.findById(offerId);
+            if (!offerOpt.isPresent()) {
+                return false;
+            }
+            
+            // Verificar el límite máximo de 5 etiquetas
+            if (labelIds.size() > 5) {
+                return false;
+            }
+            
+            Offer offer = offerOpt.get();
+            
+            // Limpiar etiquetas existentes
+            offer.getTechLabels().clear();
+            
+            // Agregar las nuevas etiquetas
+            Set<TechLabels> newLabels = new HashSet<>();
+            for (Long labelId : labelIds) {
+                Optional<TechLabels> labelOpt = techLabelsDao.findById(labelId);
+                if (labelOpt.isPresent()) {
+                    newLabels.add(labelOpt.get());
+                }
+            }
+            
+            offer.setTechLabels(newLabels);
+            offerDao.saveAndFlush(offer);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

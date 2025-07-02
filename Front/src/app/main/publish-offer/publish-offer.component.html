@@ -22,7 +22,20 @@
       </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="submitting || offerForm.invalid">Publicar</button>
+    <!-- Componente de gestión de etiquetas técnicas -->
+    <div class="tech-labels-section">
+      <app-tech-labels-manager 
+        [selectedLabels]="selectedTechLabels"
+        [maxLabels]="5"
+        [readonly]="false"
+        (labelsChanged)="onLabelsChanged($event)">
+      </app-tech-labels-manager>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting || offerForm.invalid">
+      <span *ngIf="submitting">Publicando...</span>
+      <span *ngIf="!submitting">Publicar</span>
+    </button>
 
     <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

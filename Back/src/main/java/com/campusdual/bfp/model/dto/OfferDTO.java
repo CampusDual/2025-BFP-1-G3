@@ -1,5 +1,8 @@
 package com.campusdual.bfp.model.dto;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class OfferDTO {
 
     private Long id;
@@ -8,8 +11,10 @@ public class OfferDTO {
     private Integer companyId;
     private String companyName;
     private int active;
+    private List<TechLabelsDTO> techLabels = new ArrayList<>();
 
     public OfferDTO() {
+        this.techLabels = new ArrayList<>();
     }
 
     public OfferDTO(Long id, String title, String offerDescription, Integer companyId, String companyName) {
@@ -20,6 +25,7 @@ public class OfferDTO {
         this.companyName = companyName;
         //Oferta por defecto desactivada
         this.active = 0;
+        this.techLabels = new ArrayList<>();
     }
 
     public Long getId() {
@@ -68,5 +74,13 @@ public class OfferDTO {
 
     public void setActive(int active) {
         this.active = active;
+    }
+
+    public List<TechLabelsDTO> getTechLabels() {
+        return techLabels;
+    }
+
+    public void setTechLabels(List<TechLabelsDTO> techLabels) {
+        this.techLabels = techLabels;
     }
 }

@@ -462,3 +462,9 @@ mat-card-header {
     justify-content: space-between;
   }
 }
+
+.labels-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
