@@ -172,16 +172,16 @@ button:disabled {
     padding: 16px; /* Reducir padding en tablets */
     max-width: 100%;
   }
-  
+
   form {
     padding: 20px 16px; /* Reducir padding del formulario */
     max-width: 100%;
   }
-  
+
   h2 {
     font-size: 1.5rem;
   }
-  
+
   .description-field textarea {
     min-height: 180px !important;
     height: 180px !important;
@@ -192,11 +192,11 @@ button:disabled {
   .form-container {
     padding: 12px; /* Padding mínimo en móviles */
   }
-  
+
   form {
     padding: 16px 12px; /* Padding mínimo del formulario */
   }
-  
+
   .description-field textarea {
     min-height: 150px !important;
     height: 150px !important;
