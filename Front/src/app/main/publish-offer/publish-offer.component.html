@@ -23,14 +23,14 @@
     </mat-form-field>
 
     <!-- Componente de gestión de etiquetas técnicas -->
-    <div class="tech-labels-section">
+    <!-- <div class="tech-labels-section"> -->
       <app-tech-labels-manager 
         [selectedLabels]="selectedTechLabels"
         [maxLabels]="5"
         [readonly]="false"
         (labelsChanged)="onLabelsChanged($event)">
       </app-tech-labels-manager>
-    </div>
+    <!-- </div> -->
 
     <button mat-raised-button color="primary" type="submit" [disabled]="submitting || offerForm.invalid">
       <span *ngIf="submitting">Publicando...</span>

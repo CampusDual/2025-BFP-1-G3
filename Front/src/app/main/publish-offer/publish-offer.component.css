@@ -1,37 +1,40 @@
 /* == CONTENEDOR PRINCIPAL == */
 .form-container {
-  max-width: 1400px; /* Hacer el panel aún más ancho */
-  margin: 0 auto;
-  padding: 24px; /* Reducir padding vertical para eliminar scroll innecesario */
-  background-color: transparent; /* Eliminar el fondo gris */
-  min-height: auto; /* Eliminar altura mínima que causa scroll */
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 0 0; /* Reduced margin */
+  padding: 0;
+  max-width: 100%;
+  background-color: transparent;
+  min-height: auto;
 }
 
 form {
-  background-color: #ffffff;
-  padding: 24px; /* Reducir padding interno del formulario */
+  width: 90%;
+  max-width: 600px; /* Reduced width */
+  background-color: #ffffff; /* White background from teammate */
+  padding: 15px 20px; /* Reduced padding */
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
   border: 1px solid #e0e0e0;
-  margin: 0 auto; /* Centrar el formulario */
-  max-width: 1100px; /* Aumentar el ancho del formulario */
 }
 
 h2 {
-  margin: 0;
-  font-size: 2rem;
-  color: #333;
+  text-align: center;
+  margin-bottom: 15px; /* Reduced margin */
+  color: #333; /* Dark text */
+  font-size: 1.3rem; /* Reduced font size */
   font-weight: 600;
   border-bottom: 2px solid #e61b15;
-  padding-bottom: 12px; /* Reducir padding inferior */
-  margin-bottom: 20px; /* Reducir margen inferior */
+  padding-bottom: 6px; /* Reduced padding */
 }
 
 /* Estilos para mat-form-field */
 mat-form-field {
   width: 100%;
-  margin-bottom: 16px; /* Reducir margen entre campos */
+  margin-bottom: 15px;
 }
 
 ::ng-deep .mat-mdc-form-field {
@@ -63,18 +66,20 @@ mat-form-field {
 
 /* Textarea específico para descripción */
 textarea {
-  resize: none !important; /* Deshabilitar resize para tamaño fijo */
-  min-height: 160px !important; /* Hacer el campo más grande */
-  height: 160px !important; /* Tamaño fijo */
+  resize: none !important;
+  min-height: 4rem !important; /* Further reduced height */
+  height: 4rem !important;
+  overflow-y: auto;
   font-family: inherit;
   line-height: 1.6;
+  color: #333; /* Dark text */
 }
 
 /* Campo de descripción específico */
 .description-field textarea {
   resize: none !important;
-  min-height: 220px !important; /* Campo de descripción mucho más grande */
-  height: 220px !important;
+  min-height: 120px !important; /* Reduced height */
+  height: 120px !important;
   font-size: 14px;
   line-height: 1.7;
   padding: 12px !important;
@@ -87,8 +92,8 @@ textarea {
 /* Botón principal */
 button {
   width: 100%;
-  padding: 12px 24px; /* Reducir padding del botón */
-  font-size: 16px;
+  padding: 10px 20px; /* Reduced padding */
+  font-size: 14px; /* Reduced font size */
   font-weight: 600;
   border-radius: 8px;
   background-color: #e61b15;
@@ -96,7 +101,7 @@ button {
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 12px; /* Reducir margen superior */
+  margin-top: 10px; /* Reduced margin */
   box-shadow: 0 2px 8px rgba(230, 27, 21, 0.2);
 }
 
@@ -159,11 +164,19 @@ button:disabled {
 
 /* Sección de etiquetas técnicas */
 .tech-labels-section {
-  margin: 16px 0; /* Reducir margen vertical */
-  padding: 16px; /* Reducir padding interno */
-  background-color: transparent; /* Eliminar el fondo gris */
-  border-radius: 12px;
+  margin: 10px 0 40px 0; /* Increased bottom margin to avoid overlap */
+  padding: 8px; /* Reduced padding */
+  background-color: transparent;
+  border-radius: 10px;
   border: 1px solid #e0e0e0;
+  max-height: 120px; /* Further reduced max height */
+  position: relative; /* Added for z-index */
+  z-index: 1; /* Ensure border is on top */
+  /* Removed overflow-y to avoid double scroll */
+}
+
+button {
+  margin-top: 40px; /* Increased margin-top to avoid overlap with labels */
 }
 
 /* Responsive design */
