@@ -1,34 +1,94 @@
+/* Layout principal */
 .admin-tech-labels-manager {
-  padding: 16px;
-  font-family: Arial, sans-serif;
-  color: #333;
-  max-width: 600px; /* Reduce width of the main container */
-  margin: 0 auto; /* Center the container */
+  padding: 24px;
+  width: 100%;
+  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333333;
+  min-height: calc(100vh - 64px);
 }
 
+/* Título principal */
 .admin-tech-labels-manager h2 {
-  font-size: 24px;
-  margin-bottom: 16px;
-  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #333333;
+  text-align: center;
+  padding-bottom: 16px;
+  border-bottom: 3px solid #e61b15;
 }
 
+/* Estados de carga y error */
 .loading {
-  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
   color: #666;
-  margin-bottom: 16px;
+  font-size: 16px;
 }
 
 .error {
-  color: red;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #f44336;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Mensaje cuando no hay etiquetas */
+.no-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.no-labels mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #ccc;
   margin-bottom: 16px;
 }
 
+.no-labels h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-weight: 500;
+}
+
+.no-labels p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Sección de crear nueva etiqueta */
 .create-label {
-  margin-bottom: 20px;
+  width: 70%;
+  max-width: 800px;
+  margin: 0 auto 24px auto;
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
+  border-left: 6px solid #e61b15;
 }
 
 .create-label mat-form-field {
@@ -36,138 +96,575 @@
   margin: 0;
 }
 
-.create-label input[type="text"],
-.create-label input[matInput] {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 4px;
-}
-
+/* Botón de crear */
 .create-label button {
-  padding: 6px 12px;
-  background-color: black;
-  border: none;
+  height: 48px;
+  padding: 0 24px;
+  background-color: #e61b15;
   color: white;
-  font-weight: bold;
-  border-radius: 4px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 80px;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
 }
 
 .create-label button:disabled {
-  background-color: #555;
+  background-color: #cccccc;
+  color: #666666;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .create-label button:hover:not(:disabled) {
-  background-color: #333;
+  background-color: #d81a14;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 27, 21, 0.4);
 }
 
+/* Contenedor de tabla */
+.table-container {
+  width: 70%;
+  max-width: 800px;
+  margin: 0 auto 24px auto;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Tabla */
 .labels-table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 70%;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  table-layout: fixed; /* Forzar ancho fijo de columnas */
 }
 
-.labels-table th,
-.labels-table td {
-  border: 1px solid #ddd;
-  padding: 12px 8px;
-  text-align: left;
-  vertical-align: middle;
+/* Forzar altura uniforme en todas las filas */
+.labels-table .mat-mdc-row {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
 }
 
-.labels-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+.labels-table .mat-mdc-header-row {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
 }
 
-.labels-table tr:nth-child(even) {
+/* Encabezados de tabla */
+.labels-table th.mat-header-cell,
+.labels-table .mat-mdc-header-cell {
+  background-color: #f5f5f5;
+  color: #333333;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 16px 12px !important;
+  border-bottom: 2px solid #e61b15;
+  height: 48px !important;
+  line-height: 16px !important;
+  vertical-align: middle !important;
+}
+
+/* Columna de nombre - toma el espacio restante */
+.mat-column-name {
+  width: calc(100% - 130px) !important;
+  min-width: 150px;
+  padding-left: 16px !important;
+}
+
+/* Encabezado de la columna de nombre */
+.labels-table th.mat-header-cell.mat-column-name {
+  padding-left: 16px !important;
+}
+
+/* Celdas de tabla - altura y padding uniforme */
+.labels-table td.mat-cell,
+.labels-table .mat-mdc-cell {
+  padding: 16px 12px !important;
+  color: #333333;
+  font-size: 14px;
+  vertical-align: middle !important;
+  height: 60px !important;
+  line-height: 28px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Celda de nombre */
+.labels-table td.mat-cell.mat-column-name,
+.labels-table .mat-mdc-cell.mat-column-name {
+  padding: 16px !important;
+  height: 60px !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Filas de tabla - altura consistente */
+.labels-table .mat-mdc-table .mdc-data-table__row,
+.labels-table tr.mat-row,
+.labels-table .mat-mdc-row {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+}
+
+.labels-table tr.mat-row:hover {
+  background-color: rgba(230, 27, 21, 0.05);
+}
+
+.labels-table tr.mat-row:nth-child(even) {
   background-color: #fafafa;
 }
 
-.labels-table tr:hover {
-  background-color: #f1f1f1;
+.labels-table tr.mat-row:nth-child(even):hover {
+  background-color: rgba(230, 27, 21, 0.05);
 }
 
-.labels-table input[type="text"] {
+/* Inputs dentro de la tabla para edición */
+.labels-table mat-form-field {
   width: 100%;
-  padding: 6px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin: 0;
 }
 
-/* Align action buttons to the left */
+.labels-table input[matInput] {
+  font-size: 14px;
+  color: #333333;
+}
+
+/* Contenedor de botones de acciones */
 .actions-cell {
   display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.labels-table button {
-  margin: 0;
-  padding: 4px 8px;
-  font-size: 13px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
-  background-color: black;
-  transition: background-color 0.3s ease;
-  min-width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.labels-table button:hover {
-  background-color: #333;
-}
-
-/* Delete button in red */
-.labels-table button:last-child {
-  background-color: #dc3545;
-}
-
-.labels-table button:last-child:hover {
-  background-color: #a71d2a;
-}
-
-.pagination-controls {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 12px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 100%;
+  flex-direction: row !important;
+  padding-right: 16px !important;
 }
 
-/* Smaller, minimalistic pagination buttons in red or black */
-.pagination-controls button {
-  padding: 4px 10px;
-  font-size: 13px;
+/* Botones de acción en la tabla - más compactos */
+.actions-cell button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  border: 1px solid black;
-  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 32px;
+  flex-shrink: 0;
+}
+
+/* Botones de editar/guardar/cancelar */
+.actions-cell button[color="primary"] {
+  background-color: rgba(51, 51, 51, 0.08);
+  color: #333333;
+}
+
+.actions-cell button[color="primary"]:hover {
+  background-color: #333333;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(51, 51, 51, 0.3);
+}
+
+/* Botón de eliminar */
+.actions-cell button[color="warn"] {
+  background-color: rgba(230, 27, 21, 0.08);
+  color: #e61b15;
+}
+
+.actions-cell button[color="warn"]:hover {
+  background-color: #e61b15;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(230, 27, 21, 0.4);
+}
+
+/* Iconos dentro de los botones - más pequeños */
+.actions-cell button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+/* Controles de paginación */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
   background-color: white;
-  color: black;
-  min-width: 60px;
-  height: 30px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Botones de paginación */
+.pagination-controls button {
+  height: 40px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid #e61b15;
+  border-radius: 8px;
+  background-color: white;
+  color: #e61b15;
+  min-width: 100px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-controls button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
-  border-color: #ccc;
-  color: #ccc;
-  background-color: white;
+  border-color: #cccccc;
+  color: #cccccc;
+  background-color: #f5f5f5;
+  box-shadow: none;
 }
 
 .pagination-controls button:hover:not(:disabled) {
-  background-color: #dc3545;
+  background-color: #e61b15;
   color: white;
-  border-color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(230, 27, 21, 0.3);
+}
+
+/* Texto de información de página */
+.pagination-controls span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  padding: 0 8px;
+}
+
+/* Estilo para el nombre de la etiqueta */
+.label-name {
+  font-weight: 500;
+  color: #333333;
+  padding: 8px 12px;
+  background-color: rgba(230, 27, 21, 0.1);
+  border-radius: 20px;
+  border-left: 4px solid #e61b15;
+  display: inline-block;
+  min-width: 120px;
+}
+
+/* Columna de acciones - ancho fijo y compacto */
+.mat-column-actions {
+  width: 130px !important;
+  max-width: 130px !important;
+  min-width: 130px !important;
+  text-align: center;
+  padding: 0 8px !important;
+}
+
+/* Encabezado de la columna de acciones */
+.labels-table th.mat-header-cell.mat-column-actions {
+  width: 130px !important;
+  max-width: 130px !important;
+  min-width: 130px !important;
+  text-align: center;
+  padding: 16px 12px !important;
+}
+
+/* Celda de acciones - altura y padding consistente */
+.labels-table td.mat-cell.mat-column-actions,
+.labels-table .mat-mdc-cell.mat-column-actions {
+  width: 130px !important;
+  max-width: 130px !important;
+  min-width: 130px !important;
+  padding: 16px 8px !important;
+  text-align: center;
+  height: 60px !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Alineación mejorada de encabezados */
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell.mat-column-name,
+::ng-deep .admin-tech-labels-manager .labels-table th.mat-column-name {
+  text-align: left !important;
+  padding-left: 16px !important;
+  vertical-align: middle !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell.mat-column-actions,
+::ng-deep .admin-tech-labels-manager .labels-table th.mat-column-actions {
+  text-align: center !important;
+  padding: 16px 12px !important;
+  vertical-align: middle !important;
+  width: 130px !important;
+}
+
+/* Sobrescribir completamente los estilos de Material Design para forzar alineación */
+::ng-deep .admin-tech-labels-manager .labels-table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mdc-data-table__row {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  display: table-row !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-row,
+::ng-deep .admin-tech-labels-manager .labels-table tr {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  display: table-row !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mdc-data-table__cell,
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-cell,
+::ng-deep .admin-tech-labels-manager .labels-table td {
+  height: 60px !important;
+  max-height: 60px !important;
+  min-height: 60px !important;
+  padding: 12px !important;
+  vertical-align: middle !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-sizing: border-box !important;
+  line-height: 1.2 !important;
+  display: table-cell !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell,
+::ng-deep .admin-tech-labels-manager .labels-table th {
+  height: 48px !important;
+  max-height: 48px !important;
+  min-height: 48px !important;
+  padding: 16px 12px !important;
+  vertical-align: middle !important;
+  border-bottom: 2px solid #e61b15 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  display: table-cell !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions {
+  width: 130px !important;
+  max-width: 130px !important;
+  min-width: 130px !important;
+  text-align: center !important;
+}
+
+::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions .mdc-data-table__cell,
+::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions .mat-mdc-cell,
+::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions td {
+  padding: 8px 12px 8px 8px !important;
+  text-align: center !important;
+  width: 130px !important;
+  max-width: 130px !important;
+  min-width: 130px !important;
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+
+/* Forzar override de los estilos MDC específicos con mayor especificidad */
+::ng-deep .admin-tech-labels-manager .mat-mdc-table .mdc-data-table__row {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+::ng-deep .admin-tech-labels-manager .mat-mdc-table .mdc-data-table__cell {
+  height: 60px !important;
+  padding: 12px !important;
+  border: none !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-tech-labels-manager {
+    padding: 16px;
+  }
+  
+  .admin-tech-labels-manager h2 {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .create-label {
+    width: 90%;
+    max-width: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .create-label mat-form-field {
+    width: 100%;
+  }
+  
+  .create-label button {
+    width: 100%;
+  }
+  
+  .table-container {
+    width: 90%;
+    max-width: none;
+  }
+  
+  .labels-table {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .pagination-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .pagination-controls button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Responsive para dispositivos pequeños */
+@media (max-width: 480px) {
+  .create-label {
+    width: 95%;
+    margin: 0 auto 24px auto;
+  }
+  
+  .table-container {
+    width: 95%;
+    margin: 0 auto 24px auto;
+  }
+  
+  .labels-table {
+    width: 100%;
+  }
+  
+  .mat-column-name {
+    min-width: 120px;
+  }
+  
+  .mat-column-actions {
+    width: 110px !important;
+    max-width: 110px !important;
+    min-width: 110px !important;
+  }
+  
+  .actions-cell {
+    gap: 0px !important;
+    padding-right: 8px !important;
+  }
+  
+  .actions-cell button {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    margin: 0 2px !important;
+  }
+  
+  .actions-cell button:first-child {
+    margin-left: 4px !important;
+  }
+  
+  .actions-cell button:last-child {
+    margin-right: 8px !important;
+  }
+  
+  .actions-cell button mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Animaciones suaves */
+.labels-table tr.mat-row {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #e0e0e0;
+  height: 60px !important;
+}
+
+.mat-elevation-z8 {
+  transition: box-shadow 0.2s ease;
+}
+
+.table-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Mejorar la apariencia de los iconos en encabezados */
+.labels-table th.mat-header-cell mat-icon {
+  margin-right: 8px;
+  color: #e61b15;
+  vertical-align: middle;
+}
+
+/* Efectos de hover mejorados */
+.create-label mat-form-field:hover .mat-mdc-form-field-outline {
+  color: #e61b15;
+}
+
+/* Estilo para el botón de crear cuando está activo */
+.create-label button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(230, 27, 21, 0.2);
+}
+
+/* Forzar alineación horizontal de los botones */
+::ng-deep .admin-tech-labels-manager .actions-cell {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 60px !important;
+  padding-right: 12px !important;
+}
+
+::ng-deep .admin-tech-labels-manager .actions-cell button {
+  display: inline-flex !important;
+  width: 32px !important;
+  height: 32px !important;
+  margin: 0 4px !important;
+  margin-right: 6px !important;
+}
+
+/* Primer botón con margen izquierdo */
+::ng-deep .admin-tech-labels-manager .actions-cell button:first-child {
+  margin-left: 8px !important;
+}
+
+/* Último botón con margen derecho para separarlo del borde */
+::ng-deep .admin-tech-labels-manager .actions-cell button:last-child {
+  margin-right: 12px !important;
+}
+
+/* Alineación de contenido de celdas */
+::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-cell.mat-column-name,
+::ng-deep .admin-tech-labels-manager .labels-table td.mat-column-name {
+  text-align: left !important;
+  padding-left: 16px !important;
+  vertical-align: middle !important;
 }

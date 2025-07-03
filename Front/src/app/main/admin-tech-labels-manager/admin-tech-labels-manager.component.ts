@@ -35,6 +35,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       next: (labels) => {
         this.allLabels = labels;
         this.totalPages = Math.ceil(this.allLabels.length / this.pageSize);
+        
+        // Si la página actual es mayor que el total de páginas, ir a la última página válida
+        if (this.currentPage > this.totalPages && this.totalPages > 0) {
+          this.currentPage = this.totalPages;
+        }
+        
+        // Si no hay etiquetas, resetear a la página 1
+        if (this.allLabels.length === 0) {
+          this.currentPage = 1;
+          this.totalPages = 1;
+        }
+        
         this.setPage(this.currentPage);
         this.loading = false;
       },
@@ -47,7 +59,14 @@ export class AdminTechLabelsManagerComponent implements OnInit {
   }
 
   setPage(page: number): void {
-    if (page < 1 || page > this.totalPages) return;
+    // Validar que la página esté en el rango válido
+    if (page < 1) {
+      page = 1;
+    }
+    if (page > this.totalPages && this.totalPages > 0) {
+      page = this.totalPages;
+    }
+    
     this.currentPage = page;
     const startIndex = (page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -111,12 +130,39 @@ export class AdminTechLabelsManagerComponent implements OnInit {
   }
 
   deleteLabel(label: TechLabel): void {
+    // Evitar múltiples clics mientras se procesa la eliminación
+    if (this.loading) return;
+    
     if (!confirm(`¿Estás seguro de que deseas eliminar la etiqueta "${label.name}"?`)) return;
 
     this.loading = true;
     this.loginService.deleteTechLabel(label).subscribe({
       next: () => {
-        this.loadLabels();
+        // Eliminar de la lista local inmediatamente para actualizar la vista
+        this.allLabels = this.allLabels.filter(l => l.id !== label.id);
+        
+        // Recalcular paginación
+        this.totalPages = Math.ceil(this.allLabels.length / this.pageSize);
+        
+        // Si la página actual está vacía después de la eliminación, ir a la página anterior
+        if (this.displayedLabels.length === 1 && this.currentPage > 1) {
+          this.currentPage--;
+        }
+        
+        // Si no hay más páginas, resetear a la página 1
+        if (this.totalPages === 0) {
+          this.currentPage = 1;
+          this.totalPages = 1;
+        }
+        
+        // Si la página actual es mayor que el total de páginas, ir a la última página válida
+        if (this.currentPage > this.totalPages && this.totalPages > 0) {
+          this.currentPage = this.totalPages;
+        }
+        
+        // Actualizar la vista
+        this.setPage(this.currentPage);
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error deleting label:', error);
