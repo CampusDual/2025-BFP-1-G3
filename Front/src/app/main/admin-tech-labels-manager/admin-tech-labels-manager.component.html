@@ -19,7 +19,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Nueva etiqueta</mat-label>
         <input matInput [(ngModel)]="newLabelName" placeholder="Ingrese el nombre de la etiqueta">
-        <mat-icon matSuffix>label</mat-icon>
+        <!-- <mat-icon matSuffix>label</mat-icon> -->
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="createLabel()" [disabled]="!newLabelName.trim()">
         <mat-icon>add</mat-icon>
@@ -33,8 +33,7 @@
 
         <!-- Columna de Nombre -->
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-icon>label</mat-icon>
+        <th mat-header-cell *matHeaderCellDef>
             Nombre de la Etiqueta
           </th>
           <td mat-cell *matCellDef="let label">
@@ -52,8 +51,7 @@
 
         <!-- Columna de Acciones -->
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-icon>settings</mat-icon>
+        <th mat-header-cell *matHeaderCellDef>
             Acciones
           </th>
           <td mat-cell *matCellDef="let label" class="actions-cell">
@@ -73,6 +71,7 @@
               <mat-icon>close</mat-icon>
             </button>
             <button mat-icon-button color="warn" matTooltip="Eliminar etiqueta" 
+                    *ngIf="editLabelId !== label.id"
                     (click)="deleteLabel(label)"
                     [disabled]="loading">
               <mat-icon>delete</mat-icon>

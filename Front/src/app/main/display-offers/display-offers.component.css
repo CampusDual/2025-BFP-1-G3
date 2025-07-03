@@ -13,7 +13,6 @@
   margin-bottom: 2%;
   border: 3px solid #1f1f1f;
   border-radius: 15px;
-
 }
 
 .search-bar:focus-within {
@@ -241,7 +240,6 @@ mat-card-content {
   cursor: pointer;
 }
 
-
 .labels-container .tech-chip:hover {
   background-color: #1f1f1f;
   border: #1f1f1f;
@@ -264,6 +262,9 @@ mat-card-content {
 
   .offers-container {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -275,6 +276,16 @@ mat-card-content {
 
   mat-card-title {
     font-size: 1.1rem;
+  }
+
+  .search-bar {
+    margin-bottom: 1rem;
+    width: max-content;
+  }
+
+  .search-bar input {
+    width: max-content;
+    font-size: small;
   }
 
   .offer-description {

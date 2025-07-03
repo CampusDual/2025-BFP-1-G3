@@ -1,7 +1,8 @@
 <!-- Fila superior con mensaje de bienvenida y botón -->
- <div class="top-row">
+<div class="main-content">
   <div class="welcome-message">
-    <h3>Bienvenido, <span class="companyName">{{username}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
+    <h3>Bienvenido, <span id="candidateName">{{username}}<mat-icon class="person_emoji">emoji_people</mat-icon></span>
+    </h3>
   </div>
 </div>
 
@@ -9,6 +10,7 @@
 <!-- Formulario para editar datos de perfil -->
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <div class="profile-container">
+    <h2>Editar perfil</h2>
     <mat-form-field appearance="fill">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" />
@@ -39,16 +41,16 @@
       <input matInput formControlName="linkedin" />
     </mat-form-field>
 
-<div *ngIf="signUpError" class="error-message">{{ signUpError }}</div>
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="submitting">Guardar cambios</button>
-      
-  
+    <div class="error-message" *ngIf="signUpError">
+      <mat-icon id="errorIcon">error</mat-icon>
+      {{ signUpError }}
+    </div>
+    
+    <button id="saveBtn" mat-raised-button type="submit" [disabled]="submitting">Guardar cambios</button>
   </div>
-
 
 </form>
 
-<div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-
-
+<div class="success-message" *ngIf="successMessage">
+  {{ successMessage }}
+</div>

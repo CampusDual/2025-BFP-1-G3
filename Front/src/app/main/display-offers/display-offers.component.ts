@@ -30,6 +30,7 @@ export class DisplayOffersComponent implements OnInit {
   });
   searchTerm: string = '';
   filteredOffers: Offer[] = [];
+  isSearchActive: boolean = false;
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
@@ -57,6 +58,7 @@ export class DisplayOffersComponent implements OnInit {
         this.filteredOffers = this.offers;
         console.log('Ofertas activas filtradas:', this.offers);
         console.log('Cantidad de ofertas activas:', this.offers.length);
+
         if (this.offers.length > 0) {
           console.log('Primera oferta activa:', this.offers[0]);
         }
@@ -169,17 +171,15 @@ export class DisplayOffersComponent implements OnInit {
       return this.offers;
     }
     const lowerKeyText = this.searchTerm.toLowerCase();
-    return this.offers.filter((Offer) =>
-
-      Offer.title.toLowerCase().includes(lowerKeyText) ||
-      Offer.offerDescription.toLowerCase().includes(lowerKeyText)
+    return this.offers.filter((offer) =>
+      offer.title.toLowerCase().includes(lowerKeyText) ||
+      offer.offerDescription.toLowerCase().includes(lowerKeyText)
     );
   }
 
   updateDisplayOffers(): void {
-    this.filteredOffers = this.getFilterOffers();
+    this.isSearchActive = this.searchTerm.trim().length > 0;
+    let currentOffers = this.getFilterOffers();
+    this.filteredOffers = currentOffers;
   }
-
-
-
 }

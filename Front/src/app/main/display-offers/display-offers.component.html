@@ -4,13 +4,13 @@
   <!-- == FILTRO DE OFERTAS == -->
   <div class="search-bar">
     <input type="text" placeholder="Buscar oferta por título/descripción" [(ngModel)]="searchTerm"
-      (input)="updateDisplayOffers()" />
+      (input)="updateDisplayOffers()"/>
     <span id="iconSearch"><mat-icon>search</mat-icon></span>
   </div>
 
 
-  <div class="cards-grid" *ngIf="offers && offers.length > 0; else noOffers">
-    <mat-card class="offer-card" *ngFor="let offer of offers">
+  <div class="cards-grid" *ngIf="filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
+    <mat-card class="offer-card" *ngFor="let offer of filteredOffers">
       <mat-card-header>
         <div class="header-content">
           <mat-card-title>{{ offer.title }}</mat-card-title>
@@ -59,4 +59,10 @@
     <mat-icon>info</mat-icon>
     <p>No se han encontrado resultados que cumplan los criterios de búsqueda</p>
   </div>
+</ng-template>
+
+<ng-template #noOffersOrSearch>
+  <ng-container *ngIf="offers.length === 0; else noOffersSearch">
+    <ng-container *ngTemplateOutlet="noOffers"></ng-container>
+  </ng-container>
 </ng-template>
