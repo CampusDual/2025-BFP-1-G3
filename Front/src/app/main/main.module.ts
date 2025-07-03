@@ -30,6 +30,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-manager.component';
+import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-ma
     CompanyPanelComponent,
     AdminPanelComponent,
     OfferDetailsComponent,
-    TechLabelsManagerComponent
+    TechLabelsManagerComponent,
+    AdminTechLabelsManagerComponent
   ],
   imports: [
     CommonModule,

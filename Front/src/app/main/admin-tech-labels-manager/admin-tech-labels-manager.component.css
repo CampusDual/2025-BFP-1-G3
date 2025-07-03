@@ -1,0 +1,173 @@
+.admin-tech-labels-manager {
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  max-width: 600px; /* Reduce width of the main container */
+  margin: 0 auto; /* Center the container */
+}
+
+.admin-tech-labels-manager h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #2c3e50;
+}
+
+.loading {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.create-label {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.create-label mat-form-field {
+  flex-grow: 1;
+  margin: 0;
+}
+
+.create-label input[type="text"],
+.create-label input[matInput] {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.create-label button {
+  padding: 6px 12px;
+  background-color: black;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 80px;
+}
+
+.create-label button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.create-label button:hover:not(:disabled) {
+  background-color: #333;
+}
+
+.labels-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.labels-table th,
+.labels-table td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.labels-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.labels-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.labels-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.labels-table input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Align action buttons to the left */
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.labels-table button {
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  background-color: black;
+  transition: background-color 0.3s ease;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.labels-table button:hover {
+  background-color: #333;
+}
+
+/* Delete button in red */
+.labels-table button:last-child {
+  background-color: #dc3545;
+}
+
+.labels-table button:last-child:hover {
+  background-color: #a71d2a;
+}
+
+.pagination-controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Smaller, minimalistic pagination buttons in red or black */
+.pagination-controls button {
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+  min-width: 60px;
+  height: 30px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: #ccc;
+  color: #ccc;
+  background-color: white;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
