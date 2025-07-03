@@ -43,11 +43,15 @@ mat-card-title {
   color: #000000;
   margin-bottom: 4px;
   /* Solución para texto largo */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
   max-width: 100%;
   /* border-bottom: solid #666; */
+  -webkit-hyphens: auto !important;
+  -moz-hyphens: auto !important;
+  -ms-hyphens: auto !important;
+  hyphens: auto !important;
 }
 
 mat-card-subtitle {
@@ -85,6 +89,14 @@ mat-card-subtitle {
   /* Altura fija para tres líneas */
   height: calc(1.4em * 3);
   max-width: 100%;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  -webkit-hyphens: auto !important;
+  -moz-hyphens: auto !important;
+  -ms-hyphens: auto !important;
+  hyphens: auto !important;
 }
 
 /* === BOTÓN REDONDO === */
