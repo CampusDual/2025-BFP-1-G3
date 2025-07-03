@@ -92,6 +92,7 @@ export class OfferDetailsComponent implements OnInit {
     });
   }
 
+
   // Método alternativo para obtener la oferta desde las ofertas cargadas
   loadOfferFromList(): void {
     this.loading = true;
@@ -129,6 +130,19 @@ export class OfferDetailsComponent implements OnInit {
 
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
+
+        // Custom filter predicate to filter by candidate full name or email
+        this.candidatesDataSource.filterPredicate = (data: Application, filter: string) => {
+          const filterValue = filter.trim().toLowerCase();
+
+          // Get candidate full name
+          const fullName = this.getCandidateFullName(data.candidate).toLowerCase();
+
+          // Get candidate email
+          const email = data.candidate?.email?.toLowerCase() || '';
+
+          return fullName.includes(filterValue) || email.includes(filterValue);
+        };
 
         // Configurar sorting y paginación cuando esté disponible
         setTimeout(() => {
@@ -364,7 +378,7 @@ export class OfferDetailsComponent implements OnInit {
     if (!this.offer || !this.offerId) return;
 
     const labelIds = this.offer.techLabels?.map(label => label.id) || [];
-    
+
     this.loginService.updateOfferLabels(this.offerId, labelIds).subscribe({
       next: () => {
         this.snackBar.open('Etiquetas actualizadas exitosamente', 'Cerrar', {
