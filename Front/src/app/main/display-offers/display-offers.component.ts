@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class DisplayOffersComponent implements OnInit {
   isLoggedAsCandidate(): any {
     throw new Error('Method not implemented.');
+
   }
 
   offers: Offer[] = [];
@@ -25,7 +26,10 @@ export class DisplayOffersComponent implements OnInit {
   token: string = sessionStorage.getItem('token') ?? '';
   headers: HttpHeaders = new HttpHeaders({
     'Authorization': 'Bearer ' + this.token
+
   });
+  searchTerm: string = '';
+  filteredOffers: Offer[] = [];
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
@@ -50,6 +54,7 @@ export class DisplayOffersComponent implements OnInit {
         console.log('Ofertas recibidas:', getOffers);
         // Filtrar solo ofertas activas (active puede ser boolean o number)
         this.offers = getOffers.filter(offer => (offer.active as any) == 1);
+        this.filteredOffers = this.offers;
         console.log('Ofertas activas filtradas:', this.offers);
         console.log('Cantidad de ofertas activas:', this.offers.length);
         if (this.offers.length > 0) {
@@ -157,4 +162,24 @@ export class DisplayOffersComponent implements OnInit {
       }
     });
   }
+
+  // == BARRA DE BÚSQUEDA LÓGICA ==
+  getFilterOffers(): Offer[] {
+    if (!this.searchTerm) {
+      return this.offers;
+    }
+    const lowerKeyText = this.searchTerm.toLowerCase();
+    return this.offers.filter((Offer) =>
+
+      Offer.title.toLowerCase().includes(lowerKeyText) ||
+      Offer.offerDescription.toLowerCase().includes(lowerKeyText)
+    );
+  }
+
+  updateDisplayOffers(): void {
+    this.filteredOffers = this.getFilterOffers();
+  }
+
+
+
 }
