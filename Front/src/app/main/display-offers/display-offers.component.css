@@ -43,11 +43,15 @@ mat-card-title {
   color: #000000;
   margin-bottom: 4px;
   /* Solución para texto largo */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
   max-width: 100%;
   /* border-bottom: solid #666; */
+  -webkit-hyphens: auto !important;
+  -moz-hyphens: auto !important;
+  -ms-hyphens: auto !important;
+  hyphens: auto !important;
 }
 
 mat-card-subtitle {
@@ -85,6 +89,14 @@ mat-card-subtitle {
   /* Altura fija para tres líneas */
   height: calc(1.4em * 3);
   max-width: 100%;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  -webkit-hyphens: auto !important;
+  -moz-hyphens: auto !important;
+  -ms-hyphens: auto !important;
+  hyphens: auto !important;
 }
 
 /* === BOTÓN REDONDO === */
@@ -174,6 +186,28 @@ mat-card-content {
   overflow: hidden;
 }
 
+.labels-container .tech-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #e61b15;
+  color: #f2f2f2;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #ef5c57;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+
+.labels-container .tech-chip:hover {
+  background-color: #1f1f1f;
+  border: #1f1f1f;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .cards-grid {
@@ -215,4 +249,35 @@ mat-card-content {
   #info, #apply {
     font-size: 2rem;
   }
+}
+
+/* === ETIQUETAS TÉCNICAS === */
+.tech-labels {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.labels-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #bbdefb;
+  transition: all 0.2s ease;
+}
+
+.tech-chip:hover {
+  background-color: #bbdefb;
+  transform: scale(1.05);
 }

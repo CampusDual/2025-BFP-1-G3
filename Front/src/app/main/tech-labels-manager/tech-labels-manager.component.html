@@ -1,0 +1,74 @@
+<div class="tech-labels-container">
+  <div class="labels-header">
+    <!-- <h3>Etiquetas Técnicas</h3> -->
+    <span class="labels-count" *ngIf="!readonly">
+      {{ selectedLabels.length }}/{{ maxLabels }}
+    </span>
+  </div>
+
+  <!-- Indicador de carga -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando etiquetas...</p>
+  </div>
+
+  <!-- Etiquetas seleccionadas -->
+  <div class="selected-labels" *ngIf="selectedLabels.length > 0">
+    <h4>Etiquetas seleccionadas:</h4>
+    <div class="labels-chips">
+      <div class="chip-container">
+        <span *ngFor="let label of selectedLabels" class="chip selected-chip">
+          {{ label.name }}
+          <button *ngIf="!readonly" class="chip-remove" (click)="removeLabel(label)" type="button">
+            ×
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Etiquetas disponibles -->
+  <div class="available-labels" *ngIf="!loading && !readonly">
+    <h4>Etiquetas disponibles:</h4>
+    <div class="labels-grid">
+      <div class="chip-container">
+        <span *ngFor="let label of availableLabels"
+              [class]="'chip available-chip ' + (isLabelSelected(label) ? 'selected' : '')"
+              [class.disabled]="isLabelSelected(label) || (selectedLabels.length >= maxLabels && !isLabelSelected(label))"
+              (click)="toggleLabel(label)">
+          {{ label.name }}
+          <span *ngIf="isLabelSelected(label)" class="check-icon">✓</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Solo mostrar etiquetas en modo readonly -->
+  <!--
+  <div class="readonly-labels" *ngIf="readonly && selectedLabels.length > 0">
+    <div class="labels-chips">
+      <div class="chip-container">
+        <span *ngFor="let label of selectedLabels" class="chip readonly-chip">
+          {{ label.name }}
+        </span>
+      </div>
+    </div>
+  </div>
+  -->
+
+  <!-- Mensaje cuando no hay etiquetas en modo readonly -->
+  <div class="no-labels" *ngIf="readonly && selectedLabels.length === 0">
+    <p>No hay etiquetas asignadas a esta oferta</p>
+  </div>
+
+  <!-- Botón guardar para ofertas existentes -->
+  <div class="actions" *ngIf="offerId && !readonly">
+    <button class="btn btn-primary save-btn" 
+            (click)="saveLabels()"
+            [disabled]="loading">
+      <span *ngIf="loading" class="spinner-small"></span>
+      <span *ngIf="!loading">💾</span>
+      <span style="margin-left: 8px;">Guardar etiquetas</span>
+    </button>
+  </div>
+</div>

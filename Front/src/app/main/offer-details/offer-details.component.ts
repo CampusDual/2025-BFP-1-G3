@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Offer } from 'src/app/model/offer';
 import { Candidate } from 'src/app/model/candidate';
 import { Application } from 'src/app/model/application';
+import { TechLabel } from 'src/app/model/tech-label';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
@@ -35,6 +36,10 @@ export class OfferDetailsComponent implements OnInit {
   isEditing: boolean = false;
   editedOffer: Offer | null = null;
   isSubmitting: boolean = false;
+
+  // Propiedades para etiquetas
+  isEditingLabels: boolean = false;
+  originalLabels: TechLabel[] = [];
 
   // Propiedades para la tabla de candidatos
   candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin']; // 'actions' comentado temporalmente
@@ -87,6 +92,7 @@ export class OfferDetailsComponent implements OnInit {
     });
   }
 
+
   // Método alternativo para obtener la oferta desde las ofertas cargadas
   loadOfferFromList(): void {
     this.loading = true;
@@ -97,6 +103,7 @@ export class OfferDetailsComponent implements OnInit {
       const foundOffer = offers.find(offer => offer.id === this.offerId);
       if (foundOffer) {
         this.offer = foundOffer;
+        this.loadOfferLabels(); // Cargar etiquetas de la oferta
         this.loading = false;
         return;
       }
@@ -123,6 +130,19 @@ export class OfferDetailsComponent implements OnInit {
 
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
+
+        // Custom filter predicate to filter by candidate full name or email
+        this.candidatesDataSource.filterPredicate = (data: Application, filter: string) => {
+          const filterValue = filter.trim().toLowerCase();
+
+          // Get candidate full name
+          const fullName = this.getCandidateFullName(data.candidate).toLowerCase();
+
+          // Get candidate email
+          const email = data.candidate?.email?.toLowerCase() || '';
+
+          return fullName.includes(filterValue) || email.includes(filterValue);
+        };
 
         // Configurar sorting y paginación cuando esté disponible
         setTimeout(() => {
@@ -312,6 +332,68 @@ export class OfferDetailsComponent implements OnInit {
           panelClass: ['snackbar-error']
         });
         this.isSubmitting = false;
+      }
+    });
+  }
+
+  // === MÉTODOS PARA MANEJAR ETIQUETAS ===
+
+  loadOfferLabels(): void {
+    if (!this.offerId) return;
+
+    this.loginService.getOfferLabels(this.offerId).subscribe({
+      next: (labels) => {
+        if (this.offer) {
+          this.offer.techLabels = labels;
+          this.originalLabels = [...labels];
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando etiquetas de la oferta:', error);
+      }
+    });
+  }
+
+  onLabelsChanged(labels: TechLabel[]): void {
+    if (this.offer) {
+      this.offer.techLabels = labels;
+    }
+  }
+
+  startEditingLabels(): void {
+    this.isEditingLabels = true;
+    if (this.offer?.techLabels) {
+      this.originalLabels = [...this.offer.techLabels];
+    }
+  }
+
+  cancelEditingLabels(): void {
+    this.isEditingLabels = false;
+    if (this.offer) {
+      this.offer.techLabels = [...this.originalLabels];
+    }
+  }
+
+  saveLabels(): void {
+    if (!this.offer || !this.offerId) return;
+
+    const labelIds = this.offer.techLabels?.map(label => label.id) || [];
+
+    this.loginService.updateOfferLabels(this.offerId, labelIds).subscribe({
+      next: () => {
+        this.snackBar.open('Etiquetas actualizadas exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        this.isEditingLabels = false;
+        this.originalLabels = [...(this.offer?.techLabels || [])];
+      },
+      error: (error) => {
+        console.error('Error actualizando etiquetas:', error);
+        this.snackBar.open('Error al actualizar las etiquetas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
       }
     });
   }

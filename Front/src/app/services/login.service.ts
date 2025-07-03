@@ -6,6 +6,7 @@ import { OResponse } from "../model/response";
 import { Offer } from "../model/offer";
 import { Candidate } from "../model/candidate";
 import { Application } from "../model/application";
+import { TechLabel } from "../model/tech-label";
 import { Router } from "@angular/router";
 
 @Injectable({
@@ -246,6 +247,116 @@ export class LoginService {
       }),
       catchError(error => {
         console.error('Error obteniendo candidatos:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // === MÉTODOS PARA TECH LABELS ===
+  
+  /**
+   * Obtener todas las etiquetas técnicas disponibles
+   */
+  getAllTechLabels(): Observable<TechLabel[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.get<TechLabel[]>(`${this.urlEndPoint}/tech-labels/getAll`, { headers }).pipe(
+      map(response => {
+        console.log('Etiquetas técnicas obtenidas:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo etiquetas técnicas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtener etiquetas de una oferta específica
+   */
+  getOfferLabels(offerId: number): Observable<TechLabel[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.get<TechLabel[]>(`${this.urlEndPoint}/offers/${offerId}/labels`, { headers }).pipe(
+      map(response => {
+        console.log('Etiquetas de la oferta obtenidas:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo etiquetas de la oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Agregar etiqueta a una oferta
+   */
+  addLabelToOffer(offerId: number, labelId: number): Observable<string> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.post(`${this.urlEndPoint}/offers/${offerId}/labels/${labelId}`, {}, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Etiqueta agregada a la oferta:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error agregando etiqueta a la oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Remover etiqueta de una oferta
+   */
+  removeLabelFromOffer(offerId: number, labelId: number): Observable<string> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.delete(`${this.urlEndPoint}/offers/${offerId}/labels/${labelId}`, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Etiqueta removida de la oferta:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error removiendo etiqueta de la oferta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Actualizar todas las etiquetas de una oferta
+   */
+  updateOfferLabels(offerId: number, labelIds: number[]): Observable<string> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.put(`${this.urlEndPoint}/offers/${offerId}/labels`, 
+      { labelIds: labelIds }, 
+      { headers, responseType: 'text' }
+    ).pipe(
+      map(response => {
+        console.log('Etiquetas de la oferta actualizadas:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error actualizando etiquetas de la oferta:', error);
         return throwError(() => error);
       })
     );

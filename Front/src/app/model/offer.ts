@@ -1,3 +1,5 @@
+import { TechLabel } from './tech-label';
+
 export class Offer{
     id!: number;
     title!: string;
@@ -5,4 +7,5 @@ export class Offer{
     companyId!: number;
     companyName!: string; 
     active!: boolean;
+    techLabels?: TechLabel[];
 }

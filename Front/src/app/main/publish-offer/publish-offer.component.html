@@ -12,9 +12,9 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="description-field">
       <mat-label>Descripción de la oferta</mat-label>
-      <textarea matInput id="descripcion" formControlName="descripcion" placeholder="Detalles del puesto" rows="5" maxlength="1500"></textarea>
+      <textarea matInput id="descripcion" formControlName="descripcion" placeholder="Detalles del puesto" rows="8" maxlength="1500"></textarea>
       <mat-hint align="end" [class.warn-limit]="offerForm.get('descripcion')?.value?.length >= 1450">{{offerForm.get('descripcion')?.value?.length || 0}}/1500</mat-hint>
       <mat-error *ngIf="offerForm.get('descripcion')?.invalid && offerForm.get('descripcion')?.touched">
         <span *ngIf="offerForm.get('descripcion')?.errors?.['required']">La descripción es obligatoria.</span>
@@ -22,7 +22,20 @@
       </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="submitting || offerForm.invalid">Publicar</button>
+    <!-- Componente de gestión de etiquetas técnicas -->
+    <!-- <div class="tech-labels-section"> -->
+      <app-tech-labels-manager 
+        [selectedLabels]="selectedTechLabels"
+        [maxLabels]="5"
+        [readonly]="false"
+        (labelsChanged)="onLabelsChanged($event)">
+      </app-tech-labels-manager>
+    <!-- </div> -->
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="submitting || offerForm.invalid">
+      <span *ngIf="submitting">Publicando...</span>
+      <span *ngIf="!submitting">Publicar</span>
+    </button>
 
     <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TechLabel } from 'src/app/model/tech-label';
 
 @Component({
   selector: 'app-publish-offer',
@@ -16,6 +17,7 @@ export class PublishOfferComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   companyId: number | null = null;
+  selectedTechLabels: TechLabel[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -88,23 +90,61 @@ export class PublishOfferComponent implements OnInit {
     });
     this.http.post('http://localhost:30030/offers/add', offerData, { headers })
       .subscribe({
-        next: (response) => {
-          this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
-            duration: 1000, 
-            horizontalPosition: 'center',
-            verticalPosition: 'bottom', 
-            panelClass: ['snackbar-success'],
-          });
-          this.successMessage = 'Oferta publicada con éxito.';
-          this.offerForm.reset();
-          this.submitting = false;
-          this.router.navigate(['/main/empresa']);
+        next: (response: any) => {
+          console.log('Respuesta del servidor:', response);
+          
+          // Si tenemos un ID de oferta y etiquetas seleccionadas, guardarlas
+          if (response && typeof response === 'number' && this.selectedTechLabels.length > 0) {
+            const labelIds = this.selectedTechLabels.map(label => label.id);
+            this.loginService.updateOfferLabels(response, labelIds).subscribe({
+              next: () => {
+                this.showSuccessAndRedirect();
+              },
+              error: (error) => {
+                console.error('Error guardando etiquetas:', error);
+                // Mostrar éxito de la oferta pero advertir sobre etiquetas
+                this.snackBar.open('Oferta creada, pero hubo un error al guardar las etiquetas', 'Cerrar', {
+                  duration: 5000,
+                  panelClass: ['snackbar-warning']
+                });
+                this.router.navigate(['/main/empresa']);
+                this.submitting = false;
+              }
+            });
+          } else {
+            this.showSuccessAndRedirect();
+          }
         },
         error: (error) => {
-          this.errorMessage = 'Error al publicar la oferta.';
+          console.error('Error completo:', error);
           this.submitting = false;
+          
+          if (error.status === 403) {
+            this.snackBar.open('No tienes permisos para publicar ofertas', 'Cerrar', {
+              duration: 5000,
+              panelClass: ['snackbar-failed']
+            });
+          } else {
+            this.snackBar.open('Error al publicar la oferta. Inténtalo de nuevo.', 'Cerrar', {
+              duration: 5000,
+              panelClass: ['snackbar-failed']
+            });
+          }
         }
       });
+  }
+
+  onLabelsChanged(labels: TechLabel[]): void {
+    this.selectedTechLabels = labels;
+  }
+
+  private showSuccessAndRedirect(): void {
+    this.snackBar.open('¡Oferta publicada exitosamente!', 'Cerrar', {
+      duration: 5000,
+      panelClass: ['snackbar-success']
+    });
+    this.router.navigate(['/main/empresa']);
+    this.submitting = false;
   }
 }
 

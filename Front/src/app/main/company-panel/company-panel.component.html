@@ -1,10 +1,10 @@
 <!-- Fila superior con mensaje de bienvenida y botón -->
-<div class="top-row">
+<div class="main-content">
   <div class="welcome-message" *ngIf="isLoggedIn()">
-    <h3>Bienvenido, <span class="companyName">{{companyName}}<mat-icon class="person_emoji">emoji_people</mat-icon></span></h3>
+    <h3>Bienvenido, <span class="companyName">{{companyName}}</span></h3><mat-icon class="person_emoji">emoji_people</mat-icon>
   </div>
   <div class="action-buttons-top-right">
-    <button mat-mini-fab color="primary" class="buttonadd" (click)="publicar()">
+    <button id="buttonAdd" mat-mini-fab (click)="publicar()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -23,6 +23,15 @@
 
           <mat-card-content>
             <p class="offer-description">{{ offer.offerDescription }}</p>
+
+            <!-- Etiquetas técnicas -->
+            <div class="tech-labels" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+              <div class="labels-container">
+                <span *ngFor="let label of offer.techLabels" class="tech-chip">
+                  {{ label.name }}
+                </span>
+              </div>
+            </div>
           </mat-card-content>
 
           <mat-card-actions class="card-actions">
@@ -52,6 +61,15 @@
 
           <mat-card-content>
             <p class="offer-description">{{ offer.offerDescription }}</p>
+
+            <!-- Etiquetas técnicas -->
+            <div class="tech-labels" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+              <div class="labels-container">
+                <span *ngFor="let label of offer.techLabels" class="tech-chip">
+                  {{ label.name }}
+                </span>
+              </div>
+            </div>
           </mat-card-content>
 
           <mat-card-actions class="card-actions">
