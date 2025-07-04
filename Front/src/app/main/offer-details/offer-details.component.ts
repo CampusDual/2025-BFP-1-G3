@@ -31,6 +31,13 @@ export class OfferDetailsComponent implements OnInit {
     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
   });
 
+  // Getter para el texto del toggle según el estado activo de la oferta
+  get toggleLabel(): string {
+    if (!this.offer) {
+      return '';
+    }
+    return this.offer.active ? 'Desactivar' : 'Activar';
+  }
 
   // Propiedades para edición
   isEditing: boolean = false;
