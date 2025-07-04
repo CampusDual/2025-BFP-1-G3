@@ -52,7 +52,7 @@
   <mat-tab label="Inactivas">
     <div class="offers-container" *ngIf="offersInactive && offersInactive.length > 0; else noInactiveOffers">
       <div class="cards-grid">
-        <mat-card class="offer-card clickable-card" *ngFor="let offer of offersInactive" (click)="viewOfferDetails(offer)">
+<mat-card class="offer-card clickable-card inactive-offer" *ngFor="let offer of offersInactive" (click)="viewOfferDetails(offer)">
           <mat-card-header>
             <div class="header-content">
               <mat-card-title>{{ offer.title }}</mat-card-title>
