@@ -46,7 +46,7 @@
 /* === GRID RESPONSIVO === */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
 }
 
@@ -116,7 +116,7 @@ mat-card-subtitle {
 .offer-description {
   font-size: 0.95rem;
   color: #333;
-  margin-top: 16px;
+  margin-top: 1%;
   /* Limitar a 3 líneas con puntos suspensivos */
   display: -webkit-box;
   -webkit-line-clamp: 3;
