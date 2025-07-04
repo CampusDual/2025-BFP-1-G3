@@ -52,7 +52,7 @@
               <h2>Oferta</h2>
             </mat-card-title>
             <mat-slide-toggle [checked]="offer.active" (change)="toggleActive($event.checked)"
-              color="primary">Activo</mat-slide-toggle>
+              color="primary">{{ toggleLabel }}</mat-slide-toggle>
           </mat-card-header>
           <mat-card-content>
 
