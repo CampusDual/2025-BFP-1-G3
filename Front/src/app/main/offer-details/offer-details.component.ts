@@ -231,6 +231,23 @@ export class OfferDetailsComponent implements OnInit {
       return;
     }
 
+    // Validar límites de caracteres
+    if (this.editedOffer.title.length > 100) {
+      this.snackBar.open('El título no puede superar los 100 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.offerDescription.length > 2500) {
+      this.snackBar.open('La descripción no puede superar los 2500 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
     // Crear copia para enviar al backend con active como número
     const offerToUpdate = { ...this.editedOffer };
     if (typeof offerToUpdate.active === 'boolean') {

@@ -27,8 +27,8 @@ export class PublishOfferComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.offerForm = this.fb.group({
-      titulo: ['', [Validators.required, Validators.maxLength(70)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(1500)]]
+      titulo: ['', [Validators.required, Validators.maxLength(100)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(2500)]]
     });
   }
 
