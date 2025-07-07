@@ -12,7 +12,7 @@
 
 <mat-tab-group>
   <mat-tab label="Activas">
-    <div class="offers-container" *ngIf="offersActive && offersActive.length > 0; else noActiveOffers">
+    <div class="offers-container" *ngIf="!isLoading && offersActive && offersActive.length > 0; else noActiveOffers">
       <div class="cards-grid">
         <mat-card class="offer-card clickable-card" *ngFor="let offer of offersActive" (click)="viewOfferDetails(offer)">
           <mat-card-header>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <ng-template #noActiveOffers>
-      <div class="no-offers">
+      <div class="no-offers" *ngIf="!isLoading">
         <mat-icon>info</mat-icon>
         <p>No hay ofertas activas disponibles en este momento</p>
       </div>
@@ -50,9 +50,9 @@
   </mat-tab>
 
   <mat-tab label="Inactivas">
-    <div class="offers-container" *ngIf="offersInactive && offersInactive.length > 0; else noInactiveOffers">
+    <div class="offers-container" *ngIf="!isLoading && offersInactive && offersInactive.length > 0; else noInactiveOffers">
       <div class="cards-grid">
-        <mat-card class="offer-card clickable-card" *ngFor="let offer of offersInactive" (click)="viewOfferDetails(offer)">
+<mat-card class="offer-card clickable-card inactive-offer" *ngFor="let offer of offersInactive" (click)="viewOfferDetails(offer)">
           <mat-card-header>
             <div class="header-content">
               <mat-card-title>{{ offer.title }}</mat-card-title>
@@ -80,7 +80,7 @@
       </div>
     </div>
     <ng-template #noInactiveOffers>
-      <div class="no-offers">
+      <div class="no-offers" *ngIf="!isLoading">
         <mat-icon>info</mat-icon>
         <p>No hay ofertas inactivas disponibles en este momento</p>
       </div>
@@ -88,9 +88,14 @@
   </mat-tab>
 </mat-tab-group>
 
+<!-- Loading indicator -->
+<div *ngIf="isLoading" class="loading-container" id="loadMeesage">
+  <mat-spinner diameter="40"></mat-spinner>
+  <p>Cargando ofertas...</p>
+</div>
 <!-- Mensaje cuando no hay ofertas -->
 <ng-template #noOffers>
-  <div class="no-offers">
+  <div class="no-offers" *ngIf="!isLoading">
     <mat-icon>info</mat-icon>
     <p>No hay ofertas disponibles en este momento</p>
   </div>

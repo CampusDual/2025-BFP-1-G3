@@ -12,6 +12,8 @@ import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { noAuthGuard } from '../guards/no-auth.guard';
 
+import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
+
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
@@ -22,7 +24,9 @@ const routes: Routes = [
   { path: 'empresa', component: CompanyPanelComponent, canActivate: [AuthGuard] },
   { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
-  { path: 'offer-details/:id', component: OfferDetailsComponent, canActivate: [AuthGuard] }
+  { path: 'admin/etiquetas', component: AdminTechLabelsManagerComponent, canActivate: [AuthGuard] },
+  { path: 'offer-details/:id', component: OfferDetailsComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: 'ofertas' }
 ];
 
 @NgModule({

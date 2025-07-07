@@ -1,18 +1,32 @@
+<!-- == CONTENEDOR PRINCIPAL == -->
+<div class="offers-container" >
 
-<!-- Diseño de tarjetas -->
-<div class="offers-container" *ngIf="offers && offers.length > 0; else noOffers">
-  <div class="cards-grid">
-    <mat-card class="offer-card" *ngFor="let offer of offers">
+  <!-- == FILTRO DE OFERTAS == -->
+  <div class="search-bar">
+    <input type="text" placeholder="Buscar oferta por título/descripción" [(ngModel)]="searchTerm"
+      (input)="updateDisplayOffers()"/>
+    <span id="iconSearch"><mat-icon>search</mat-icon></span>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando ofertas...</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="!isLoading && filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
+    <mat-card class="offer-card" *ngFor="let offer of filteredOffers">
       <mat-card-header>
         <div class="header-content">
           <mat-card-title>{{ offer.title }}</mat-card-title>
-          <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
+          <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre'
+              }}</span></mat-card-subtitle>
         </div>
       </mat-card-header>
 
       <mat-card-content>
         <p class="offer-description">{{ offer.offerDescription }}</p>
-        
+
         <!-- Etiquetas técnicas -->
         <div class="tech-labels" *ngIf="offer.techLabels && offer.techLabels.length > 0">
           <div class="labels-container">
@@ -27,18 +41,33 @@
         <!-- <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button">
           <mat-icon id="info">info</mat-icon>
         </button> -->
-        <button *ngIf="companyName==''" mat-icon-button matTooltip="Inscribirse a la oferta" (click)="applyOffer(offer.id)" class="tooltip-button">
-          <mat-icon id="apply">work</mat-icon>
+        <button *ngIf="companyName==''" mat-icon-button matTooltip="Inscribirse a la oferta"
+          (click)="applyOffer(offer.id)" class="tooltip-button">
+          <mat-icon id="apply">outbox</mat-icon>
         </button>
       </mat-card-actions>
     </mat-card>
   </div>
 </div>
 
-<!-- Mensaje cuando no hay ofertas disponibles -->
+<!-- Mensaje aviso: No hay ofertas -->
 <ng-template #noOffers>
-  <div class="no-offers">
+  <div id="errorMessage">
     <mat-icon>info</mat-icon>
     <p>No hay ofertas disponibles en este momento</p>
   </div>
+</ng-template>
+
+<!-- Mensaje cuando el filtro no encuentra ofertas -->
+<ng-template #noOffersSearch>
+  <div class="no-offers" *ngIf="!isLoading">
+    <mat-icon>info</mat-icon>
+    <p>No se han encontrado resultados que cumplan los criterios de búsqueda</p>
+  </div>
+</ng-template>
+
+<ng-template #noOffersOrSearch>
+  <ng-container *ngIf="!isLoading && offers.length === 0; else noOffersSearch">
+    <ng-container *ngTemplateOutlet="noOffers"></ng-container>
+  </ng-container>
 </ng-template>

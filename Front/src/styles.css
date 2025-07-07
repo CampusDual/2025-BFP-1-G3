@@ -16,22 +16,30 @@ body {
     overflow-x: hidden;
 }
 
+/* Estilos para el snackbar de exito (verde) */
 .snackbar-success.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #4CAF50!important; /* Verde */
-  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
-  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+  --mdc-snackbar-container-color: #3FCC33;
+  --mdc-snackbar-supporting-text-color: #E6FCD6; 
+  --mat-mdc-snack-bar-button-color: #E6FCD6; 
 }
 
 /* Estilos para el snackbar de error (rojo) */
 .snackbar-failed.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #F44336!important; /* Rojo */
-  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
-  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+  --mdc-snackbar-container-color: #D62032; 
+  --mdc-snackbar-supporting-text-color: #FCDDD1; 
+  --mat-mdc-snack-bar-button-color: #FCDDD1; 
 }
 
 /* Estilos para el snackbar informativo (azul) */
 .snackbar-info.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #2196F3!important; /* Azul */
-  --mdc-snackbar-supporting-text-color: white!important; /* Texto blanco */
-  --mat-mdc-snack-bar-button-color: white!important; /* Color del botón "Cerrar" */
+  --mdc-snackbar-container-color: #006AC6; 
+  --mdc-snackbar-supporting-text-color: #C9EFFC; 
+  --mat-mdc-snack-bar-button-color: #C9EFFC; 
+}
+
+/* Estilos para el snackbar aviso (amarillo) */
+.snackbar-warn.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #BA7705; 
+  --mdc-snackbar-supporting-text-color: #FBF0CA; 
+  --mat-mdc-snack-bar-button-color: #FBF0CA; 
 }

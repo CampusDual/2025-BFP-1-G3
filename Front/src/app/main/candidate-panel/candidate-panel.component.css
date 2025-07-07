@@ -1,53 +1,41 @@
-.top-row {
+* {
+  color: #333333;
+}
+
+.main-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 1%;
+  padding-top: 0;
 }
 
-.welcome-message {
-  font-family: sans-serif;
-  color: #333333;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-
-.companyName {
+#candidateName {
   color: #e61b15;
   font-weight: bold;
 }
 
-.welcome-message h3 {
-  margin: 0;
-}
-
-h3 {
-  align-items: center;
-}
-
 .person_emoji {
   color: #333333;
-  font-size: 2rem;
-  align-items: baseline;
+  font-size: 2rem; 
 }
 
-/* New styles for candidate profile form */
-
 .profile-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* Added to prevent vertical scroll */
-  max-height: 100vh;
-  overflow-y: auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 35rem;
+  max-height: 100vh;
+  margin: 2% auto;
+  padding: 1%;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+  border-bottom: 2px solid #fc3d37;
 }
 
 mat-form-field {
@@ -55,22 +43,26 @@ mat-form-field {
   margin-bottom: 0;
 }
 
-button[type="submit"] {
-  margin-top: 12px;
-  /* Center the button */
-  align-self: center;
-}
-
-/* Success and error messages */
-.success-message {
-  color: #4caf50;
-  font-weight: 600;
-  margin-top: 16px;
-  text-align: center;
-}
-
 .error-message {
-  color: #f44336;
-  font-weight: 600;
+  display: flex;
+  justify-content: center;
   text-align: center;
+  margin-bottom: 1rem;
+  color: #ff6b67;
+  font-weight: bold;
+}
+
+#errorIcon {
+  margin-right: 0.5rem;
+}
+
+#saveBtn {
+  align-items: center;
+  margin-top: 1%;
+  background-color: #e61b15;
+  color: #f6f6f6;
+}
+
+#saveBtn:hover {
+  background-color: #c51510;
 }

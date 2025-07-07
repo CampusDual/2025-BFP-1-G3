@@ -276,6 +276,69 @@ export class LoginService {
   }
 
   /**
+   * Insertar una nueva etiqueta técnica
+   */
+  insertTechLabel(label: TechLabel): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(`${this.urlEndPoint}/tech-labels/add`, label, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Etiqueta técnica insertada:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error insertando etiqueta técnica:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Actualizar una etiqueta técnica existente
+   */
+  updateTechLabel(label: TechLabel): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(`${this.urlEndPoint}/tech-labels/update`, label, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Etiqueta técnica actualizada:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error actualizando etiqueta técnica:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Eliminar una etiqueta técnica
+   */
+  deleteTechLabel(label: TechLabel): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(`${this.urlEndPoint}/tech-labels/delete`, label, { headers, responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Etiqueta técnica eliminada:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error eliminando etiqueta técnica:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
    * Obtener etiquetas de una oferta específica
    */
   getOfferLabels(offerId: number): Observable<TechLabel[]> {

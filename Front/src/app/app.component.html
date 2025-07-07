@@ -50,6 +50,10 @@
               <mat-icon>business</mat-icon>
               <span>Empresas</span>
             </a>
+            <a mat-list-item routerLink="/main/admin/etiquetas" [class.active]="isActiveAdminSection('etiquetas')" (click)="sidenav.close()">
+              <mat-icon>label</mat-icon>
+              <span>Etiquetas</span>
+            </a>
             <!-- <a mat-list-item routerLink="/main/admin/ofertas" [class.active]="isActiveAdminSection('ofertas')" (click)="sidenav.close()">
               <mat-icon>work</mat-icon>
               <span>Ofertas</span>

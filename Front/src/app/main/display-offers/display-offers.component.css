@@ -1,18 +1,57 @@
 /* === CONTENEDOR PRINCIPAL === */
 .offers-container {
-  padding: 32px;
+  padding: 2%;
+  background-color: #f2f2f2;
+}
+
+/* == FILTRO DE OFERTAS == */
+.search-bar {
+  display: flex;
+  width: 50%;
+
+  align-items: center;
+  margin-bottom: 2%;
+  border: 3px solid #1f1f1f;
+  border-radius: 15px;
+}
+
+.search-bar:focus-within {
+  border: 3px solid #e61b15;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px #ef5c57;
+  -webkit-box-shadow: 0px 0px 10px #ef5c57;
+  -moz-box-shadow: 0px 0px 10px #ef5c57;
+}
+
+.search-bar input {
+  width: 100%;
+  height: 3rem;
+  padding-left: 1%;
+  border: none;
+  border-radius: 15px;
+  background-color: #f2f2f2;
+  font-size: medium;
+}
+
+.search-bar input:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+#iconSearch {
+  margin-top: 0.5%;
 }
 
 /* === GRID RESPONSIVO === */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
 }
 
 /* === TARJETA DE OFERTA === */
 .offer-card {
-  background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -77,7 +116,7 @@ mat-card-subtitle {
 .offer-description {
   font-size: 0.95rem;
   color: #333;
-  margin-top: 16px;
+  margin-top: 1%;
   /* Limitar a 3 líneas con puntos suspensivos */
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -131,11 +170,23 @@ mat-card-subtitle {
   width: max-content;
 }
 
+#loadMeesage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4%;
+  font-size: large;
+  font-weight: bolder;
+  color: #6d6d6d;
+}
+
 /* === MENSAJE SIN OFERTAS === */
-.no-offers {
+#errorMessage {
   text-align: center;
-  padding: 60px;
-  color: #999;
+  margin-top: 4%;
+  font-size: large;
+  font-weight: bolder;
+  color: #6d6d6d;
 }
 
 /* Para elementos mat-card específicos */
@@ -200,7 +251,6 @@ mat-card-content {
   cursor: pointer;
 }
 
-
 .labels-container .tech-chip:hover {
   background-color: #1f1f1f;
   border: #1f1f1f;
@@ -215,38 +265,55 @@ mat-card-content {
     gap: 16px;
     padding: 0 16px;
   }
-  
+
   .offer-card {
-    height: 240px; /* Altura ligeramente menor en móviles */
+    height: 240px;
+    /* Altura ligeramente menor en móviles */
   }
-  
+
   .offers-container {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
 @media (max-width: 480px) {
   .offer-card {
-    height: 220px; /* Altura aún menor en pantallas muy pequeñas */
+    height: 220px;
+    /* Altura aún menor en pantallas muy pequeñas */
   }
-  
+
   mat-card-title {
     font-size: 1.1rem;
   }
-  
+
+  .search-bar {
+    margin-bottom: 1rem;
+    width: max-content;
+  }
+
+  .search-bar input {
+    width: max-content;
+    font-size: small;
+  }
+
   .offer-description {
     font-size: 0.9rem;
-    -webkit-line-clamp: 2; /* Menos líneas en pantallas pequeñas */
+    -webkit-line-clamp: 2;
+    /* Menos líneas en pantallas pequeñas */
     line-clamp: 2;
     height: calc(1.4em * 2);
   }
-  
+
   .tooltip-button {
     width: 45px;
     height: 45px;
   }
-  
-  #info, #apply {
+
+  #info,
+  #apply {
     font-size: 2rem;
   }
 }

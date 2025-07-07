@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class DisplayOffersComponent implements OnInit {
   isLoggedAsCandidate(): any {
     throw new Error('Method not implemented.');
+
   }
 
   offers: Offer[] = [];
@@ -25,7 +26,12 @@ export class DisplayOffersComponent implements OnInit {
   token: string = sessionStorage.getItem('token') ?? '';
   headers: HttpHeaders = new HttpHeaders({
     'Authorization': 'Bearer ' + this.token
+
   });
+  searchTerm: string = '';
+  filteredOffers: Offer[] = [];
+  isSearchActive: boolean = false;
+  isLoading: boolean = false; // Added loading state
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
@@ -45,18 +51,31 @@ export class DisplayOffersComponent implements OnInit {
 
   load(): void {
     console.log('Iniciando carga de ofertas...');
+    this.isLoading = true; // Start loading
+    const loadingTimeout = setTimeout(() => {
+      if (this.isLoading) {
+        this.isLoading = false; // Stop loading after timeout
+      }
+    }, 5000); // 5 seconds timeout
+
     this.loginService.getOffers().subscribe(
       getOffers => {
+        clearTimeout(loadingTimeout);
+        this.isLoading = false;
         console.log('Ofertas recibidas:', getOffers);
         // Filtrar solo ofertas activas (active puede ser boolean o number)
         this.offers = getOffers.filter(offer => (offer.active as any) == 1);
+        this.filteredOffers = this.offers;
         console.log('Ofertas activas filtradas:', this.offers);
         console.log('Cantidad de ofertas activas:', this.offers.length);
+
         if (this.offers.length > 0) {
           console.log('Primera oferta activa:', this.offers[0]);
         }
       },
       error => {
+        clearTimeout(loadingTimeout);
+        this.isLoading = false;
         console.error('Error al cargar ofertas:', error);
       }
     );
@@ -156,5 +175,23 @@ export class DisplayOffersComponent implements OnInit {
         });
       }
     });
+  }
+
+  // == BARRA DE BÚSQUEDA LÓGICA ==
+  getFilterOffers(): Offer[] {
+    if (!this.searchTerm) {
+      return this.offers;
+    }
+    const lowerKeyText = this.searchTerm.toLowerCase();
+    return this.offers.filter((offer) =>
+      offer.title.toLowerCase().includes(lowerKeyText) ||
+      offer.offerDescription.toLowerCase().includes(lowerKeyText)
+    );
+  }
+
+  updateDisplayOffers(): void {
+    this.isSearchActive = this.searchTerm.trim().length > 0;
+    let currentOffers = this.getFilterOffers();
+    this.filteredOffers = currentOffers;
   }
 }

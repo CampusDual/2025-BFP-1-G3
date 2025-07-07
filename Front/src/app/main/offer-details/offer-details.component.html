@@ -52,7 +52,7 @@
               <h2>Oferta</h2>
             </mat-card-title>
             <mat-slide-toggle [checked]="offer.active" (change)="toggleActive($event.checked)"
-              color="primary">Activo</mat-slide-toggle>
+              color="primary">{{ toggleLabel }}</mat-slide-toggle>
           </mat-card-header>
           <mat-card-content>
 
@@ -72,16 +72,20 @@
             <div class="offer-edit-form" *ngIf="isEditing && editedOffer">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Título de la oferta</mat-label>
-                <input matInput [(ngModel)]="editedOffer.title" placeholder="Ingresa el título de la oferta" required>
+                <input matInput [(ngModel)]="editedOffer.title" placeholder="Ingresa el título de la oferta" required maxlength="100">
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.title.length || 0) >= 95">{{editedOffer.title.length || 0}}/100</mat-hint>
                 <mat-error *ngIf="!editedOffer.title">El título es requerido</mat-error>
+                <mat-error *ngIf="editedOffer.title && editedOffer.title.length > 100">El título no puede superar los 100 caracteres</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Descripción de la oferta</mat-label>
                 <textarea matInput [(ngModel)]="editedOffer.offerDescription"
-                  placeholder="Describe los detalles de la oferta" rows="8" required>
+                  placeholder="Describe los detalles de la oferta" rows="8" required maxlength="2500">
                 </textarea>
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.offerDescription.length || 0) >= 2400">{{editedOffer.offerDescription.length || 0}}/2500</mat-hint>
                 <mat-error *ngIf="!editedOffer.offerDescription">La descripción es requerida</mat-error>
+                <mat-error *ngIf="editedOffer.offerDescription && editedOffer.offerDescription.length > 2500">La descripción no puede superar los 2500 caracteres</mat-error>
               </mat-form-field>
             </div>
           </mat-card-content>

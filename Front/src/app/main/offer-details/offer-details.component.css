@@ -468,3 +468,24 @@ mat-card-header {
   gap: 8px;
   align-items: center;
 }
+
+/* Estilos para hints y validaciones */
+.warn-limit {
+  color: #e61b15 !important;
+  font-weight: bold;
+}
+
+::ng-deep mat-hint {
+  transition: color 0.3s ease;
+  color: #666;
+}
+
+::ng-deep mat-hint.warn-limit {
+  color: #e61b15 !important;
+}
+
+::ng-deep mat-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}

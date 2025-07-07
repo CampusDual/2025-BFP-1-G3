@@ -31,6 +31,13 @@ export class OfferDetailsComponent implements OnInit {
     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
   });
 
+  // Getter para el texto del toggle según el estado activo de la oferta
+  get toggleLabel(): string {
+    if (!this.offer) {
+      return '';
+    }
+    return this.offer.active ? 'Desactivar' : 'Activar';
+  }
 
   // Propiedades para edición
   isEditing: boolean = false;
@@ -218,6 +225,23 @@ export class OfferDetailsComponent implements OnInit {
     // Validar campos requeridos
     if (!this.editedOffer.title || !this.editedOffer.offerDescription) {
       this.snackBar.open('Por favor, completa todos los campos requeridos', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    // Validar límites de caracteres
+    if (this.editedOffer.title.length > 100) {
+      this.snackBar.open('El título no puede superar los 100 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.offerDescription.length > 2500) {
+      this.snackBar.open('La descripción no puede superar los 2500 caracteres', 'Cerrar', {
         duration: 3000,
         panelClass: ['snackbar-error']
       });
