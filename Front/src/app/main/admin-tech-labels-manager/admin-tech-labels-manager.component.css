@@ -2,24 +2,26 @@
 .admin-tech-labels-manager {
   padding: 24px;
   width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   background-color: #f5f5f5;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333333;
   min-height: calc(100vh - 64px);
+  overflow-x: hidden;
 }
 
 /* Título principal */
 .admin-tech-labels-manager h2 {
   font-size: 28px;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin: 0 auto 24px auto;
   color: #333333;
   text-align: center;
   padding-bottom: 16px;
   border-bottom: 3px solid #e61b15;
-  width: 70%;
+  width: 90%;
   max-width: 800px;
-  margin: 0 auto 24px auto;
 }
 
 /* Estados de carga y error */
@@ -81,9 +83,8 @@
 
 /* Sección de crear nueva etiqueta */
 .create-label {
-  width: 70%;
+  width: 90%;
   max-width: 700px;
-  margin-top: 10px;
   margin: 0 auto 24px auto;
   background-color: white;
   padding: 24px;
@@ -93,25 +94,17 @@
   gap: 16px;
   align-items: center;
   border-left: 6px solid #e61b15;
+  box-sizing: border-box;
 }
 
 .create-label mat-form-field {
   flex-grow: 1;
   margin: 0;
-  height: 53px; /* Match button height */
+  height: 53px;
   display: flex;
   align-items: center;
 }
 
-.create-label mat-form-field input {
-  height: auto;
-  line-height: normal;
-  display: flex;
-  align-items: center;
-  padding: 0 12px; /* Adjust padding if needed */
-}
-
-/* Botón de crear */
 .create-label button {
   height: 53px;
   padding: 0 24px;
@@ -125,6 +118,7 @@
   transition: all 0.2s ease;
   min-width: 100px;
   box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
+  flex-shrink: 0;
 }
 
 .create-label button:disabled {
@@ -142,108 +136,71 @@
 
 /* Contenedor de tabla */
 .table-container {
-  width: 70%;
+  width: 90%;
   max-width: 800px;
   margin: 0 auto 24px auto;
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.table-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease;
 }
 
 /* Tabla */
 .labels-table {
-  width: 70%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
   background-color: white;
-  table-layout: fixed; /* Forzar ancho fijo de columnas */
 }
 
-/* Forzar altura uniforme en todas las filas */
-.labels-table .mat-mdc-row {
-  height: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
+/* Filas y celdas de tabla */
+::ng-deep .admin-tech-labels-manager .labels-table tr {
+  height: 60px;
 }
 
-.labels-table .mat-mdc-header-row {
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
+::ng-deep .admin-tech-labels-manager .labels-table th,
+::ng-deep .admin-tech-labels-manager .labels-table td {
+  height: 60px;
+  vertical-align: middle;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* Encabezados de tabla */
-.labels-table th.mat-header-cell,
-.labels-table .mat-mdc-header-cell {
+::ng-deep .admin-tech-labels-manager .labels-table th {
   background-color: #f5f5f5;
   color: #333333;
   font-weight: 600;
   font-size: 14px;
-  padding: 16px 12px !important;
   border-bottom: 2px solid #e61b15;
-  height: 48px !important;
-  line-height: 16px !important;
-  vertical-align: middle !important;
-  /* Removed flexbox to undo previous change */
+  height: 48px;
 }
 
-/* Columna de nombre - toma el espacio restante */
+/* Columnas */
 .mat-column-name {
-  width: calc(100% - 130px) !important;
+  width: calc(100% - 130px);
   min-width: 150px;
-  padding-left: 16px !important;
 }
 
-/* Encabezado de la columna de nombre */
-.labels-table th.mat-header-cell.mat-column-name {
-  padding-left: 16px !important;
+.mat-column-actions {
+  width: 130px;
+  text-align: center;
 }
 
-/* Celdas de tabla - altura y padding uniforme */
-.labels-table td.mat-cell,
-.labels-table .mat-mdc-cell {
-  padding: 16px 12px !important;
-  color: #333333;
-  font-size: 14px;
-  vertical-align: middle !important;
-  height: 60px !important;
-  line-height: 28px !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-  box-sizing: border-box !important;
-}
-
-/* Celda de nombre */
-.labels-table td.mat-cell.mat-column-name,
-.labels-table .mat-mdc-cell.mat-column-name {
-  padding: 16px !important;
-  height: 60px !important;
-  vertical-align: middle !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-}
-
-/* Filas de tabla - altura consistente */
-.labels-table .mat-mdc-table .mdc-data-table__row,
-.labels-table tr.mat-row,
-.labels-table .mat-mdc-row {
-  height: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
-}
-
+/* Filas hover */
 .labels-table tr.mat-row:hover {
   background-color: rgba(230, 27, 21, 0.05);
+  transition: background-color 0.2s ease;
 }
 
 .labels-table tr.mat-row:nth-child(even) {
   background-color: #fafafa;
 }
 
-.labels-table tr.mat-row:nth-child(even):hover {
-  background-color: rgba(230, 27, 21, 0.05);
-}
-
-/* Inputs dentro de la tabla para edición */
+/* Inputs dentro de la tabla */
 .labels-table mat-form-field {
   width: 100%;
   margin: 0;
@@ -254,30 +211,27 @@
   color: #333333;
 }
 
+/* Estilo para el nombre de la etiqueta */
+.label-name {
+  font-weight: 500;
+  color: #333333;
+  padding: 8px 12px;
+  background-color: rgba(230, 27, 21, 0.1);
+  border-radius: 20px;
+  border-left: 4px solid #e61b15;
+  display: inline-block;
+  min-width: 120px;
+}
+
 /* Contenedor de botones de acciones */
 .actions-cell {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;
-  width: 100%;
-  flex-direction: row !important;
-  padding-right: 16px !important;
-  /* Added to prevent buttons from wrapping and keep them aligned */
-  white-space: nowrap;
 }
 
-.actions-cell button {
-  /* Ensure buttons do not shrink and keep consistent height */
-  flex-shrink: 0;
-  height: 36px; /* Adjust height if needed */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Botones de acción en la tabla - más compactos */
+/* Botones de acción */
 .actions-cell button {
   width: 32px;
   height: 32px;
@@ -290,11 +244,8 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-width: 32px;
-  flex-shrink: 0;
 }
 
-/* Botones de editar/guardar/cancelar */
 .actions-cell button[color="primary"] {
   background-color: rgba(51, 51, 51, 0.08);
   color: #333333;
@@ -307,7 +258,6 @@
   box-shadow: 0 4px 8px rgba(51, 51, 51, 0.3);
 }
 
-/* Botón de eliminar */
 .actions-cell button[color="warn"] {
   background-color: rgba(230, 27, 21, 0.08);
   color: #e61b15;
@@ -320,12 +270,10 @@
   box-shadow: 0 4px 8px rgba(230, 27, 21, 0.4);
 }
 
-/* Iconos dentro de los botones - más pequeños */
 .actions-cell button mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
-  line-height: 18px;
 }
 
 /* Controles de paginación */
@@ -338,13 +286,12 @@
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-right: auto;
-  margin-left: auto;
-  width: 56%;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
   box-sizing: border-box;
 }
 
-/* Botones de paginación */
 .pagination-controls button {
   height: 40px;
   padding: 0 20px;
@@ -376,7 +323,6 @@
   box-shadow: 0 4px 8px rgba(230, 27, 21, 0.3);
 }
 
-/* Texto de información de página */
 .pagination-controls span {
   font-size: 14px;
   font-weight: 500;
@@ -384,204 +330,38 @@
   padding: 0 8px;
 }
 
-/* Estilo para el nombre de la etiqueta */
-.label-name {
-  font-weight: 500;
-  color: #333333;
-  padding: 8px 12px;
-  background-color: rgba(230, 27, 21, 0.1);
-  border-radius: 20px;
-  border-left: 4px solid #e61b15;
-  display: inline-block;
-  min-width: 120px;
-}
-
-/* Columna de acciones - ancho fijo y compacto */
-.mat-column-actions {
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  text-align: center;
-  padding: 0 8px !important;
-}
-
-/* Encabezado de la columna de acciones */
-.labels-table th.mat-header-cell.mat-column-actions {
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  text-align: center;
-  padding: 16px 12px !important;
-}
-
-/* Celda de acciones - altura y padding consistente */
-.labels-table td.mat-cell.mat-column-actions,
-.labels-table .mat-mdc-cell.mat-column-actions {
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  padding: 16px 8px !important;
-  text-align: center;
-  height: 60px !important;
-  vertical-align: middle !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-}
-
-/* Alineación mejorada de encabezados */
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell.mat-column-name,
-::ng-deep .admin-tech-labels-manager .labels-table th.mat-column-name {
-  text-align: left !important;
-  padding-left: 16px !important;
-  vertical-align: middle !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell.mat-column-actions,
-::ng-deep .admin-tech-labels-manager .labels-table th.mat-column-actions {
-  text-align: center !important;
-  padding: 16px 12px !important;
-  vertical-align: middle !important;
-  width: 130px !important;
-}
-
-/* Sobrescribir completamente los estilos de Material Design para forzar alineación */
-::ng-deep .admin-tech-labels-manager .labels-table {
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mdc-data-table__row {
-  height: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-  display: table-row !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-row,
-::ng-deep .admin-tech-labels-manager .labels-table tr {
-  height: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-  display: table-row !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mdc-data-table__cell,
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-cell,
-::ng-deep .admin-tech-labels-manager .labels-table td {
-  height: 60px !important;
-  max-height: 60px !important;
-  min-height: 60px !important;
-  padding: 12px !important;
-  vertical-align: middle !important;
-  border-bottom: none !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  box-sizing: border-box !important;
-  line-height: 1.2 !important;
-  display: table-cell !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-header-cell,
-::ng-deep .admin-tech-labels-manager .labels-table th {
-  height: 48px !important;
-  max-height: 48px !important;
-  min-height: 48px !important;
-  padding: 16px 12px !important;
-  vertical-align: middle !important;
-  border-bottom: 2px solid #e61b15 !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  display: table-cell !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions {
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  text-align: center !important;
-}
-
-::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions .mdc-data-table__cell,
-::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions .mat-mdc-cell,
-::ng-deep .admin-tech-labels-manager .labels-table .mat-column-actions td {
-  padding: 8px 12px 8px 8px !important;
-  text-align: center !important;
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  display: table-cell !important;
-  vertical-align: middle !important;
-}
-
-/* Forzar override de los estilos MDC específicos con mayor especificidad */
-::ng-deep .admin-tech-labels-manager .mat-mdc-table .mdc-data-table__row {
-  height: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
-  border-bottom: 1px solid #e0e0e0 !important;
-}
-
-::ng-deep .admin-tech-labels-manager .mat-mdc-table .mdc-data-table__cell {
-  height: 60px !important;
-  padding: 12px !important;
-  border: none !important;
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
   .admin-tech-labels-manager {
-    padding: 16px;
+    padding: 16px 12px;
   }
   
   .admin-tech-labels-manager h2 {
     font-size: 24px;
-    margin-bottom: 16px;
+    width: 95%;
   }
   
   .create-label {
-    
-    width: 70%;
-    max-width: none;
-    display: flex;
+    width: 95%;
     flex-direction: column;
     gap: 12px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-   
-  }
-
-  
-  .create-label mat-form-field {
-    width: 100%;
+    padding: 20px 16px;
   }
   
+  .create-label mat-form-field,
   .create-label button {
     width: 100%;
   }
   
-  .table-container {
-    width: 70%;
-    max-width: none;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .labels-table {
-    width: 100%;
-    max-width: none;
+  .table-container,
+  .pagination-controls {
+    width: 95%;
   }
   
   .pagination-controls {
     flex-direction: column;
     gap: 12px;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 95%;
+    padding: 16px;
   }
   
   .pagination-controls button {
@@ -590,60 +370,41 @@
   }
 }
 
-/* Responsive para dispositivos pequeños */
 @media (max-width: 480px) {
-
+  .admin-tech-labels-manager {
+    padding: 12px 8px;
+  }
   
   .admin-tech-labels-manager h2 {
     font-size: 20px;
-    margin-right: 18%;
-    
+    width: 98%;
   }
   
   .create-label {
-    width: 70%;
-    max-width: none;
-    margin-right: 11.5%;
+    width: 98%;
+    padding: 16px 12px;
   }
   
-  .table-container {
-    width: 85%;
-    max-width: none;
-    margin-right: 11.5%;
+  .table-container,
+  .pagination-controls {
+    width: 98%;
   }
   
-  .labels-table {
-    width: 100%;
-  }
-  
-  .mat-column-name {
-    min-width: 120px;
+  .pagination-controls {
+    padding: 12px;
   }
   
   .mat-column-actions {
-    width: 110px !important;
-    max-width: 110px !important;
-    min-width: 110px !important;
+    width: 110px;
   }
   
   .actions-cell {
-    gap: 0px !important;
-    padding-right: 8px !important;
+    gap: 4px;
   }
   
   .actions-cell button {
     width: 28px;
     height: 28px;
-    min-width: 28px;
-    margin: 0 2px !important;
-  }
-  
-  .actions-cell button:first-child {
-    margin-left: 4px !important;
-  }
-  
-  .actions-cell button:last-child {
-    margin-right: 8px !important;
   }
   
   .actions-cell button mat-icon {
@@ -651,86 +412,40 @@
     width: 16px;
     height: 16px;
   }
+}
 
-  
-  .pagination-controls {
-    width: 81.5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 95%;
+@media (max-width: 360px) {
+  .admin-tech-labels-manager {
+    padding: 8px 4px;
   }
-
-}
-
-/* Animaciones suaves */
-.labels-table tr.mat-row {
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #e0e0e0;
-  height: 60px !important;
-}
-
-.mat-elevation-z8 {
-  transition: box-shadow 0.2s ease;
-}
-
-.table-container:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-/* Mejorar la apariencia de los iconos en encabezados */
-.labels-table th.mat-header-cell mat-icon {
-  margin-right: 8px;
-  color: #e61b15;
-  vertical-align: middle;
-}
-
-/* Efectos de hover mejorados */
-.create-label mat-form-field:hover .mat-mdc-form-field-outline {
-  color: #e61b15;
-}
-
-/* Estilo para el botón de crear cuando está activo */
-.create-label button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(230, 27, 21, 0.2);
-}
-
-/* Forzar alineación horizontal de los botones */
-::ng-deep .admin-tech-labels-manager .actions-cell {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 0px !important;
-  justify-content: center !important;
-  align-items: center !important;
-  height: 60px !important;
-  padding-right: 12px !important;
-}
-
-::ng-deep .admin-tech-labels-manager .actions-cell button {
-  display: inline-flex !important;
-  width: 32px !important;
-  height: 32px !important;
-  margin: 0 4px !important;
-  margin-right: 6px !important;
-}
-
-/* Primer botón con margen izquierdo */
-::ng-deep .admin-tech-labels-manager .actions-cell button:first-child {
-  margin-left: 8px !important;
-}
-
-/* Último botón con margen derecho para separarlo del borde */
-::ng-deep .admin-tech-labels-manager .actions-cell button:last-child {
-  margin-right: 12px !important;
-}
-
-/* Alineación de contenido de celdas */
-::ng-deep .admin-tech-labels-manager .labels-table .mat-mdc-cell.mat-column-name,
-::ng-deep .admin-tech-labels-manager .labels-table td.mat-column-name {
-  text-align: left !important;
-  padding-left: 16px !important;
-  vertical-align: middle !important;
+  
+  .admin-tech-labels-manager h2 {
+    font-size: 18px;
+    width: 99%;
+  }
+  
+  .create-label {
+    width: 99%;
+    padding: 12px 8px;
+  }
+  
+  .table-container,
+  .pagination-controls {
+    width: 99%;
+  }
+  
+  .mat-column-actions {
+    width: 100px;
+  }
+  
+  .actions-cell button {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .actions-cell button mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
 }
