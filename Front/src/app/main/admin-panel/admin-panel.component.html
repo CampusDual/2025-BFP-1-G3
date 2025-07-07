@@ -13,13 +13,13 @@
     </div>
 
     <!-- Indicador de carga -->
-    <div *ngIf="isLoading" class="loading-container">
+    <div id="loadMeesage" *ngIf="isLoading">
       <mat-spinner diameter="40"></mat-spinner>
       <p>Cargando empresas...</p>
     </div>
 
     <!-- Mensaje de error -->
-    <div *ngIf="errorMessage" class="error-message">
+    <div id="errorMessage" *ngIf="errorMessage">
       <mat-icon>error</mat-icon>
       <p>{{ errorMessage }}</p>
     </div>
