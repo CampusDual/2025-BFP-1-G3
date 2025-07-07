@@ -31,6 +31,7 @@ export class DisplayOffersComponent implements OnInit {
   searchTerm: string = '';
   filteredOffers: Offer[] = [];
   isSearchActive: boolean = false;
+  isLoading: boolean = false; // Added loading state
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
@@ -50,8 +51,17 @@ export class DisplayOffersComponent implements OnInit {
 
   load(): void {
     console.log('Iniciando carga de ofertas...');
+    this.isLoading = true; // Start loading
+    const loadingTimeout = setTimeout(() => {
+      if (this.isLoading) {
+        this.isLoading = false; // Stop loading after timeout
+      }
+    }, 5000); // 5 seconds timeout
+
     this.loginService.getOffers().subscribe(
       getOffers => {
+        clearTimeout(loadingTimeout);
+        this.isLoading = false;
         console.log('Ofertas recibidas:', getOffers);
         // Filtrar solo ofertas activas (active puede ser boolean o number)
         this.offers = getOffers.filter(offer => (offer.active as any) == 1);
@@ -64,6 +74,8 @@ export class DisplayOffersComponent implements OnInit {
         }
       },
       error => {
+        clearTimeout(loadingTimeout);
+        this.isLoading = false;
         console.error('Error al cargar ofertas:', error);
       }
     );

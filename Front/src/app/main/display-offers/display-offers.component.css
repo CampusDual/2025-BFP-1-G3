@@ -170,6 +170,22 @@ mat-card-subtitle {
   width: max-content;
 }
 
+#loadMeesage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: large;
+  font-weight: bolder;
+  color: #6d6d6d;
+}
+
+#errorMessage {
+  text-align: center;
+  font-size: large;
+  font-weight: bolder;
+  color: #6d6d6d;
+}
+
 /* === MENSAJE SIN OFERTAS === */
 .no-offers {
   text-align: center;

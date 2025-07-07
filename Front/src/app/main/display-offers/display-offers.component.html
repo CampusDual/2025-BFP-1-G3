@@ -8,8 +8,13 @@
     <span id="iconSearch"><mat-icon>search</mat-icon></span>
   </div>
 
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando ofertas...</p>
+  </div>
 
-  <div class="cards-grid" *ngIf="filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
+  <div class="cards-grid" *ngIf="!isLoading && filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
     <mat-card class="offer-card" *ngFor="let offer of filteredOffers">
       <mat-card-header>
         <div class="header-content">
@@ -55,14 +60,14 @@
 
 <!-- Mensaje cuando el filtro no encuentra ofertas -->
 <ng-template #noOffersSearch>
-  <div class="no-offers">
+  <div class="no-offers" *ngIf="!isLoading">
     <mat-icon>info</mat-icon>
     <p>No se han encontrado resultados que cumplan los criterios de búsqueda</p>
   </div>
 </ng-template>
 
 <ng-template #noOffersOrSearch>
-  <ng-container *ngIf="offers.length === 0; else noOffersSearch">
+  <ng-container *ngIf="!isLoading && offers.length === 0; else noOffersSearch">
     <ng-container *ngTemplateOutlet="noOffers"></ng-container>
   </ng-container>
 </ng-template>

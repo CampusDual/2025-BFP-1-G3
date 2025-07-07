@@ -22,6 +22,7 @@ export class CompanyPanelComponent implements OnInit {
   headers: HttpHeaders = new HttpHeaders({
     'Authorization': 'Bearer ' + this.token
   });
+  isLoading: boolean = false; // Added loading state
 
   constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
@@ -48,10 +49,19 @@ export class CompanyPanelComponent implements OnInit {
 
 
   loadOffersByCompany(): void {
+    this.isLoading = true; // Start loading
+    const loadingTimeout = setTimeout(() => {
+      if (this.isLoading) {
+        this.isLoading = false; // Stop loading after timeout
+      }
+    }, 5000); // 5 seconds timeout
+
     this.loginService.loadUserProfile().subscribe(response => {
       const companyId = response.companyId;
       console.log('ID de la empresa:', companyId);
       this.loginService.getOffersByCompanyId(companyId).subscribe(offers => {
+        clearTimeout(loadingTimeout);
+        this.isLoading = false;
         this.offers = offers;
         // Filtrar ofertas activas e inactivas
         this.offersActive = offers.filter(offer => (offer.active as any) == 1);
@@ -65,6 +75,8 @@ export class CompanyPanelComponent implements OnInit {
         }
       },
         error => {
+          clearTimeout(loadingTimeout);
+          this.isLoading = false;
           console.error('Error al cargar ofertas:', error);
         });
     });
