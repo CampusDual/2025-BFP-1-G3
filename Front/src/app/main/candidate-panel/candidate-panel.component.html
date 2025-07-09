@@ -1,56 +1,138 @@
-<!-- Fila superior con mensaje de bienvenida y botón -->
-<div class="main-content">
-  <div class="welcome-message">
-    <h3>Bienvenido, <span id="candidateName">{{username}}<mat-icon class="person_emoji">emoji_people</mat-icon></span>
-    </h3>
-  </div>
-</div>
-
-
-<!-- Formulario para editar datos de perfil -->
-<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-  <div class="profile-container">
-    <h2>Editar perfil</h2>
-    <mat-form-field appearance="fill">
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Primer apellido</mat-label>
-      <input matInput formControlName="surname1" />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Segundo apellido</mat-label>
-      <input matInput formControlName="surname2" />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Teléfono</mat-label>
-      <input matInput formControlName="phone" />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Correo</mat-label>
-      <input matInput formControlName="email" />
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>LinkedIn</mat-label>
-      <input matInput formControlName="linkedin" />
-    </mat-form-field>
-
-    <div class="error-message" *ngIf="signUpError">
-      <mat-icon id="errorIcon">error</mat-icon>
-      {{ signUpError }}
-    </div>
-    
-    <button id="saveBtn" mat-raised-button type="submit" [disabled]="submitting">Guardar cambios</button>
+<div class="container">
+  <div class="header">
+    <h2>Mi Perfil</h2>
+    <p class="username">Bienvenido, {{ username }}</p>
   </div>
 
-</form>
+  <mat-tab-group (selectedTabChange)="onTabChanged($event)" [selectedIndex]="selectedTabIndex">
+    <!-- Pestaña de Datos del Usuario -->
+    <mat-tab label="Mis Datos">
+      <div class="tab-content">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="name" required>
+              <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
+                El nombre es requerido
+              </mat-error>
+            </mat-form-field>
 
-<div class="success-message" *ngIf="successMessage">
-  {{ successMessage }}
+            <mat-form-field appearance="outline">
+              <mat-label>Primer Apellido</mat-label>
+              <input matInput formControlName="surname1" required>
+              <mat-error *ngIf="profileForm.get('surname1')?.hasError('required')">
+                El primer apellido es requerido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Segundo Apellido</mat-label>
+              <input matInput formControlName="surname2" required>
+              <mat-error *ngIf="profileForm.get('surname2')?.hasError('required')">
+                El segundo apellido es requerido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="phone" required>
+              <mat-error *ngIf="profileForm.get('phone')?.hasError('required')">
+                El teléfono es requerido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email" required>
+              <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
+                El email es requerido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>LinkedIn (opcional)</mat-label>
+              <input matInput formControlName="linkedin">
+            </mat-form-field>
+          </div>
+
+          <div class="error-message" *ngIf="signUpError">
+            {{ signUpError }}
+          </div>
+
+          <div class="button-container">
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit" 
+              [disabled]="submitting || profileForm.invalid">
+              <mat-icon *ngIf="submitting">hourglass_empty</mat-icon>
+              {{ submitting ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <!-- Pestaña de Mis Aplicaciones -->
+    <mat-tab label="Mis Aplicaciones">
+      <div class="tab-content">
+        <div class="applications-header">
+          <h3>Ofertas en las que estás inscrito</h3>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="loadMyApplications()"
+            [disabled]="loadingApplications">
+            <mat-icon>refresh</mat-icon>
+            Actualizar
+          </button>
+        </div>
+
+        <div *ngIf="loadingApplications" class="loading-message">
+          <mat-spinner diameter="30"></mat-spinner>
+          <p>Cargando aplicaciones...</p>
+        </div>
+
+        <div *ngIf="applicationsError" class="error-message">
+          {{ applicationsError }}
+        </div>
+
+        <div *ngIf="!loadingApplications && myApplications.length === 0 && !applicationsError" class="no-applications">
+          <mat-icon>info</mat-icon>
+          <p>No tienes aplicaciones a ofertas todavía.</p>
+        </div>
+
+        <div *ngIf="!loadingApplications && myApplications.length > 0" class="applications-list">
+          <mat-card *ngFor="let application of myApplications" class="application-card">
+            <mat-card-header>
+              <mat-card-title>{{ application.offer.title || 'Sin título' }}</mat-card-title>
+              <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa' }}</mat-card-subtitle>
+              <div class="state-badge" [ngClass]="getStateClass(application.state)">
+                {{ getStateText(application.state) }}
+              </div>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <p class="offer-description">{{ application.offer.description || application.offer.offerDescription || 'Sin descripción' }}</p>
+              <div class="offer-details">
+                <div class="detail-item" *ngIf="application.offer.location">
+                  <mat-icon>location_on</mat-icon>
+                  <span>{{ application.offer.location }}</span>
+                </div>
+                <div class="detail-item" *ngIf="application.offer.salary">
+                  <mat-icon>attach_money</mat-icon>
+                  <span>{{ application.offer.salary | currency:'EUR':'symbol':'1.0-0' }}</span>
+                </div>
+                <div class="detail-item" *ngIf="application.offer.startDate && application.offer.endDate">
+                  <mat-icon>date_range</mat-icon>
+                  <span>{{ application.offer.startDate | date:'dd/MM/yyyy' }} - {{ application.offer.endDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>

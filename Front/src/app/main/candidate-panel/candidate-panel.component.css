@@ -1,68 +1,169 @@
-* {
-  color: #333333;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.main-content {
+.header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.header h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.username {
+  color: #666;
+  font-size: 1.1em;
+}
+
+.tab-content {
+  padding: 20px 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.button-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1%;
-  padding-top: 0;
-}
-
-#candidateName {
-  color: #e61b15;
-  font-weight: bold;
-}
-
-.person_emoji {
-  color: #333333;
-  font-size: 2rem; 
-}
-
-.profile-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 35rem;
-  max-height: 100vh;
-  margin: 2% auto;
-  padding: 1%;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.profile-container h2 {
-  border-bottom: 2px solid #fc3d37;
-}
-
-mat-form-field {
-  width: 100%;
-  margin-bottom: 0;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .error-message {
-  display: flex;
-  justify-content: center;
+  color: #f44336;
   text-align: center;
-  margin-bottom: 1rem;
-  color: #ff6b67;
-  font-weight: bold;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
 }
 
-#errorIcon {
-  margin-right: 0.5rem;
-}
-
-#saveBtn {
+/* Estilos para las aplicaciones */
+.applications-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 1%;
-  background-color: #e61b15;
-  color: #f6f6f6;
+  margin-bottom: 20px;
 }
 
-#saveBtn:hover {
-  background-color: #c51510;
+.applications-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.loading-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+}
+
+.loading-message p {
+  margin-top: 10px;
+  color: #666;
+}
+
+.no-applications {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-applications mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 10px;
+}
+
+.applications-list {
+  display: grid;
+  gap: 20px;
+}
+
+.application-card {
+  margin-bottom: 0;
+}
+
+.application-card mat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.state-badge {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.state-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.state-accepted {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.state-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.state-unknown {
+  background-color: #e2e3e5;
+  color: #495057;
+}
+
+.offer-description {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.offer-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #666;
+}
+
+.detail-item mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .applications-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .offer-details {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

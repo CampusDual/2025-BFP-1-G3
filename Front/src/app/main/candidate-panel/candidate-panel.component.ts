@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
+import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
 
 @Component({
   selector: 'app-candidate-panel',
@@ -19,7 +20,12 @@ export class CandidatePanelComponent implements OnInit {
   submitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
-  // candidateId ya no es necesario - se obtiene del token en el backend
+  
+  // Nuevas propiedades para las pestañas
+  selectedTabIndex: number = 0;
+  myApplications: ApplicationSummaryDTO[] = [];
+  loadingApplications: boolean = false;
+  applicationsError: string = '';
 
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -41,11 +47,8 @@ export class CandidatePanelComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    // El endpoint /candidate/get ahora es seguro y obtiene el candidateId del token
-    // No necesitamos enviar el ID en el cuerpo
     this.http.post('http://localhost:30030/candidate/get', {}, {headers: headers}).subscribe(
-      (response: any) =>
-      {
+      (response: any) => {
         console.log('Datos del candidato obtenidos:', response);
         if (response) {
           this.profileForm.patchValue({
@@ -65,9 +68,55 @@ export class CandidatePanelComponent implements OnInit {
     )
   }
 
+  // Nuevo método para cargar aplicaciones
+  loadMyApplications(): void {
+    this.loadingApplications = true;
+    this.applicationsError = '';
+    
+    this.loginService.getCandidateApplications().subscribe({
+      next: (applications: ApplicationSummaryDTO[]) => {
+        console.log('Mis aplicaciones:', applications);
+        this.myApplications = applications;
+        this.loadingApplications = false;
+      },
+      error: (error) => {
+        console.error('Error cargando aplicaciones:', error);
+        this.applicationsError = 'Error al cargar las aplicaciones';
+        this.loadingApplications = false;
+      }
+    });
+  }
+
+  // Método para obtener el texto del estado
+  getStateText(state: number): string {
+    switch (state) {
+      case 0: return 'Pendiente';
+      case 1: return 'Aceptada';
+      case 2: return 'Rechazada';
+      default: return 'Desconocido';
+    }
+  }
+
+  // Método para obtener la clase CSS del estado
+  getStateClass(state: number): string {
+    switch (state) {
+      case 0: return 'state-pending';
+      case 1: return 'state-accepted';
+      case 2: return 'state-rejected';
+      default: return 'state-unknown';
+    }
+  }
+
+  // Método para manejar el cambio de pestaña
+  onTabChanged(event: any): void {
+    this.selectedTabIndex = event.index;
+    // Cargar aplicaciones cuando se selecciona la pestaña de aplicaciones
+    if (event.index === 1 && this.myApplications.length === 0) {
+      this.loadMyApplications();
+    }
+  }
+
   ngOnInit(): void {
-    // Directamente cargar los datos del candidato autenticado
-    // El endpoint /candidate/get es ahora seguro y obtiene los datos del token
     this.retrieveCandidateData();
   }
 
@@ -77,7 +126,6 @@ export class CandidatePanelComponent implements OnInit {
       return;
     }
     const registerData = {
-      // No enviamos ID - el backend lo obtiene del token de forma segura
       name: String(this.profileForm.value.name).trim(),
       surname1: String(this.profileForm.value.surname1).trim(),
       surname2: String(this.profileForm.value.surname2).trim(),
@@ -93,7 +141,6 @@ export class CandidatePanelComponent implements OnInit {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    // Usar el endpoint seguro /candidate/profile para PUT
     this.http.put('http://localhost:30030/candidate/profile', registerData, { headers })
       .subscribe({
         next: (response) => {
@@ -114,5 +161,4 @@ export class CandidatePanelComponent implements OnInit {
         }
       });
   }
-
 }
