@@ -112,10 +112,14 @@
             <div class="offer-edit-form" *ngIf="isEditing && editedOffer">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Título de la oferta</mat-label>
-                <input matInput [(ngModel)]="editedOffer.title" placeholder="Ingresa el título de la oferta" required maxlength="100">
-                <mat-hint align="end" [class.warn-limit]="(editedOffer.title.length || 0) >= 95">{{editedOffer.title.length || 0}}/100</mat-hint>
+                <input matInput [(ngModel)]="editedOffer.title" placeholder="Ingresa el título de la oferta" required
+                  maxlength="100">
+                <mat-hint align="end"
+                  [class.warn-limit]="(editedOffer.title.length || 0) >= 95">{{editedOffer.title.length ||
+                  0}}/100</mat-hint>
                 <mat-error *ngIf="!editedOffer.title">El título es requerido</mat-error>
-                <mat-error *ngIf="editedOffer.title && editedOffer.title.length > 100">El título no puede superar los 100 caracteres</mat-error>
+                <mat-error *ngIf="editedOffer.title && editedOffer.title.length > 100">El título no puede superar los
+                  100 caracteres</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
@@ -123,9 +127,12 @@
                 <textarea matInput [(ngModel)]="editedOffer.offerDescription"
                   placeholder="Describe los detalles de la oferta" rows="8" required maxlength="2500">
                 </textarea>
-                <mat-hint align="end" [class.warn-limit]="(editedOffer.offerDescription.length || 0) >= 2400">{{editedOffer.offerDescription.length || 0}}/2500</mat-hint>
+                <mat-hint align="end"
+                  [class.warn-limit]="(editedOffer.offerDescription.length || 0) >= 2400">{{editedOffer.offerDescription.length
+                  || 0}}/2500</mat-hint>
                 <mat-error *ngIf="!editedOffer.offerDescription">La descripción es requerida</mat-error>
-                <mat-error *ngIf="editedOffer.offerDescription && editedOffer.offerDescription.length > 2500">La descripción no puede superar los 2500 caracteres</mat-error>
+                <mat-error *ngIf="editedOffer.offerDescription && editedOffer.offerDescription.length > 2500">La
+                  descripción no puede superar los 2500 caracteres</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="full-width">
@@ -173,6 +180,21 @@
                 <mat-hint align="end" [class.warn-limit]="(editedOffer.benefits.length || 0) >= 4800">{{editedOffer.benefits.length || 0}}/5000</mat-hint>
                 <mat-error *ngIf="editedOffer.benefits && editedOffer.benefits.length > 5000">Los beneficios no pueden superar los 5000 caracteres</mat-error>
               </mat-form-field>
+            <div class="labels-actions" *ngIf="canEdit()">
+              <button *ngIf="!isEditingLabels" mat-button color="primary" (click)="startEditingLabels()">
+                <mat-icon>edit</mat-icon>
+                Editar etiquetas
+              </button>
+              <div *ngIf="isEditingLabels" class="edit-actions">
+                <button mat-button (click)="cancelEditingLabels()">
+                  <mat-icon>cancel</mat-icon>
+                  Cancelar
+                </button>
+                <button mat-raised-button color="primary" (click)="saveLabels()">
+                  <mat-icon>save</mat-icon>
+                  Guardar
+                </button>
+              </div>
             </div>
 
           <!-- Sección de Etiquetas Técnicas -->
@@ -230,7 +252,7 @@
             <!-- Name Column -->
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre Completo </th>
-              <td mat-cell *matCellDef="let candidateApp">
+              <td mat-cell *matCellDef="let candidateApp" (click)="viewCandidateProfile(candidateApp)" id="name">
                 {{ getCandidateFullName(candidateApp.candidate) }}
               </td>
             </ng-container>
@@ -273,23 +295,11 @@
               </td>
             </ng-container>
 
-            <!-- Actions Column - Comentado temporalmente -->
-            <!--
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Acciones </th>
-              <td mat-cell *matCellDef="let candidateApp" class="actions-cell">
-                <button mat-icon-button color="primary" matTooltip="Ver perfil completo" (click)="viewCandidateProfile(candidateApp)">
-                  <mat-icon>person</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" matTooltip="Descargar CV" (click)="downloadCV(candidateApp)" *ngIf="candidateApp.candidate?.cvUrl">
-                  <mat-icon>download</mat-icon>
-                </button>
-                <button mat-icon-button color="primary" matTooltip="Enviar email" (click)="openEmailClient(candidateApp.candidate?.email)">
-                  <mat-icon>mail</mat-icon>
-                </button>
-              </td>
+            <ng-container matColumnDef="state">
+              <th mat-header-cell *matHeaderCellDef> Estado </th>
+              <td mat-cell *matCellDef="let candidateApp" [ngClass]="getStateClass(candidateApp.state)">
+                <p>{{getState(candidateApp.state)}}</p>
             </ng-container>
-            -->
 
             <tr mat-header-row *matHeaderRowDef="candidatesDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: candidatesDisplayedColumns;"></tr>

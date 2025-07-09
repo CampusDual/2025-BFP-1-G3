@@ -13,6 +13,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { noAuthGuard } from '../guards/no-auth.guard';
 
 import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
+import { ApproveCandidatePanelComponent } from './approve-candidate-panel/approve-candidate-panel.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
   { path: 'admin/etiquetas', component: AdminTechLabelsManagerComponent, canActivate: [AuthGuard] },
   { path: 'offer-details/:id', component: OfferDetailsComponent },
+  { path: 'detallesCandidato/:id', component: ApproveCandidatePanelComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'ofertas' }
 ];
 

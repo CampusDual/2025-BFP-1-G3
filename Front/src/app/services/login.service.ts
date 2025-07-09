@@ -8,6 +8,7 @@ import { Candidate } from "../model/candidate";
 import { Application } from "../model/application";
 import { TechLabel } from "../model/tech-label";
 import { Router } from "@angular/router";
+import { state } from "@angular/animations";
 import { ApplicationSummaryDTO } from '../model/application-summary';
 
 @Injectable({
@@ -24,7 +25,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.post<ApplicationSummaryDTO[]>(`${this.urlEndPoint}/applications/getAplicationsByCandidate`, {}, { headers }).pipe(
       map(response => {
         console.log('Aplicaciones del candidato:', response);
@@ -34,6 +35,44 @@ export class LoginService {
         console.error('Error obteniendo aplicaciones del candidato:', error);
         console.error('Status:', error.status);
         console.error('URL:', error.url);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Nuevo método para obtener una aplicación por su ID
+  getApplicationById(applicationId: number): Observable<ApplicationSummaryDTO> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<ApplicationSummaryDTO>(`${this.urlEndPoint}/applications/${applicationId}`, { headers }).pipe(
+      map(response => {
+        console.log('Aplicación obtenida por ID:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo aplicación por ID:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Nuevo método para obtener aplicaciones de un candidato por id
+  getApplicationsByCandidate(candidateId: number): Observable<ApplicationSummaryDTO[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<ApplicationSummaryDTO[]>(`${this.urlEndPoint}/applications/getAplicationsByCandidate`, { id: candidateId }, { headers }).pipe(
+      map(response => {
+        console.log('Aplicaciones del candidato por id:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo aplicaciones del candidato por id:', error);
         return throwError(() => error);
       })
     );
@@ -65,7 +104,7 @@ export class LoginService {
 
   private urlEndPoint: string = 'http://localhost:30030'
 
-  constructor(private http: HttpClient, private router: Router) { 
+  constructor(private http: HttpClient, private router: Router) {
     // Inicializar el rol desde el token si existe
     this.role = this.getRoleFromToken();
   }
@@ -78,7 +117,7 @@ export class LoginService {
     try {
       // Decodificar el payload del JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
-      
+
       // Extraer el rol del campo 'role' del payload
       return payload.role || '';
     } catch (error) {
@@ -172,7 +211,7 @@ export class LoginService {
           sessionStorage.setItem('token', response.token);
           sessionStorage.setItem('empresa', response.empresa);
           // Ya no guardamos el rol en sessionStorage, se obtiene del token
-          
+
           this.role = response.roles;
           
           // 🚀 OPTIMIZACIÓN: Precargar caché de aplicaciones para candidatos
@@ -242,7 +281,7 @@ export class LoginService {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    
+
     return this.http.put<any>(`${this.urlEndPoint}/offers/update`, offer, { headers }).pipe(
       map(response => {
         console.log('Oferta actualizada:', response);
@@ -304,7 +343,7 @@ export class LoginService {
   isLoggedAsCompany(): boolean {
     const token = sessionStorage.getItem('token');
     if (!token) return false;
-    
+
     const role = this.getRole();
     return role === 'role_company';
   }
@@ -312,7 +351,7 @@ export class LoginService {
   isLoggedAsCandidate(): boolean {
     const token = sessionStorage.getItem('token');
     if (!token) return false;
-    
+
     const role = this.getRole();
     return role === 'role_candidate';
   }
@@ -320,7 +359,7 @@ export class LoginService {
   isLoggedAsAdmin(): boolean {
     const token = sessionStorage.getItem('token');
     if (!token) return false;
-    
+
     const role = this.getRole();
     return role === 'role_admin';
   }
@@ -382,7 +421,7 @@ export class LoginService {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const exp = payload.exp;
       const now = Math.floor(Date.now() / 1000);
-      
+
       // Verificar expiración con un margen de 10 segundos
       return exp > (now + 10);
     } catch (error) {
@@ -397,7 +436,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.get<Application[]>(`${this.urlEndPoint}/offers/${offerId}/candidates`, { headers }).pipe(
       map(response => {
         console.log('Candidatos obtenidos para la oferta:', response);
@@ -411,7 +450,7 @@ export class LoginService {
   }
 
   // === MÉTODOS PARA TECH LABELS ===
-  
+
   /**
    * Obtener todas las etiquetas técnicas disponibles
    */
@@ -420,7 +459,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.get<TechLabel[]>(`${this.urlEndPoint}/tech-labels/getAll`, { headers }).pipe(
       map(response => {
         console.log('Etiquetas técnicas obtenidas:', response);
@@ -504,7 +543,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.get<TechLabel[]>(`${this.urlEndPoint}/offers/${offerId}/labels`, { headers }).pipe(
       map(response => {
         console.log('Etiquetas de la oferta obtenidas:', response);
@@ -525,7 +564,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.post(`${this.urlEndPoint}/offers/${offerId}/labels/${labelId}`, {}, { headers, responseType: 'text' }).pipe(
       map(response => {
         console.log('Etiqueta agregada a la oferta:', response);
@@ -546,7 +585,7 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+
     return this.http.delete(`${this.urlEndPoint}/offers/${offerId}/labels/${labelId}`, { headers, responseType: 'text' }).pipe(
       map(response => {
         console.log('Etiqueta removida de la oferta:', response);
@@ -567,9 +606,9 @@ export class LoginService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
-    return this.http.put(`${this.urlEndPoint}/offers/${offerId}/labels`, 
-      { labelIds: labelIds }, 
+
+    return this.http.put(`${this.urlEndPoint}/offers/${offerId}/labels`,
+      { labelIds: labelIds },
       { headers, responseType: 'text' }
     ).pipe(
       map(response => {
@@ -605,6 +644,32 @@ export class LoginService {
     };
     
     return this.http.post(`${this.urlEndPoint}/applications/add`, applicationData, { headers });
+  }
+
+  // Método para actualizar el estado de una aplicación
+  updateApplicationState(applicationId: number, newState: number): Observable<String> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    const requestBody = {
+      id: applicationId,
+      state: newState
+    };
+
+    return this.http.put(`${this.urlEndPoint}/applications/toggleActive/${applicationId}`, requestBody,
+      { headers, responseType: 'text' }).pipe(
+        map(response => {
+          console.log("Estado de la inscripción del candidato:", response);
+          return response;
+        }),
+        catchError(error => {
+          console.error('Error al cambiar el estado de la inscripción del candidato:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   // Método para obtener aplicaciones del candidato con caché

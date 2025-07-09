@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Offer } from 'src/app/model/offer';
 import { Candidate } from 'src/app/model/candidate';
-import { Application } from 'src/app/model/application';
+import { Application, ApplicationStateHelper } from 'src/app/model/application';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
 import { TechLabel } from 'src/app/model/tech-label';
 import { LoginService } from 'src/app/services/login.service';
@@ -28,6 +28,7 @@ export class OfferDetailsComponent implements OnInit {
   error: string = '';
   offerId: number = 0;
   token: string = sessionStorage.getItem('token') ?? '';
+  applicationId: number = 0;
   
   // Inicializar headers de forma dinámica
   get headers(): HttpHeaders {
@@ -69,8 +70,10 @@ export class OfferDetailsComponent implements OnInit {
     { value: 'onsite', label: 'Presencial' }
   ];
 
+  //
+
   // Propiedades para la tabla de candidatos
-  candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin']; // 'actions' comentado temporalmente
+  candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin', 'state'];
   candidatesDataSource!: MatTableDataSource<Application>;
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -315,10 +318,10 @@ export class OfferDetailsComponent implements OnInit {
     this.location.back();
   }
 
+  // Método para navegar a la página de perfil del candidato
   viewCandidateProfile(application: Application): void {
-    // Implementar navegación al perfil del candidato
     if (application.candidate) {
-      this.router.navigate(['/main/candidate-profile', application.candidate.id]);
+      this.router.navigate(['/main/detallesCandidato', application.candidate.id], { state: { applicationId: application.id, applicationState: application.state } });
     }
   }
 
@@ -850,4 +853,39 @@ export class OfferDetailsComponent implements OnInit {
       }
     });
   }
+
+  // Método para cargar el estado en el que se encuentra la inscripción del candidato 
+  getState(state: number): string {
+    return ApplicationStateHelper.getStateDescription(state);
+  }
+
+  getStateClass(state: number): string {
+    switch (state) {
+      case 0: return 'state-pending';
+      case 1: return 'state-accepted';
+      case 2: return 'state-rejected';
+      default: return 'state-unknown';
+    }
+  }
+
+  // Método para actualizar estado
+  updateState(application: Application, newState: number): void {
+    this.loginService.updateApplicationState(application.id, newState).subscribe({
+      next: (response) => {
+        application.state = newState; // Actualizar estado localmente para reflejar el cambio en la UI
+        this.getState(newState);
+        if (this.candidatesDataSource) {
+          this.candidatesDataSource._updateChangeSubscription(); // Forzar actualización de la tabla
+        }
+      },
+      error: (error) => {
+        console.error('Error actualizando estados:', error);
+        this.snackBar.open('Error al actualizar los estados', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+      }
+    });
+  }
 }
+
