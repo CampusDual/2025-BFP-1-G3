@@ -85,4 +85,18 @@ public class ApplicationController {
     public long deleteApplication(@RequestBody ApplicationDTO applicationDTO) {
         return applicationService.deleteApplication(applicationDTO);
     }
+
+    @PutMapping("/toggleActive/{id}")
+    public ResponseEntity<String> toggleActive(@PathVariable Long id, @RequestBody ApplicationDTO applicationDTO) {
+        int updated = applicationService.toggleActiveStatus(id, applicationDTO);
+        if (updated == 1) {
+            return ResponseEntity.ok("Estado cambiado con éxito, aceptado.");
+        } else  if (updated == 2) {
+            return ResponseEntity.ok("Estado cambiado con éxito, rechazado.");
+        } else if (updated == 0) {
+            return ResponseEntity.ok("Estado cambiado con éxito, pendiente.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

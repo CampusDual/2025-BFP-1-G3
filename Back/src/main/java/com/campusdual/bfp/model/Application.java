@@ -18,13 +18,17 @@ public class Application {
     @JoinColumn(name = "id_offer", nullable = false, foreignKey = @ForeignKey(name = "applications_id_offer_fkey"))
     private Offer offer;
 
+    @Column
+    private int state;
+
     public Application() {
     }
 
-    public Application(Long id, Candidate candidate, Offer offer) {
+    public Application(Long id, Candidate candidate, Offer offer, int state) {
         this.id = id;
         this.candidate = candidate;
         this.offer = offer;
+        this.state = state;
     }
 
     public Long getId() {
@@ -49,5 +53,13 @@ public class Application {
 
     public void setOffer(Offer offer) {
         this.offer = offer;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

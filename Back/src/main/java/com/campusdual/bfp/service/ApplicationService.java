@@ -3,6 +3,7 @@ package com.campusdual.bfp.service;
 import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.model.Application;
 import com.campusdual.bfp.model.Candidate;
+import com.campusdual.bfp.model.Offer;
 import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.dao.ApplicationDao;
 import com.campusdual.bfp.model.dao.CandidateDao;
@@ -16,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("ApplicationService")
@@ -72,7 +75,7 @@ public class ApplicationService implements IApplicationService {
 
     /**
      * MÉTODO SEGURO AGREGADO: insertSecureApplication()
-     * 
+     * <p>
      * DIFERENCIA CON insertApplication():
      * - insertApplication() confiaba en el candidateId enviado desde el frontend (VULNERABLE)
      * - insertSecureApplication() obtiene el candidateId del usuario autenticado (SEGURO)
@@ -115,7 +118,7 @@ public class ApplicationService implements IApplicationService {
             // 7. Guardar en BD y devolver ID
             applicationDao.saveAndFlush(application);
             return application.getId();
-            
+
         } catch (Exception e) {
             // 8. Manejo de errores con mensaje descriptivo
             throw new RuntimeException("Error al procesar la aplicación: " + e.getMessage());
@@ -133,6 +136,18 @@ public class ApplicationService implements IApplicationService {
         Application application = ApplicationMapper.INSTANCE.toEntity(applicationDTO);
         applicationDao.delete(application);
         return id;
+    }
+
+    public int toggleActiveStatus(Long id, ApplicationDTO applicationDTO) {
+        Optional<Application> optionalApplication = applicationDao.findById(id);
+        int state = applicationDTO.getState();
+        if (optionalApplication.isPresent()) {
+            Application application = optionalApplication.get();
+            application.setState(state);
+            applicationDao.saveAndFlush(application);
+            return application.getState();
+        }
+        return -1;
     }
 
     @Override

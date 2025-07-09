@@ -12,4 +12,5 @@ public interface IApplicationService {
     Long updateApplication(ApplicationDTO applicationDTO);
     Long deleteApplication(ApplicationDTO applicationDTO);
     List<ApplicationDTO> getCandidatesByOfferId(int offerId);
+    int toggleActiveStatus(Long id, ApplicationDTO applicationDTO);
 }
