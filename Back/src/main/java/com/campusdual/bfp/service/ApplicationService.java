@@ -10,15 +10,23 @@ import com.campusdual.bfp.model.dao.CandidateDao;
 import com.campusdual.bfp.model.dao.OfferDao;
 import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
+import com.campusdual.bfp.model.dto.ApplicationSummaryDTO;
 import com.campusdual.bfp.model.dto.CandidateDTO;
+import com.campusdual.bfp.model.dto.OfferDTO;
 import com.campusdual.bfp.model.dto.dtomapper.ApplicationMapper;
 import com.campusdual.bfp.model.dto.dtomapper.CandidateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -168,6 +176,41 @@ public class ApplicationService implements IApplicationService {
             applicationDTO.setCandidate(candidateDTO);
 
             return applicationDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ApplicationSummaryDTO> queryAplicationsByCandidate(String login) {
+        // 1. Buscar el usuario por login
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            return new ArrayList<>();
+        }
+
+        // 2. Obtener el candidato del usuario
+        Candidate candidate = user.getCandidate();
+        if (candidate == null) {
+            // Fallback: buscar por email si no hay relación directa
+            candidate = candidateDao.findByEmail(login);
+            if (candidate == null) {
+                return new ArrayList<>();
+            }
+        }
+
+        // 3. Buscar aplicaciones por candidateId
+        List<Application> applications = applicationDao.findByCandidateId(candidate.getId());
+
+        // 4. Convertir a ApplicationSummaryDTO
+        return applications.stream().map(application -> {
+            ApplicationSummaryDTO dto = new ApplicationSummaryDTO();
+            dto.setId(application.getId());
+            dto.setState(application.getState());
+
+            Offer offer = application.getOffer();
+            OfferDTO offerDTO = OfferMapper.INSTANCE.toDTO(offer);
+            dto.setOffer(offerDTO);
+
+            return dto;
         }).collect(Collectors.toList());
     }
 }
