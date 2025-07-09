@@ -5,6 +5,7 @@ export interface Candidate {
   surname2?: string;
   phone?: string;
   email: string;
+  linkedin?: string;
   // Campos adicionales que podrían ser útiles
   cvUrl?: string;
   applicationDate?: Date;

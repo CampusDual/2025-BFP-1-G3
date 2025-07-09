@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
+import { UserData } from 'src/app/model/userData';
 
 @Component({
   selector: 'app-candidate-panel',
@@ -20,7 +21,8 @@ export class CandidatePanelComponent implements OnInit {
   submitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
-  
+  userData: UserData | null = null;
+
   // Nuevas propiedades para las pestañas
   selectedTabIndex: number = 0;
   myApplications: ApplicationSummaryDTO[] = [];
@@ -46,8 +48,7 @@ export class CandidatePanelComponent implements OnInit {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
-
-    this.http.post('http://localhost:30030/candidate/get', {}, {headers: headers}).subscribe(
+    this.http.post('http://localhost:30030/candidate/get', {}, { headers: headers }).subscribe(
       (response: any) => {
         console.log('Datos del candidato obtenidos:', response);
         if (response) {
@@ -59,6 +60,18 @@ export class CandidatePanelComponent implements OnInit {
             email: response.email,
             linkedin: response.linkedin
           });
+          this.userData = {
+            candidate: {
+              id: response.id,
+              name: response.name,
+              surname1: response.surname1,
+              surname2: response.surname2,
+              phone: response.phone,
+              email: response.email,
+              linkedin: response.linkedin
+
+            }
+          };
         }
       },
       (error) => {
@@ -72,7 +85,7 @@ export class CandidatePanelComponent implements OnInit {
   loadMyApplications(): void {
     this.loadingApplications = true;
     this.applicationsError = '';
-    
+
     this.loginService.getCandidateApplications().subscribe({
       next: (applications: ApplicationSummaryDTO[]) => {
         console.log('Mis aplicaciones:', applications);
@@ -131,8 +144,8 @@ export class CandidatePanelComponent implements OnInit {
       surname2: String(this.profileForm.value.surname2).trim(),
       phone: String(this.profileForm.value.phone).trim(),
       email: String(this.profileForm.value.email).trim(),
-      linkedin: (String(this.profileForm.value.linkedin).trim() !== '') ? 
-      String(this.profileForm.value.linkedin).trim():null
+      linkedin: (String(this.profileForm.value.linkedin).trim() !== '') ?
+        String(this.profileForm.value.linkedin).trim() : null
     };
 
     this.submitting = true;

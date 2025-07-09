@@ -1,7 +1,24 @@
 <div class="container">
-  <div class="header">
-    <h2>Mi Perfil</h2>
-    <p class="username">Bienvenido, {{ username }}</p>
+  <div class="candidate-profile-container">
+    <div class="candidate-header-card">
+      <div class="avatar-section">
+        <div class="avatar">
+          <mat-icon class="avatar-icon">person</mat-icon>
+        </div>
+        <div class="candidate-info">
+          <h2>{{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}
+          </h2>
+          <p class="candidate-email"><mat-icon>email</mat-icon> {{ userData?.candidate?.email }}</p>
+          <p class="candidate-extra" *ngIf="userData?.candidate?.phone">
+            <mat-icon>phone</mat-icon> {{ userData?.candidate?.phone }}
+          </p>
+          <a *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin" target="_blank"
+            class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
+            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <mat-tab-group (selectedTabChange)="onTabChanged($event)" [selectedIndex]="selectedTabIndex">
@@ -61,11 +78,7 @@
           </div>
 
           <div class="button-container">
-            <button 
-              mat-raised-button 
-              color="primary" 
-              type="submit" 
-              [disabled]="submitting || profileForm.invalid">
+            <button mat-raised-button color="primary" type="submit" [disabled]="submitting || profileForm.invalid">
               <mat-icon *ngIf="submitting">hourglass_empty</mat-icon>
               {{ submitting ? 'Guardando...' : 'Guardar Cambios' }}
             </button>
@@ -79,11 +92,7 @@
       <div class="tab-content">
         <div class="applications-header">
           <h3>Ofertas en las que estás inscrito</h3>
-          <button 
-            mat-raised-button 
-            color="primary" 
-            (click)="loadMyApplications()"
-            [disabled]="loadingApplications">
+          <button mat-raised-button color="primary" (click)="loadMyApplications()" [disabled]="loadingApplications">
             <mat-icon>refresh</mat-icon>
             Actualizar
           </button>
@@ -107,14 +116,16 @@
           <mat-card *ngFor="let application of myApplications" class="application-card">
             <mat-card-header>
               <mat-card-title>{{ application.offer.title || 'Sin título' }}</mat-card-title>
-              <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa' }}</mat-card-subtitle>
+              <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa'
+                }}</mat-card-subtitle>
               <div class="state-badge" [ngClass]="getStateClass(application.state)">
                 {{ getStateText(application.state) }}
               </div>
             </mat-card-header>
-            
+
             <mat-card-content>
-              <p class="offer-description">{{ application.offer.description || application.offer.offerDescription || 'Sin descripción' }}</p>
+              <p class="offer-description">{{ application.offer.description || application.offer.offerDescription ||
+                'Sin descripción' }}</p>
               <div class="offer-details">
                 <div class="detail-item" *ngIf="application.offer.location">
                   <mat-icon>location_on</mat-icon>
@@ -126,7 +137,8 @@
                 </div>
                 <div class="detail-item" *ngIf="application.offer.startDate && application.offer.endDate">
                   <mat-icon>date_range</mat-icon>
-                  <span>{{ application.offer.startDate | date:'dd/MM/yyyy' }} - {{ application.offer.endDate | date:'dd/MM/yyyy' }}</span>
+                  <span>{{ application.offer.startDate | date:'dd/MM/yyyy' }} - {{ application.offer.endDate |
+                    date:'dd/MM/yyyy' }}</span>
                 </div>
               </div>
             </mat-card-content>
