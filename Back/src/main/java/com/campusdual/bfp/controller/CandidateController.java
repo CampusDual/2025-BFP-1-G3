@@ -318,6 +318,11 @@ public class CandidateController {
                 // Los admins pueden consultar cualquier candidato por ID
                 return ResponseEntity.ok(candidateService.queryCandidate(candidateDTO));
             }
+
+            if ("role_company".equals(role)) {
+                // Los admins pueden consultar cualquier candidato por ID
+                return ResponseEntity.ok(candidateService.queryCandidate(candidateDTO));
+            }
             
             // 3. CASO 2: Si es candidato, solo permitir acceso a SUS PROPIOS datos
             if ("role_candidate".equals(role)) {

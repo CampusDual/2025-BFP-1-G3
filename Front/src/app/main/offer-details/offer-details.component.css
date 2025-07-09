@@ -29,6 +29,28 @@ mat-card-header {
   color: #e61b15;
 }
 
+#name:hover {
+  cursor: pointer;
+  color: #e61b15;
+
+}
+
+.state-pending {
+  color: #BA7705;
+}
+
+.state-accepted {
+  color: #3FCC33;
+}
+
+.state-rejected {
+  color: #D62032;
+}
+
+.state-unknown {
+  color: #6d6d6d;
+}
+
 .offer-title-section h1 {
   margin: 0;
   font-size: 2rem;
@@ -195,6 +217,7 @@ mat-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .candidate-basic h3 {
@@ -488,4 +511,8 @@ mat-card-header {
   color: #dc3545;
   font-size: 12px;
   margin-top: 4px;
+}
+
+mat-elevation-z8 table-container {
+  width: 100dvh;
 }

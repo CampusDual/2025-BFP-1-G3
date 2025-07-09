@@ -1,0 +1,34 @@
+<div class="container" >
+  <div class="candidate-profile-container" [ngClass]="getStateClass(applicationState)">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="candidate-header-card">
+      <div class="avatar-section">
+        <div class="avatar">
+          <mat-icon class="avatar-icon">person</mat-icon>
+        </div>
+        <div class="candidate-info">
+          <h2>{{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}
+          </h2>
+          <p class="candidate-email"><mat-icon>email</mat-icon> {{ userData?.candidate?.email }}</p>
+          <p class="candidate-extra" *ngIf="userData?.candidate?.phone">
+            <mat-icon>phone</mat-icon> {{ userData?.candidate?.phone }}
+          </p>
+          <a id="linkedin-container" *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin"
+            target="_blank" class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
+            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
+          </a>
+        </div>
+      </div>
+      <!-- Select para estado de la aplicación -->
+      <mat-form-field class="application-state-select">
+        <mat-label>Estado de la aplicación</mat-label>
+        <mat-select [(value)]="applicationState" (selectionChange)="updateState($event.value)">
+          <mat-option [value]="0">Pendiente</mat-option>
+          <mat-option [value]="1">Aceptar</mat-option>
+          <mat-option [value]="2">Rechazar</mat-option>
+        </mat-select>
+      </mat-form-field>     
+    </div>
+  </div>
