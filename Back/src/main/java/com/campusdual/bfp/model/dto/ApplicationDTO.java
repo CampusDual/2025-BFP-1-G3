@@ -5,21 +5,23 @@ public class ApplicationDTO {
     private Integer id_candidate;
     private Integer id_offer;
     private CandidateDTO candidate;
+    private Integer state;
 
     public ApplicationDTO() {
     }
 
-    public ApplicationDTO(Long id, Integer candidate, Integer offer) {
+    public ApplicationDTO(Long id, Integer candidate, Integer offer, Integer state) {
         this.id = id;
         this.id_candidate = candidate;
         this.id_offer = offer;
     }
 
-    public ApplicationDTO(Long id, Integer candidateId, Integer offerId, CandidateDTO candidate) {
+    public ApplicationDTO(Long id, Integer candidateId, Integer offerId, CandidateDTO candidate, Integer state) {
         this.id = id;
         this.id_candidate = candidateId;
         this.id_offer = offerId;
         this.candidate = candidate;
+        this.state = state;
     }
 
     public Long getId() {
@@ -52,5 +54,13 @@ public class ApplicationDTO {
 
     public void setCandidate(CandidateDTO candidate) {
         this.candidate = candidate;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
 }

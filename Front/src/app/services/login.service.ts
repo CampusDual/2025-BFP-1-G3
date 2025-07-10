@@ -8,11 +8,32 @@ import { Candidate } from "../model/candidate";
 import { Application } from "../model/application";
 import { TechLabel } from "../model/tech-label";
 import { Router } from "@angular/router";
+import { ApplicationSummaryDTO } from '../model/application-summary';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
+  //Método para obtener aplicaciones de un candidato
+  getCandidateApplications(): Observable<ApplicationSummaryDTO[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.post<ApplicationSummaryDTO[]>(`${this.urlEndPoint}/applications/getAplicationsByCandidate`, {}, { headers }).pipe(
+      map(response => {
+        console.log('Aplicaciones del candidato:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo aplicaciones del candidato:', error);
+        console.error('Status:', error.status);
+        console.error('URL:', error.url);
+        return throwError(() => error);
+      })
+    );
+  }
 
   // Nuevo método para alternar estado activo de oferta
   toggleOfferActive(id: number): Observable<any> {

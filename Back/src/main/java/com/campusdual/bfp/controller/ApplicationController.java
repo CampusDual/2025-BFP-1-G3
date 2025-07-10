@@ -2,7 +2,10 @@ package com.campusdual.bfp.controller;
 
 import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.auth.JWTUtil;
+import com.campusdual.bfp.model.User;
+import com.campusdual.bfp.model.dao.UserDao;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
+import com.campusdual.bfp.model.dto.ApplicationSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,9 @@ import java.util.List;
 @RestController()
 @RequestMapping("/applications")
 public class ApplicationController {
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private IApplicationService applicationService;
@@ -38,7 +44,7 @@ public class ApplicationController {
      * SOLUCIÓN: Obtiene candidateId del token JWT del usuario autenticado (SEGURO)
      */
     @PostMapping(value = "/add")
-    public ResponseEntity<?> addApplication(@RequestBody ApplicationDTO applicationDTO, 
+    public ResponseEntity<?> addApplication(@RequestBody ApplicationDTO applicationDTO,
                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
             // 1. Extraer el token JWT del header "Authorization: Bearer <token>"
@@ -85,4 +91,29 @@ public class ApplicationController {
     public long deleteApplication(@RequestBody ApplicationDTO applicationDTO) {
         return applicationService.deleteApplication(applicationDTO);
     }
+
+    @PutMapping("/toggleActive/{id}")
+    public ResponseEntity<String> toggleActive(@PathVariable Long id, @RequestBody ApplicationDTO applicationDTO) {
+        int updated = applicationService.toggleActiveStatus(id, applicationDTO);
+        if (updated == 1) {
+            return ResponseEntity.ok("Estado cambiado con éxito, aceptado.");
+        } else  if (updated == 2) {
+            return ResponseEntity.ok("Estado cambiado con éxito, rechazado.");
+        } else if (updated == 0) {
+            return ResponseEntity.ok("Estado cambiado con éxito, pendiente.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //Obtener ofertas de un candidato
+    @PostMapping("/getAplicationsByCandidate")
+    public List<ApplicationSummaryDTO> queryAplicationsByCandidate(
+            @RequestHeader("Authorization") String token) {
+
+        String login = jwtUtil.getUsernameFromToken(token.substring(7));
+        return applicationService.queryAplicationsByCandidate(login);
+    }
+
+
 }

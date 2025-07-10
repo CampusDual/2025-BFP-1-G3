@@ -8,4 +8,5 @@ import java.util.List;
 public interface ApplicationDao extends JpaRepository<Application, Long> {
     boolean existsByCandidateIdAndOfferId(int candidateId, Long offerId);
     List<Application> findByOfferId(Long offerId);
+    List<Application> findByCandidateId(int candidateId);
 }
