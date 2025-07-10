@@ -173,5 +173,10 @@ export class CandidatePanelComponent implements OnInit {
           this.submitting = false;
         }
       });
+
+      //Recargamos la pagina para reflejar los cambios
+      window.location.reload();
+
+      
   }
 }

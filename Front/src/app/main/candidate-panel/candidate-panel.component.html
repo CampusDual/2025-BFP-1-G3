@@ -87,8 +87,8 @@
       </div>
     </mat-tab>
 
-    <!-- Pestaña de Mis Aplicaciones -->
-    <mat-tab label="Mis Aplicaciones">
+    <!-- Pestaña de Mis Candidaturas -->
+    <mat-tab label="Mis Candidaturas">
       <div class="tab-content">
         <div class="applications-header">
           <h3>Ofertas en las que estás inscrito</h3>
@@ -100,7 +100,7 @@
 
         <div *ngIf="loadingApplications" class="loading-message">
           <mat-spinner diameter="30"></mat-spinner>
-          <p>Cargando aplicaciones...</p>
+          <p>Cargando candidaturas...</p>
         </div>
 
         <div *ngIf="applicationsError" class="error-message">
@@ -109,7 +109,7 @@
 
         <div *ngIf="!loadingApplications && myApplications.length === 0 && !applicationsError" class="no-applications">
           <mat-icon>info</mat-icon>
-          <p>No tienes aplicaciones a ofertas todavía.</p>
+          <p>Todavía no te has inscrito en ninguna oferta</p>
         </div>
 
         <div *ngIf="!loadingApplications && myApplications.length > 0" class="applications-list">
