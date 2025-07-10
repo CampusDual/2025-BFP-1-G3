@@ -8,6 +8,8 @@ import java.util.List;
 public interface IOfferService {
     OfferDTO queryOffer(OfferDTO offerDto);
     List<OfferDTO> queryAllOffers();
+    Object queryAllOffersPaginated(int page, int size);
+    List<OfferDTO> queryActiveOffers();
     List<OfferDTO> getOffersByCompanyId(int companyId);
     long insertOffer(OfferDTO offerDto);
     long insertSecureOffer(OfferDTO offerDto, String username);

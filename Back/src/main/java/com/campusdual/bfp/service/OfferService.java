@@ -17,12 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("OfferService")
 @Lazy
@@ -59,6 +64,44 @@ public class OfferService implements IOfferService {
             }
         });
         return OfferMapper.INSTANCE.toDTOList(offers);
+    }
+
+    @Override
+    public Object queryAllOffersPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        // Solo obtener ofertas activas (active = 1)
+        Page<Offer> offerPage = offerDao.findByActive(1, pageable);
+        
+        // Asegurar que las relaciones company estén cargadas
+        offerPage.getContent().forEach(offer -> {
+            if(offer.getCompany() != null) {
+                offer.getCompany().getName();
+            }
+        });
+        
+        List<OfferDTO> offerDTOs = OfferMapper.INSTANCE.toDTOList(offerPage.getContent());
+        
+        // Crear respuesta con información de paginación
+        Map<String, Object> response = new HashMap<>();
+        response.put("offers", offerDTOs);
+        response.put("currentPage", offerPage.getNumber());
+        response.put("totalPages", offerPage.getTotalPages());
+        response.put("totalElements", offerPage.getTotalElements());
+        response.put("size", offerPage.getSize());
+        
+        return response;
+    }
+
+    @Override
+    public List<OfferDTO> queryActiveOffers() {
+        List<Offer> activeOffers = offerDao.findByActive(1);
+        // Asegurar que las relaciones company estén cargadas
+        activeOffers.forEach(offer -> {
+            if(offer.getCompany() != null) {
+                offer.getCompany().getName();
+            }
+        });
+        return OfferMapper.INSTANCE.toDTOList(activeOffers);
     }
 
     @Override

@@ -169,6 +169,34 @@ export class LoginService {
     );
   }
 
+  // Método para obtener ofertas paginadas
+  getOffersPaginated(page: number, size: number): Observable<any> {
+    return this.http.get<any>(`${this.urlEndPoint}/offers/getPaginated?page=${page}&size=${size}`).pipe(
+      map(response => {
+        console.log('Respuesta paginada del servidor:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo ofertas paginadas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Método para obtener solo ofertas activas
+  getAllActiveOffers(): Observable<Offer[]> {
+    return this.http.get<Offer[]>(`${this.urlEndPoint}/offers/getActive`).pipe(
+      map(response => {
+        console.log('Respuesta ofertas activas del servidor:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo ofertas activas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }

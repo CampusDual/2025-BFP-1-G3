@@ -258,6 +258,60 @@ mat-card-content {
   cursor: pointer;
 }
 
+/* === PAGINATION STYLES === */
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-controls button {
+  min-width: 120px;
+}
+
+.page-numbers {
+  font-weight: bold;
+  color: #333;
+  min-width: 60px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+  .pagination-container {
+    padding: 15px;
+  }
+  
+  .pagination-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .pagination-controls button {
+    min-width: 150px;
+  }
+}
+
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .cards-grid {

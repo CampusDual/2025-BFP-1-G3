@@ -71,3 +71,21 @@
     <ng-container *ngTemplateOutlet="noOffers"></ng-container>
   </ng-container>
 </ng-template>
+
+<!-- Controles de paginación -->
+<div class="pagination-container" *ngIf="!isLoading && !isSearchActive && totalPages > 1">
+  <div class="pagination-info">
+    <p>Página {{ currentPage + 1 }} de {{ totalPages }} - Total: {{ totalOffers }} ofertas</p>
+  </div>
+  <div class="pagination-controls">
+    <button mat-raised-button color="primary" [disabled]="currentPage === 0" (click)="previousPage()">
+      <mat-icon>navigate_before</mat-icon>
+      Anterior
+    </button>
+    <span class="page-numbers">{{ currentPage + 1 }} / {{ totalPages }}</span>
+    <button mat-raised-button color="primary" [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+      Siguiente
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
+</div>

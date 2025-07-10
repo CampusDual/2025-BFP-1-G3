@@ -37,6 +37,23 @@ public class OffersController {
         return offersService.queryAllOffers();
     }
 
+    @GetMapping(value = "/getPaginated")
+    public ResponseEntity<?> queryAllOffersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        try {
+            return ResponseEntity.ok(offersService.queryAllOffersPaginated(page, size));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al obtener ofertas paginadas: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/getActive")
+    public List<OfferDTO> queryActiveOffers() {
+        return offersService.queryActiveOffers();
+    }
+
     @GetMapping("/getOffersByCompany/{companyId}")
     public List<OfferDTO> getOffersByCompanyId(@PathVariable int companyId) {
         return offersService.getOffersByCompanyId(companyId);
