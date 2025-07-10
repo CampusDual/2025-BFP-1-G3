@@ -12,7 +12,7 @@
           <p class="candidate-extra" *ngIf="userData?.candidate?.phone">
             <mat-icon>phone</mat-icon> {{ userData?.candidate?.phone }}
           </p>
-          <a *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin" target="_blank"
+          <a id="linkedin-container" *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin" target="_blank"
             class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
             <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
           </a>

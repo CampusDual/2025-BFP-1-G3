@@ -154,14 +154,14 @@
 .candidate-profile-container {
   max-width: 950px;
   margin: 3% auto 3% auto;
-  background: var(--gray-megalightest, #EBE9E9);
+  background: var(--gray-megalightest, #ebe9e9);
   border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
   overflow: hidden;
-  border: 1.5px solid var(--gray-lightest, #C6C0C1);
+  border: 1.5px solid var(--gray-lightest, #c6c0c1);
   background-color: #f6f6f6;
 }
- 
+
 .candidate-header-card {
   display: flex;
   align-items: center;
@@ -180,7 +180,11 @@
 .avatar {
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, var(--primary, #E81C34) 60%, var(--primary-light, #FA6F76) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary, #e81c34) 60%,
+    var(--primary-light, #fa6f76) 100%
+  );
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -194,49 +198,52 @@
   margin: 0 0 0.3rem 0;
   font-size: 2rem;
   font-weight: 600;
-  color: var(--primary, #E81C34);
+  color: var(--primary, #e81c34);
 }
-.candidate-email, .candidate-extra {
-  color: var(--gray-dark, #5B5152);
+.candidate-email,
+.candidate-extra {
+  color: var(--gray-dark, #5b5152);
   font-size: 1rem;
   margin: 0.1rem 0;
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
- 
+
 .avatar-icon {
   font-size: xxx-large;
   color: #fff;
 }
- 
-mat-icon  {
-    -webkit-user-select: none;
-    user-select: none;
-    background-repeat: no-repeat;
-    display: inline-block;
-    fill: currentColor;
-    height: fit-content;
-    width: fit-content;
-}
 
+mat-icon {
+  -webkit-user-select: none;
+  user-select: none;
+  background-repeat: no-repeat;
+  display: inline-block;
+  fill: currentColor;
+  height: fit-content;
+  width: fit-content;
+}
+#linkedin-container {
+  display: flex;
+  align-items: center;
+}
 .linkedin-icon {
-  color: #5B5152;
+  color: #5b5152;
   text-decoration: none;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 24px;
 }
 
-#linkedin-link{
+#linkedin-link {
   font-size: 16px;
-  margin-left: 0.3rem ;
-  display: inline;
+  margin-left: 0.3rem;
 }
 
-.linkedin-icon:hover {
+.linkedin-icon span:hover {
   color: blue;
   text-decoration: underline;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   cursor: pointer;
 }
 
@@ -244,13 +251,13 @@ mat-icon  {
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .applications-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
-  
+
   .offer-details {
     flex-direction: column;
     gap: 10px;
