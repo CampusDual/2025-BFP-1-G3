@@ -33,6 +33,10 @@ import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-manager.component';
 import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
+import { MatSelectModule } from '@angular/material/select';
+import { ApproveCandidatePanelComponent } from './approve-candidate-panel/approve-candidate-panel.component';
+
+
 
 
 @NgModule({
@@ -47,7 +51,8 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
     AdminPanelComponent,
     OfferDetailsComponent,
     TechLabelsManagerComponent,
-    AdminTechLabelsManagerComponent
+    AdminTechLabelsManagerComponent,
+    ApproveCandidatePanelComponent
   ],
   imports: [
     CommonModule,
@@ -71,6 +76,8 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
     MatButtonModule,
     MatProgressSpinnerModule,
     MatTabsModule,
+    MatSlideToggleModule,
+    MatSelectModule,
     MatSlideToggleModule
   ],
   providers: [

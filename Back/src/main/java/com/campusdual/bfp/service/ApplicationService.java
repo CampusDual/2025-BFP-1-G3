@@ -175,6 +175,7 @@ public class ApplicationService implements IApplicationService {
             applicationDTO.setId_candidate(application.getCandidate().getId());
             applicationDTO.setId_offer(application.getOffer().getId().intValue());
             applicationDTO.setCandidate(candidateDTO);
+            applicationDTO.setState(application.getState());
 
             return applicationDTO;
         }).collect(Collectors.toList());
