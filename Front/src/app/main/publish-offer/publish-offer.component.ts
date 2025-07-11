@@ -111,6 +111,10 @@ export class PublishOfferComponent implements OnInit {
       benefits: String(this.offerForm.value.benefits || '').trim()
     };
 
+    console.log('Datos que se van a enviar:', offerData);
+    console.log('FormGroup values:', this.offerForm.value);
+    console.log('FormGroup valid:', this.offerForm.valid);
+
     this.submitting = true;
 
     const headers = new HttpHeaders({
@@ -146,9 +150,23 @@ export class PublishOfferComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error completo:', error);
+          console.error('Status:', error.status);
+          console.error('Error body:', error.error);
+          console.error('Message:', error.message);
           this.submitting = false;
           
-          if (error.status === 403) {
+          if (error.status === 400) {
+            let errorMsg = 'Error en los datos enviados (400)';
+            if (error.error && typeof error.error === 'string') {
+              errorMsg = error.error;
+            } else if (error.error && error.error.message) {
+              errorMsg = error.error.message;
+            }
+            this.snackBar.open(errorMsg, 'Cerrar', {
+              duration: 7000,
+              panelClass: ['snackbar-failed']
+            });
+          } else if (error.status === 403) {
             this.snackBar.open('No tienes permisos para publicar ofertas', 'Cerrar', {
               duration: 5000,
               panelClass: ['snackbar-failed']
