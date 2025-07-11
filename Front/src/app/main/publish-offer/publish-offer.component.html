@@ -32,6 +32,18 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+      <mat-label>Modalidad de trabajo</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let workType of workTypes" [value]="workType.value">
+          {{workType.label}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="offerForm.get('type')?.invalid && offerForm.get('type')?.touched">
+        <span *ngIf="offerForm.get('type')?.errors?.['required']">La modalidad de trabajo es obligatoria.</span>
+      </mat-error>
+    </mat-form-field>
+
     <!-- Componente de gestión de etiquetas técnicas -->
     <!-- <div class="tech-labels-section"> -->
       <app-tech-labels-manager 

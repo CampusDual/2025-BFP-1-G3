@@ -31,6 +31,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-manager.component';
 import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
 
@@ -71,7 +73,9 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
     MatButtonModule,
     MatProgressSpinnerModule,
     MatTabsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   providers: [
     DatePipe,
