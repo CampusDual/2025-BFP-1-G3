@@ -42,9 +42,6 @@ public class Offer {
     @Column(name = "benefits", columnDefinition = "TEXT")
     private String benefits;
 
-    @Column(name = "salary")
-    private String salary;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_company", nullable = false, foreignKey = @ForeignKey(name = "FK_OFFER_COMPANY"))
     private Company company;
@@ -178,13 +175,5 @@ public class Offer {
 
     public void setBenefits(String benefits) {
         this.benefits = benefits;
-    }
-
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
     }
 }

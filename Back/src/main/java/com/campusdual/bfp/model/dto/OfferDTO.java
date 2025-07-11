@@ -22,7 +22,6 @@ public class OfferDTO {
     private String requirements;
     private String desirable;
     private String benefits;
-    private String salary;
 
     public OfferDTO() {
         this.techLabels = new ArrayList<>();
@@ -142,13 +141,5 @@ public class OfferDTO {
 
     public void setBenefits(String benefits) {
         this.benefits = benefits;
-    }
-
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
     }
 }

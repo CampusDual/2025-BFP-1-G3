@@ -11,10 +11,16 @@ export class Offer {
         id: number;
         name: string;
     };
+    
+    // Nuevos campos añadidos
     location!: string;
-    salary!: number;
+    publishingDate!: string;
+    type!: string; // 'remote', 'hybrid', 'onsite'
     requirements!: string;
+    desirable!: string;
     benefits!: string;
+    
+    // Campos existentes que mantienen compatibilidad
     startDate!: string;
     endDate!: string;
     active!: boolean;

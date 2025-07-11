@@ -47,6 +47,13 @@ export class OfferDetailsComponent implements OnInit {
   // Propiedades para etiquetas
   isEditingLabels: boolean = false;
   originalLabels: TechLabel[] = [];
+  
+  // Opciones para el tipo de trabajo
+  workTypes = [
+    { value: 'remote', label: 'Remoto' },
+    { value: 'hybrid', label: 'Híbrido' },
+    { value: 'onsite', label: 'Presencial' }
+  ];
 
   // Propiedades para la tabla de candidatos
   candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin']; // 'actions' comentado temporalmente
@@ -223,7 +230,8 @@ export class OfferDetailsComponent implements OnInit {
     if (!this.editedOffer) return;
 
     // Validar campos requeridos
-    if (!this.editedOffer.title || !this.editedOffer.offerDescription) {
+    if (!this.editedOffer.title || !this.editedOffer.offerDescription || 
+        !this.editedOffer.location || !this.editedOffer.requirements) {
       this.snackBar.open('Por favor, completa todos los campos requeridos', 'Cerrar', {
         duration: 3000,
         panelClass: ['snackbar-error']
@@ -242,6 +250,38 @@ export class OfferDetailsComponent implements OnInit {
 
     if (this.editedOffer.offerDescription.length > 2500) {
       this.snackBar.open('La descripción no puede superar los 2500 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.location.length > 255) {
+      this.snackBar.open('La ubicación no puede superar los 255 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.requirements.length > 5000) {
+      this.snackBar.open('Los requisitos no pueden superar los 5000 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.desirable && this.editedOffer.desirable.length > 5000) {
+      this.snackBar.open('Los conocimientos deseables no pueden superar los 5000 caracteres', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (this.editedOffer.benefits && this.editedOffer.benefits.length > 5000) {
+      this.snackBar.open('Los beneficios no pueden superar los 5000 caracteres', 'Cerrar', {
         duration: 3000,
         panelClass: ['snackbar-error']
       });

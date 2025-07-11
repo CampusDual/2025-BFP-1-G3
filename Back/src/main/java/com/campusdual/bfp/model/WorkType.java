@@ -1,5 +1,8 @@
 package com.campusdual.bfp.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum WorkType {
     REMOTE("remote"),
     HYBRID("hybrid"), 
@@ -11,19 +14,21 @@ public enum WorkType {
         this.value = value;
     }
     
+    @JsonValue
     public String getValue() {
         return value;
     }
     
+    @JsonCreator
     public static WorkType fromString(String value) {
         if (value == null) {
-            return ONSITE; // valor por defecto
+            return REMOTE; // valor por defecto
         }
         for (WorkType type : WorkType.values()) {
             if (type.value.equalsIgnoreCase(value) || type.name().equalsIgnoreCase(value)) {
                 return type;
             }
         }
-        return ONSITE; // valor por defecto si no se encuentra
+        return REMOTE; // valor por defecto si no se encuentra
     }
 }

@@ -18,6 +18,13 @@ export class PublishOfferComponent implements OnInit {
   successMessage = '';
   companyId: number | null = null;
   selectedTechLabels: TechLabel[] = [];
+  
+  // Opciones para el tipo de trabajo
+  workTypes = [
+    { value: 'remote', label: 'Remoto' },
+    { value: 'hybrid', label: 'Híbrido' },
+    { value: 'onsite', label: 'Presencial' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +35,12 @@ export class PublishOfferComponent implements OnInit {
   ) {
     this.offerForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(2500)]]
+      descripcion: ['', [Validators.required, Validators.maxLength(2500)]],
+      location: ['', [Validators.required, Validators.maxLength(255)]],
+      type: ['remote', [Validators.required]],
+      requirements: ['', [Validators.required, Validators.maxLength(5000)]],
+      desirable: ['', [Validators.maxLength(5000)]],
+      benefits: ['', [Validators.maxLength(5000)]]
     });
   }
 
@@ -79,7 +91,12 @@ export class PublishOfferComponent implements OnInit {
     const offerData = {
       title: String(this.offerForm.value.titulo).trim(),
       offerDescription: String(this.offerForm.value.descripcion).trim(),
-      companyId: this.companyId
+      companyId: this.companyId,
+      location: String(this.offerForm.value.location).trim(),
+      type: this.offerForm.value.type,
+      requirements: String(this.offerForm.value.requirements).trim(),
+      desirable: String(this.offerForm.value.desirable || '').trim(),
+      benefits: String(this.offerForm.value.benefits || '').trim()
     };
 
     this.submitting = true;
