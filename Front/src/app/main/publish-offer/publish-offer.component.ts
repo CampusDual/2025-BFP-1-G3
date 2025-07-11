@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TechLabel } from 'src/app/model/tech-label';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+/** Error state matcher que muestra errores cuando el campo está sucio e inválido */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-publish-offer',
@@ -18,6 +27,9 @@ export class PublishOfferComponent implements OnInit {
   successMessage = '';
   companyId: number | null = null;
   selectedTechLabels: TechLabel[] = [];
+  
+  // Error state matcher personalizado
+  errorStateMatcher = new MyErrorStateMatcher();
   
   // Opciones para el tipo de trabajo
   workTypes = [
