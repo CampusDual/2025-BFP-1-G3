@@ -16,7 +16,13 @@ public enum WorkType {
     
     @JsonValue
     public String getValue() {
-        return value;
+        return this.value;
+    }
+    
+    // Necesario para @Enumerated(EnumType.STRING)
+    @Override
+    public String toString() {
+        return this.value;
     }
     
     @JsonCreator
@@ -24,11 +30,21 @@ public enum WorkType {
         if (value == null) {
             return REMOTE; // valor por defecto
         }
+        
+        // Buscar por valor específico
         for (WorkType type : WorkType.values()) {
-            if (type.value.equalsIgnoreCase(value) || type.name().equalsIgnoreCase(value)) {
+            if (type.value.equalsIgnoreCase(value)) {
                 return type;
             }
         }
+        
+        // Buscar por nombre del enum (case insensitive)
+        for (WorkType type : WorkType.values()) {
+            if (type.name().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        
         return REMOTE; // valor por defecto si no se encuentra
     }
 }

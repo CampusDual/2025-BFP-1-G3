@@ -29,7 +29,7 @@ public class Offer {
     @Column(name = "publishing_date")
     private LocalDateTime publishingDate;
 
-    @Column(name = "type")
+    @Column(name = "type", length = 10)
     @Convert(converter = WorkTypeConverter.class)
     private WorkType type;
 
@@ -57,7 +57,8 @@ public class Offer {
     public Offer() {
         this.techLabels = new HashSet<>();
         this.publishingDate = LocalDateTime.now();
-        this.type = WorkType.ONSITE; // valor por defecto
+        this.type = WorkType.REMOTE; // valor por defecto consistente con WorkType.fromString()
+        this.active = 1; // Oferta activa por defecto
     }
 
     public Offer(Long id, String title, String offerDescription, Company company, int active) {
@@ -68,7 +69,7 @@ public class Offer {
         this.active = active;
         this.techLabels = new HashSet<>();
         this.publishingDate = LocalDateTime.now();
-        this.type = WorkType.ONSITE;
+        this.type = WorkType.REMOTE; // valor por defecto consistente
     }
 
     public Long getId() {
