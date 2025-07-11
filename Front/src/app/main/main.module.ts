@@ -1,7 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { MainRoutingModule } from './main-routing.module';
+import { SharedModule } from '../shared/shared.module';
 import { LoginComponent } from './login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -49,6 +51,8 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
   ],
   imports: [
     CommonModule,
+    RouterModule,
+    SharedModule,
     MainRoutingModule,
     MatFormFieldModule,
     MatInputModule,
@@ -68,6 +72,11 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
     MatProgressSpinnerModule,
     MatTabsModule,
     MatSlideToggleModule
-  ]
+  ],
+  providers: [
+    DatePipe,
+    CurrencyPipe
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class MainModule { }

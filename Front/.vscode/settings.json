@@ -1,0 +1,25 @@
+{
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.validate.enable": false,
+  "html.validate.scripts": false,
+  "html.validate.styles": false,
+  "angular.enable-strict-mode-prompt": false,
+  "typescript.suggest.autoImports": false,
+  "problems.decorations.enabled": false,
+  "editor.showUnused": false,
+  "problems.showCurrentInStatus": false,
+  "typescript.reportStyleChecksAsWarnings": false,
+  "typescript.check.npmIsInstalled": false,
+  "angular.experimental-ivy": true,
+  "angular.log": "off",
+  "typescript.surveys.enabled": false,
+  "html.completion.attributeDefaultValue": "empty",
+  "html.validate.enabledSchemas": [],
+  "files.associations": {
+    "*.html": "html"
+  },
+  "emmet.includeLanguages": {
+    "typescript": "html"
+  },
+  "html.customData": []
+}
