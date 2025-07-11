@@ -3,6 +3,7 @@ package com.campusdual.bfp.model;
 import javax.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "offers")
@@ -22,6 +23,25 @@ public class Offer {
     @Column(name = "active")
     private int active;
 
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "publishing_date")
+    private LocalDateTime publishingDate;
+
+    @Column(name = "type")
+    @Convert(converter = WorkTypeConverter.class)
+    private WorkType type;
+
+    @Column(name = "requirements", columnDefinition = "TEXT")
+    private String requirements;
+
+    @Column(name = "desirable", columnDefinition = "TEXT")
+    private String desirable;
+
+    @Column(name = "benefits", columnDefinition = "TEXT")
+    private String benefits;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_company", nullable = false, foreignKey = @ForeignKey(name = "FK_OFFER_COMPANY"))
     private Company company;
@@ -36,6 +56,8 @@ public class Offer {
 
     public Offer() {
         this.techLabels = new HashSet<>();
+        this.publishingDate = LocalDateTime.now();
+        this.type = WorkType.ONSITE; // valor por defecto
     }
 
     public Offer(Long id, String title, String offerDescription, Company company, int active) {
@@ -45,6 +67,8 @@ public class Offer {
         this.company = company;
         this.active = active;
         this.techLabels = new HashSet<>();
+        this.publishingDate = LocalDateTime.now();
+        this.type = WorkType.ONSITE;
     }
 
     public Long getId() {
@@ -102,5 +126,54 @@ public class Offer {
 
     public void removeTechLabel(TechLabels techLabel) {
         this.techLabels.remove(techLabel);
+    }
+
+    // Getters y setters para los nuevos campos
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public LocalDateTime getPublishingDate() {
+        return publishingDate;
+    }
+
+    public void setPublishingDate(LocalDateTime publishingDate) {
+        this.publishingDate = publishingDate;
+    }
+
+    public WorkType getType() {
+        return type;
+    }
+
+    public void setType(WorkType type) {
+        this.type = type;
+    }
+
+    public String getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+
+    public String getDesirable() {
+        return desirable;
+    }
+
+    public void setDesirable(String desirable) {
+        this.desirable = desirable;
+    }
+
+    public String getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(String benefits) {
+        this.benefits = benefits;
     }
 }

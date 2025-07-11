@@ -2,6 +2,8 @@ package com.campusdual.bfp.model.dto;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import com.campusdual.bfp.model.WorkType;
 
 public class OfferDTO {
 
@@ -12,6 +14,14 @@ public class OfferDTO {
     private String companyName;
     private int active;
     private List<TechLabelsDTO> techLabels = new ArrayList<>();
+    
+    // Nuevos campos
+    private String location;
+    private LocalDateTime publishingDate;
+    private WorkType type;
+    private String requirements;
+    private String desirable;
+    private String benefits;
 
     public OfferDTO() {
         this.techLabels = new ArrayList<>();
@@ -82,5 +92,54 @@ public class OfferDTO {
 
     public void setTechLabels(List<TechLabelsDTO> techLabels) {
         this.techLabels = techLabels;
+    }
+
+    // Getters y setters para los nuevos campos
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public LocalDateTime getPublishingDate() {
+        return publishingDate;
+    }
+
+    public void setPublishingDate(LocalDateTime publishingDate) {
+        this.publishingDate = publishingDate;
+    }
+
+    public WorkType getType() {
+        return type;
+    }
+
+    public void setType(WorkType type) {
+        this.type = type;
+    }
+
+    public String getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+
+    public String getDesirable() {
+        return desirable;
+    }
+
+    public void setDesirable(String desirable) {
+        this.desirable = desirable;
+    }
+
+    public String getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(String benefits) {
+        this.benefits = benefits;
     }
 }

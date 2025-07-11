@@ -3,6 +3,7 @@ package com.campusdual.bfp.controller;
 import com.campusdual.bfp.api.IOfferService;
 import com.campusdual.bfp.api.IApplicationService;
 import com.campusdual.bfp.auth.JWTUtil;
+import com.campusdual.bfp.model.WorkType;
 import com.campusdual.bfp.model.dto.OfferDTO;
 import com.campusdual.bfp.model.dto.ApplicationDTO;
 import com.campusdual.bfp.model.dto.TechLabelsDTO;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Arrays;
 
 @RestController()
 @RequestMapping("/offers")
@@ -149,5 +151,13 @@ public class OffersController {
         } else {
             return ResponseEntity.badRequest().body("Error al actualizar etiquetas (máximo 5 etiquetas por oferta)");
         }
+    }
+
+    // Nuevo endpoint para obtener los tipos de trabajo disponibles
+    @GetMapping("/work-types")
+    public List<String> getWorkTypes() {
+        return Arrays.stream(WorkType.values())
+                .map(WorkType::getValue)
+                .collect(java.util.stream.Collectors.toList());
     }
 }
