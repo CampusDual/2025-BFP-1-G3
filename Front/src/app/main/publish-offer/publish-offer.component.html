@@ -44,6 +44,34 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="fill" class="description-field">
+      <mat-label>Requisitos obligatorios</mat-label>
+      <textarea matInput id="requirements" formControlName="requirements" placeholder="Detalles de los requisitos necesarios para el puesto" rows="6" maxlength="5000"></textarea>
+      <mat-hint align="end" [class.warn-limit]="offerForm.get('requirements')?.value?.length >= 4800">{{offerForm.get('requirements')?.value?.length || 0}}/5000</mat-hint>
+      <mat-error *ngIf="offerForm.get('requirements')?.invalid && offerForm.get('requirements')?.touched">
+        <span *ngIf="offerForm.get('requirements')?.errors?.['required']">Los requisitos son obligatorios.</span>
+        <span *ngIf="offerForm.get('requirements')?.errors?.['maxlength']">Los requisitos no pueden superar los 5000 caracteres.</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="description-field">
+      <mat-label>Conocimientos deseables (opcional)</mat-label>
+      <textarea matInput id="desirable" formControlName="desirable" placeholder="Conocimientos adicionales que se valoran positivamente" rows="4" maxlength="5000"></textarea>
+      <mat-hint align="end" [class.warn-limit]="offerForm.get('desirable')?.value?.length >= 4800">{{offerForm.get('desirable')?.value?.length || 0}}/5000</mat-hint>
+      <mat-error *ngIf="offerForm.get('desirable')?.invalid && offerForm.get('desirable')?.touched">
+        <span *ngIf="offerForm.get('desirable')?.errors?.['maxlength']">Los conocimientos deseables no pueden superar los 5000 caracteres.</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="description-field">
+      <mat-label>Beneficios y compensaciones (opcional)</mat-label>
+      <textarea matInput id="benefits" formControlName="benefits" placeholder="Beneficios, compensaciones extra, formación, horarios flexibles, etc." rows="4" maxlength="5000"></textarea>
+      <mat-hint align="end" [class.warn-limit]="offerForm.get('benefits')?.value?.length >= 4800">{{offerForm.get('benefits')?.value?.length || 0}}/5000</mat-hint>
+      <mat-error *ngIf="offerForm.get('benefits')?.invalid && offerForm.get('benefits')?.touched">
+        <span *ngIf="offerForm.get('benefits')?.errors?.['maxlength']">Los beneficios no pueden superar los 5000 caracteres.</span>
+      </mat-error>
+    </mat-form-field>
+
     <!-- Componente de gestión de etiquetas técnicas -->
     <!-- <div class="tech-labels-section"> -->
       <app-tech-labels-manager 
