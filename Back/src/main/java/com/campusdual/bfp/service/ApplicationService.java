@@ -214,4 +214,13 @@ public class ApplicationService implements IApplicationService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public boolean checkApplicationExists(Integer candidateId, Long offerId) {
+        // Buscar si ya existe una aplicación para este candidato y oferta
+        List<Application> existingApplications = applicationDao.findByCandidateId(candidateId);
+
+        return existingApplications.stream()
+                .anyMatch(application -> application.getOffer().getId().equals(offerId));
+    }
 }

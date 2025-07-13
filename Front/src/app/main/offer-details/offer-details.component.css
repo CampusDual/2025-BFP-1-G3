@@ -91,6 +91,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.offer-title-section {
+  flex: 1;
+  text-align: center;
+  margin: 0 16px;
+}
+
 mat-card-header {
   border-bottom: 2px solid #e61b15;
   margin-bottom: 0.5rem;
@@ -530,7 +536,12 @@ mat-card-header {
   .offer-header {
     flex-direction: column;
     gap: 16px;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
+  }
+
+  .offer-title-section {
+    margin: 0;
   }
 
   .offer-title-section h1 {
@@ -585,4 +596,12 @@ mat-card-header {
   color: #dc3545;
   font-size: 12px;
   margin-top: 4px;
+}
+
+/* Mensaje para oferta inactiva */
+.inactive-offer-message {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  font-style: italic;
 }

@@ -88,6 +88,40 @@ export class LoginService {
     return this.getRoleFromToken();
   }
 
+  // Método para obtener el ID del usuario del token JWT
+  getUserIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el ID del usuario del campo 'sub' o 'id' del payload
+      return payload.sub || payload.id || null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener ID de usuario:', error);
+      return null;
+    }
+  }
+
+  // Método para obtener el companyId del token (solo para empresas)
+  getCompanyIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el companyId del payload (solo estará presente si es una empresa)
+      return payload.companyId || null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener companyId:', error);
+      return null;
+    }
+  }
+
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
     const headers = new HttpHeaders({
@@ -192,6 +226,20 @@ export class LoginService {
       }),
       catchError(error => {
         console.error('Error obteniendo ofertas activas:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Método para obtener una oferta específica por ID (sin autenticación requerida)
+  getOfferById(id: number): Observable<Offer> {
+    return this.http.get<Offer>(`${this.urlEndPoint}/offers/${id}`).pipe(
+      map(response => {
+        console.log('Respuesta oferta por ID del servidor:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo oferta por ID:', error);
         return throwError(() => error);
       })
     );
@@ -472,5 +520,29 @@ export class LoginService {
         return throwError(() => error);
       })
     );
+  }
+
+  // Método para verificar si un candidato ya está inscrito en una oferta
+  checkApplicationExists(candidateId: number, offerId: number): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get(`${this.urlEndPoint}/applications/check/${candidateId}/${offerId}`, { headers });
+  }
+
+  // Método para inscribirse a una oferta
+  applyToOfferService(offerId: number): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    const applicationData = {
+      id_offer: offerId
+    };
+    
+    return this.http.post(`${this.urlEndPoint}/applications/add`, applicationData, { headers });
   }
 }

@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { Offer } from '../../model/offer';
 
@@ -27,7 +28,7 @@ export class DisplayOffersComponent implements OnInit {
   hasNextPage = false;
   hasPreviousPage = false;
 
-  constructor(private loginService: LoginService) { }
+  constructor(private loginService: LoginService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadOffers();
@@ -72,9 +73,73 @@ export class DisplayOffersComponent implements OnInit {
     }
   }
 
+  viewOfferDetails(offerId: number): void {
+    this.router.navigate(['/main/offer-details', offerId]);
+  }
+
+  isCandidate(): boolean {
+    return this.loginService.isLoggedAsCandidate();
+  }
+
+  isCompany(): boolean {
+    return this.loginService.isLoggedAsCompany();
+  }
+
   applyOffer(offerId: number): void {
-    // Implementation for applying to offer
-    console.log('Applying to offer:', offerId);
+    if (!this.isCandidate()) {
+      alert('Solo los candidatos pueden inscribirse a ofertas');
+      return;
+    }
+    
+    // Obtener el ID del candidato del token
+    const candidateId = this.loginService.getUserIdFromToken();
+    
+    if (!candidateId) {
+      alert('Error al obtener información del candidato');
+      return;
+    }
+
+    // Verificar si ya está inscrito
+    this.loginService.checkApplicationExists(candidateId, offerId).subscribe({
+      next: (response: any) => {
+        if (response && response.exists) {
+          alert('Ya estás inscrito a esta oferta');
+        } else {
+          // No está inscrito, proceder con la inscripción
+          this.loginService.applyToOfferService(offerId).subscribe({
+            next: (response) => {
+              alert('Inscripción recibida con éxito');
+            },
+            error: (error) => {
+              console.error('Error en la inscripción:', error);
+              let errorMessage = 'Error al procesar la inscripción';
+              
+              if (error.status === 400) {
+                errorMessage = 'Ya estás inscrito a esta oferta';
+              } else if (error.status === 401) {
+                errorMessage = 'Debes estar logueado para inscribirte';
+              } else if (error.status === 403) {
+                errorMessage = 'No tienes permisos para inscribirte a esta oferta';
+              }
+
+              alert(errorMessage);
+            }
+          });
+        }
+      },
+      error: () => {
+        // Si hay error en la verificación, intentar inscribir de todos modos
+        this.loginService.applyToOfferService(offerId).subscribe({
+          next: (response) => {
+            alert('Inscripción recibida con éxito');
+          },
+          error: (error) => {
+            console.error('Error en la inscripción:', error);
+            alert('Error al procesar la inscripción');
+          }
+        });
+      }
+    });
   }
 
   nextPage(): void {

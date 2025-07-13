@@ -18,24 +18,36 @@
       </div>
     </div>
 
-    <!-- Botones de acción para empresas -->
-    <div class="header-actions" *ngIf="canEdit()">
-      <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="startEditing()">
-        <mat-icon>edit</mat-icon>
-        Editar oferta
-      </button>
+    <!-- Botones de acción -->
+    <div class="header-actions">
+      <!-- Botones para empresas -->
+      <div *ngIf="canEdit()">
+        <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="startEditing()">
+          <mat-icon>edit</mat-icon>
+          Editar oferta
+        </button>
 
-      <div *ngIf="isEditing" class="edit-actions">
-        <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
-          <mat-icon>cancel</mat-icon>
-          Cancelar
+        <div *ngIf="isEditing" class="edit-actions">
+          <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+          <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
+            <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+            <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar cambios</span>
+            <span *ngIf="isSubmitting">Guardando...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón para candidatos -->
+      <div *ngIf="isCandidate()">
+        <button mat-raised-button color="accent" (click)="applyToOffer()" [disabled]="!offer.active">
+          <mat-icon>send</mat-icon>
+          Inscribirse a esta oferta
         </button>
-        <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
-          <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
-          <mat-icon *ngIf="!isSubmitting">save</mat-icon>
-          <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar cambios</span>
-          <span *ngIf="isSubmitting">Guardando...</span>
-        </button>
+        <p *ngIf="!offer.active" class="inactive-offer-message">Esta oferta no está activa</p>
       </div>
     </div>
   </div>
@@ -51,7 +63,7 @@
           <!-- Encabezado simple -->
           <div class="content-header">
             <h2>Información de la Oferta</h2>
-            <mat-slide-toggle [checked]="offer.active" (change)="toggleActive($event.checked)"
+            <mat-slide-toggle *ngIf="canEdit()" [checked]="offer.active" (change)="toggleActive($event.checked)"
               color="primary">{{ toggleLabel }}</mat-slide-toggle>
           </div>
 
@@ -178,8 +190,8 @@
       </div>
     </mat-tab>
 
-    <!-- Pestaña de Candidatos -->
-    <mat-tab label="Candidatos inscritos">
+    <!-- Pestaña de Candidatos (solo para empresas) -->
+    <mat-tab label="Candidatos inscritos" *ngIf="canEdit()">
       <div class="tab-content">
         <div class="candidates-header">
           <h2>Candidatos inscritos</h2>

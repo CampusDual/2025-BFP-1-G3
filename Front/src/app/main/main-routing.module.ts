@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminPanelComponent, canActivate: [AuthGuard] },
   { path: 'admin/etiquetas', component: AdminTechLabelsManagerComponent, canActivate: [AuthGuard] },
-  { path: 'offer-details/:id', component: OfferDetailsComponent, canActivate: [AuthGuard] },
+  { path: 'offer-details/:id', component: OfferDetailsComponent },
   { path: '**', redirectTo: 'ofertas' }
 ];
 

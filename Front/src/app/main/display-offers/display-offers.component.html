@@ -38,10 +38,11 @@
       </mat-card-content>
 
       <mat-card-actions class="card-actions">
-        <!-- <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button">
+        <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button"
+          (click)="viewOfferDetails(offer.id)">
           <mat-icon id="info">info</mat-icon>
-        </button> -->
-        <button *ngIf="companyName==''" mat-icon-button matTooltip="Inscribirse a la oferta"
+        </button>
+        <button *ngIf="isCandidate()" mat-icon-button matTooltip="Inscribirse a la oferta"
           (click)="applyOffer(offer.id)" class="tooltip-button">
           <mat-icon id="apply">outbox</mat-icon>
         </button>

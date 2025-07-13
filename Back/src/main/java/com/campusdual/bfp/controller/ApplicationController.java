@@ -115,5 +115,47 @@ public class ApplicationController {
         return applicationService.queryAplicationsByCandidate(login);
     }
 
-
+    // Endpoint para verificar si un candidato ya está inscrito en una oferta
+    @GetMapping("/check/{candidateId}/{offerId}")
+    public ResponseEntity<?> checkApplicationExists(@PathVariable Integer candidateId, 
+                                                   @PathVariable Long offerId,
+                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        try {
+            // Extraer el token del header
+            String token = authHeader.substring(7); // Remover "Bearer "
+            String role = jwtUtil.getRoleFromToken(token);
+            
+            // Verificar que sea un candidato
+            if (role == null || (!role.equals("role_candidate") && !role.equalsIgnoreCase("role_candidate"))) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Solo los candidatos pueden verificar aplicaciones");
+            }
+            
+            // Verificar si ya existe la aplicación
+            boolean exists = applicationService.checkApplicationExists(candidateId, offerId);
+            
+            return ResponseEntity.ok(new CheckApplicationResponse(exists));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error al verificar la aplicación: " + e.getMessage());
+        }
+    }
+    
+    // Clase helper para la respuesta del check
+    public static class CheckApplicationResponse {
+        private boolean exists;
+        
+        public CheckApplicationResponse(boolean exists) {
+            this.exists = exists;
+        }
+        
+        public boolean isExists() {
+            return exists;
+        }
+        
+        public void setExists(boolean exists) {
+            this.exists = exists;
+        }
+    }
 }

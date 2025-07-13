@@ -27,9 +27,17 @@ export class OfferDetailsComponent implements OnInit {
   error: string = '';
   offerId: number = 0;
   token: string = sessionStorage.getItem('token') ?? '';
-  headers: HttpHeaders = new HttpHeaders({
-    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-  });
+  
+  // Inicializar headers de forma dinámica
+  get headers(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': 'Bearer ' + token
+      });
+    }
+    return new HttpHeaders();
+  }
 
   // Getter para el texto del toggle según el estado activo de la oferta
   get toggleLabel(): string {
@@ -96,8 +104,10 @@ export class OfferDetailsComponent implements OnInit {
           this.loadOfferFromList();
         }
 
-        // Cargar candidatos después de tener el offerId
-        this.loadCandidates();
+        // Cargar candidatos solo si el usuario puede editar (es una empresa)
+        if (this.canEdit()) {
+          this.loadCandidates();
+        }
       } else {
         console.error('No se pudo obtener el ID de la oferta de la URL');
         this.error = 'No se pudo cargar la oferta';
@@ -107,25 +117,30 @@ export class OfferDetailsComponent implements OnInit {
   }
 
 
-  // Método alternativo para obtener la oferta desde las ofertas cargadas
+  // Método para obtener la oferta desde el servidor
   loadOfferFromList(): void {
     this.loading = true;
-    // Intentar obtener las ofertas del sessionStorage o del servicio
-    const storedOffers = sessionStorage.getItem('company_offers');
-    if (storedOffers) {
-      const offers: Offer[] = JSON.parse(storedOffers);
-      const foundOffer = offers.find(offer => offer.id === this.offerId);
-      if (foundOffer) {
-        this.offer = foundOffer;
+    
+    // Usar el nuevo endpoint público para obtener la oferta
+    this.loginService.getOfferById(this.offerId).subscribe(
+      (offer: Offer) => {
+        console.log('Oferta obtenida del servidor:', offer);
+        this.offer = offer;
+        
+        // Convertir active de int a boolean si es necesario
+        if (this.offer && typeof this.offer.active === 'number') {
+          this.offer.active = this.offer.active === 1;
+        }
+        
         this.loadOfferLabels(); // Cargar etiquetas de la oferta
         this.loading = false;
-        return;
+      },
+      (error) => {
+        console.error('Error al cargar la oferta:', error);
+        this.error = 'Error al cargar la oferta. Inténtalo de nuevo más tarde.';
+        this.loading = false;
       }
-    }
-
-    // Si no se encuentra en el storage, mostrar error
-    this.error = 'Oferta no encontrada';
-    this.loading = false;
+    );
   }
 
   loadCandidates(): void {
@@ -205,10 +220,14 @@ export class OfferDetailsComponent implements OnInit {
       return false;
     }
 
-    // Solo permitir edición si hay una oferta y el usuario es una empresa
-    // En una implementación más robusta, también se verificaría que la empresa
-    // sea la propietaria de la oferta comparando IDs
-    return true;
+    // Obtener el ID de la empresa logueada del token
+    const currentCompanyId = this.loginService.getCompanyIdFromToken();
+    
+    console.log('DEBUG canEdit - currentCompanyId:', currentCompanyId);
+    console.log('DEBUG canEdit - offer.companyId:', this.offer.companyId);
+    
+    // Solo permitir edición si la empresa es la propietaria de la oferta
+    return currentCompanyId !== null && this.offer.companyId === currentCompanyId;
   }
 
   // Iniciar edición
@@ -462,4 +481,88 @@ export class OfferDetailsComponent implements OnInit {
     });
   }
 
+  // Método para verificar si el usuario es candidato
+  isCandidate(): boolean {
+    return this.loginService.isLoggedAsCandidate();
+  }
+
+  // Método para que un candidato se inscriba a la oferta
+  applyToOffer(): void {
+    if (!this.offer || !this.isCandidate()) {
+      this.snackBar.open('No tienes permisos para inscribirte a esta oferta', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    if (!this.offer.active) {
+      this.snackBar.open('Esta oferta no está activa', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    // Obtener el ID del candidato del token
+    const candidateId = this.loginService.getUserIdFromToken();
+    
+    if (!candidateId) {
+      this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+      return;
+    }
+
+    // Verificar si ya está inscrito
+    this.loginService.checkApplicationExists(candidateId, this.offer.id!).subscribe({
+      next: (response: any) => {
+        if (response && response.exists) {
+          // Ya está inscrito, mostrar mensaje informativo
+          this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
+            duration: 5000,
+            panelClass: ['snackbar-info']
+          });
+        } else {
+          // No está inscrito, proceder con la inscripción
+          this.submitApplication();
+        }
+      },
+      error: () => {
+        // Si hay error en la verificación, intentar inscribir de todos modos
+        this.submitApplication();
+      }
+    });
+  }
+
+  private submitApplication(): void {
+    if (!this.offer?.id) return;
+
+    this.loginService.applyToOfferService(this.offer.id).subscribe({
+      next: (response) => {
+        this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+      },
+      error: (error) => {
+        console.error('Error en la inscripción:', error);
+        let errorMessage = 'Error al procesar la inscripción';
+        
+        if (error.status === 400) {
+          errorMessage = 'Ya estás inscrito a esta oferta';
+        } else if (error.status === 401) {
+          errorMessage = 'Debes estar logueado para inscribirte';
+        } else if (error.status === 403) {
+          errorMessage = 'No tienes permisos para inscribirte a esta oferta';
+        }
+
+        this.snackBar.open(errorMessage, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['snackbar-error']
+        });
+      }
+    });
+  }
 }
