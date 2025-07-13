@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { Offer } from '../../model/offer';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-display-offers',
@@ -28,7 +29,11 @@ export class DisplayOffersComponent implements OnInit {
   hasNextPage = false;
   hasPreviousPage = false;
 
-  constructor(private loginService: LoginService, private router: Router) { }
+  constructor(
+    private loginService: LoginService, 
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.loadOffers();
@@ -87,28 +92,72 @@ export class DisplayOffersComponent implements OnInit {
 
   applyOffer(offerId: number): void {
     if (!this.isCandidate()) {
-      alert('Solo los candidatos pueden inscribirse a ofertas');
-      return;
+      // Si no es candidato, verificar si está logueado
+      if (!this.loginService.isLoggedIn()) {
+        // No está logueado, redirigir al login
+        sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${offerId}`);
+        this.router.navigate(['/main/login']);
+        return;
+      } else {
+        // Está logueado pero no es candidato (probablemente empresa)
+        this.snackBar.open('Solo los candidatos pueden inscribirse a ofertas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        return;
+      }
     }
     
     // Obtener el ID del candidato del token
-    const candidateId = this.loginService.getUserIdFromToken();
+    const candidateId = this.loginService.getCandidateIdFromToken();
     
     if (!candidateId) {
-      alert('Error al obtener información del candidato');
+      // Si no se pudo obtener el candidateId, intentar cargar el perfil del usuario
+      console.log('No se pudo obtener candidateId, cargando perfil...');
+      this.loginService.loadUserProfile().subscribe({
+        next: () => {
+          // Después de cargar el perfil, intentar de nuevo
+          const updatedCandidateId = this.loginService.getCandidateIdFromToken();
+          if (updatedCandidateId) {
+            this.proceedWithApplicationCheck(updatedCandidateId, offerId);
+          } else {
+            this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        },
+        error: () => {
+          this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      });
       return;
     }
+
+    this.proceedWithApplicationCheck(candidateId, offerId);
+  }
+
+  private proceedWithApplicationCheck(candidateId: number, offerId: number): void {
 
     // Verificar si ya está inscrito
     this.loginService.checkApplicationExists(candidateId, offerId).subscribe({
       next: (response: any) => {
         if (response && response.exists) {
-          alert('Ya estás inscrito a esta oferta');
+          this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
+            duration: 5000,
+            panelClass: ['snackbar-info']
+          });
         } else {
           // No está inscrito, proceder con la inscripción
           this.loginService.applyToOfferService(offerId).subscribe({
             next: (response) => {
-              alert('Inscripción recibida con éxito');
+              this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
             },
             error: (error) => {
               console.error('Error en la inscripción:', error);
@@ -122,7 +171,10 @@ export class DisplayOffersComponent implements OnInit {
                 errorMessage = 'No tienes permisos para inscribirte a esta oferta';
               }
 
-              alert(errorMessage);
+              this.snackBar.open(errorMessage, 'Cerrar', {
+                duration: 5000,
+                panelClass: ['snackbar-error']
+              });
             }
           });
         }
@@ -131,11 +183,17 @@ export class DisplayOffersComponent implements OnInit {
         // Si hay error en la verificación, intentar inscribir de todos modos
         this.loginService.applyToOfferService(offerId).subscribe({
           next: (response) => {
-            alert('Inscripción recibida con éxito');
+            this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
           },
           error: (error) => {
             console.error('Error en la inscripción:', error);
-            alert('Error al procesar la inscripción');
+            this.snackBar.open('Error al procesar la inscripción', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
           }
         });
       }

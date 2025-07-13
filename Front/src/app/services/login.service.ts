@@ -122,6 +122,38 @@ export class LoginService {
     }
   }
 
+  // Método para obtener el candidateId del token JWT
+  getCandidateIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      console.log('DEBUG getCandidateIdFromToken - payload completo:', payload);
+      console.log('DEBUG getCandidateIdFromToken - candidateId desde token:', payload.candidateId);
+      console.log('DEBUG getCandidateIdFromToken - candidateId desde servicio:', this.candidateId);
+      
+      // Primero intentar obtener el candidateId del token
+      if (payload.candidateId) {
+        return payload.candidateId;
+      }
+      
+      // Si no está en el token, usar el que se cargó desde el perfil
+      if (this.candidateId) {
+        return this.candidateId;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener candidateId:', error);
+      
+      // Como fallback, usar el candidateId del servicio si está disponible
+      return this.candidateId || null;
+    }
+  }
+
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
     const headers = new HttpHeaders({
@@ -271,6 +303,12 @@ export class LoginService {
     
     const role = this.getRole();
     return role === 'role_admin';
+  }
+
+  // Verificar si el usuario está logueado (cualquier rol)
+  isLoggedIn(): boolean {
+    const token = sessionStorage.getItem('token');
+    return token !== null && token.trim() !== '';
   }
 
   logout(): void {

@@ -486,6 +486,27 @@ export class OfferDetailsComponent implements OnInit {
     return this.loginService.isLoggedAsCandidate();
   }
 
+  // Verificar si el usuario está logueado (cualquier rol)
+  isLoggedIn(): boolean {
+    return this.loginService.isLoggedIn();
+  }
+
+  // Verificar si debe mostrar el botón de inscripción
+  shouldShowApplyButton(): boolean {
+    // Mostrar si es candidato logueado O si no está logueado (para ir a login)
+    // NO mostrar si es empresa
+    return !this.loginService.isLoggedAsCompany();
+  }
+
+  // Método para redirigir a login cuando no está logueado
+  redirectToLogin(): void {
+    // Guardar el ID de la oferta para redirigir después del login
+    if (this.offer?.id) {
+      sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${this.offer.id}`);
+    }
+    this.router.navigate(['/main/login']);
+  }
+
   // Método para que un candidato se inscriba a la oferta
   applyToOffer(): void {
     if (!this.offer || !this.isCandidate()) {
@@ -505,15 +526,39 @@ export class OfferDetailsComponent implements OnInit {
     }
 
     // Obtener el ID del candidato del token
-    const candidateId = this.loginService.getUserIdFromToken();
+    const candidateId = this.loginService.getCandidateIdFromToken();
     
     if (!candidateId) {
-      this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+      // Si no se pudo obtener el candidateId, intentar cargar el perfil del usuario
+      console.log('No se pudo obtener candidateId, cargando perfil...');
+      this.loginService.loadUserProfile().subscribe({
+        next: () => {
+          // Después de cargar el perfil, intentar de nuevo
+          const updatedCandidateId = this.loginService.getCandidateIdFromToken();
+          if (updatedCandidateId) {
+            this.proceedWithApplication(updatedCandidateId);
+          } else {
+            this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        },
+        error: () => {
+          this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
       });
       return;
     }
+
+    this.proceedWithApplication(candidateId);
+  }
+
+  private proceedWithApplication(candidateId: number): void {
+    if (!this.offer?.id) return;
 
     // Verificar si ya está inscrito
     this.loginService.checkApplicationExists(candidateId, this.offer.id!).subscribe({

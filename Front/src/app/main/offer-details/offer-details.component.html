@@ -41,13 +41,21 @@
         </div>
       </div>
 
-      <!-- Botón para candidatos -->
+      <!-- Botón para candidatos logueados -->
       <div *ngIf="isCandidate()">
         <button mat-raised-button color="accent" (click)="applyToOffer()" [disabled]="!offer.active">
           <mat-icon>send</mat-icon>
           Inscribirse a esta oferta
         </button>
         <p *ngIf="!offer.active" class="inactive-offer-message">Esta oferta no está activa</p>
+      </div>
+
+      <!-- Botón para usuarios no logueados -->
+      <div *ngIf="!isLoggedIn() && shouldShowApplyButton()">
+        <button mat-raised-button color="primary" (click)="redirectToLogin()">
+          <mat-icon>login</mat-icon>
+          Iniciar sesión para inscribirse
+        </button>
       </div>
     </div>
   </div>
