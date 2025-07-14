@@ -56,6 +56,10 @@ export class OfferDetailsComponent implements OnInit {
   isEditingLabels: boolean = false;
   originalLabels: TechLabel[] = [];
   
+  // Propiedades para el estado de aplicación del candidato
+  isAlreadyApplied: boolean = false;
+  checkingApplicationStatus: boolean = false;
+  
   // Opciones para el tipo de trabajo
   workTypes = [
     { value: 'remote', label: 'Remoto' },
@@ -108,6 +112,11 @@ export class OfferDetailsComponent implements OnInit {
         if (this.canEdit()) {
           this.loadCandidates();
         }
+
+        // Verificar estado de aplicación si es candidato
+        if (this.loginService.isLoggedAsCandidate()) {
+          this.checkApplicationStatus();
+        }
       } else {
         console.error('No se pudo obtener el ID de la oferta de la URL');
         this.error = 'No se pudo cargar la oferta';
@@ -134,6 +143,11 @@ export class OfferDetailsComponent implements OnInit {
         
         this.loadOfferLabels(); // Cargar etiquetas de la oferta
         this.loading = false;
+        
+        // Verificar estado de aplicación si es candidato
+        if (this.loginService.isLoggedAsCandidate()) {
+          this.checkApplicationStatus();
+        }
       },
       (error) => {
         console.error('Error al cargar la oferta:', error);
@@ -498,6 +512,48 @@ export class OfferDetailsComponent implements OnInit {
     return !this.loginService.isLoggedAsCompany();
   }
 
+  // Método para verificar si el candidato ya está aplicado a esta oferta
+  checkApplicationStatus(): void {
+    if (!this.offer?.id || !this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
+    const candidateId = this.loginService.getCandidateIdFromToken();
+    if (!candidateId) {
+      // Si no se puede obtener el candidateId, intentar cargar el perfil
+      this.loginService.loadUserProfile().subscribe({
+        next: () => {
+          const updatedCandidateId = this.loginService.getCandidateIdFromToken();
+          if (updatedCandidateId) {
+            this.performApplicationCheck(updatedCandidateId);
+          }
+        },
+        error: () => {
+          console.log('No se pudo cargar el perfil del usuario para verificar aplicación');
+        }
+      });
+      return;
+    }
+
+    this.performApplicationCheck(candidateId);
+  }
+
+  private performApplicationCheck(candidateId: number): void {
+    if (!this.offer?.id) return;
+
+    this.checkingApplicationStatus = true;
+    this.loginService.checkApplicationExists(candidateId, this.offer.id).subscribe({
+      next: (response: any) => {
+        this.isAlreadyApplied = response && response.exists;
+        this.checkingApplicationStatus = false;
+      },
+      error: () => {
+        this.isAlreadyApplied = false;
+        this.checkingApplicationStatus = false;
+      }
+    });
+  }
+
   // Método para redirigir a login cuando no está logueado
   redirectToLogin(): void {
     // Guardar el ID de la oferta para redirigir después del login
@@ -507,8 +563,29 @@ export class OfferDetailsComponent implements OnInit {
     this.router.navigate(['/main/login']);
   }
 
+  // Método para obtener el texto del botón de aplicación
+  getApplyButtonText(): string {
+    if (this.checkingApplicationStatus) {
+      return 'Verificando...';
+    }
+    if (this.isAlreadyApplied) {
+      return 'Ya estás inscrito';
+    }
+    return 'Inscribirse';
+  }
+
+  // Método para verificar si el botón de aplicación debe estar deshabilitado
+  isApplyButtonDisabled(): boolean {
+    return this.checkingApplicationStatus || this.isAlreadyApplied;
+  }
+
   // Método para que un candidato se inscriba a la oferta
   applyToOffer(): void {
+    // Si ya está aplicado, no hacer nada
+    if (this.isAlreadyApplied) {
+      return;
+    }
+
     if (!this.offer || !this.isCandidate()) {
       this.snackBar.open('No tienes permisos para inscribirte a esta oferta', 'Cerrar', {
         duration: 3000,
@@ -590,6 +667,8 @@ export class OfferDetailsComponent implements OnInit {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
+        // Actualizar el estado para mostrar que ya está aplicado
+        this.isAlreadyApplied = true;
       },
       error: (error) => {
         console.error('Error en la inscripción:', error);
@@ -597,6 +676,8 @@ export class OfferDetailsComponent implements OnInit {
         
         if (error.status === 400) {
           errorMessage = 'Ya estás inscrito a esta oferta';
+          // Si el error es porque ya está inscrito, actualizar el estado
+          this.isAlreadyApplied = true;
         } else if (error.status === 401) {
           errorMessage = 'Debes estar logueado para inscribirte';
         } else if (error.status === 403) {

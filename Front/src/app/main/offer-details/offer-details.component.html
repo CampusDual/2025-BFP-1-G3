@@ -43,9 +43,12 @@
 
       <!-- Botón para candidatos logueados -->
       <div *ngIf="isCandidate()">
-        <button mat-raised-button color="accent" (click)="applyToOffer()" [disabled]="!offer.active">
-          <mat-icon>send</mat-icon>
-          Inscribirse a esta oferta
+        <button mat-raised-button 
+                [color]="isAlreadyApplied ? 'warn' : 'accent'" 
+                (click)="applyToOffer()" 
+                [disabled]="!offer.active || isApplyButtonDisabled()">
+          <mat-icon>{{ isAlreadyApplied ? 'check_circle' : 'send' }}</mat-icon>
+          {{ getApplyButtonText() }}
         </button>
         <p *ngIf="!offer.active" class="inactive-offer-message">Esta oferta no está activa</p>
       </div>
