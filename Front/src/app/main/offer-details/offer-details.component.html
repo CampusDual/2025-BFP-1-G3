@@ -180,21 +180,6 @@
                 <mat-hint align="end" [class.warn-limit]="(editedOffer.benefits.length || 0) >= 4800">{{editedOffer.benefits.length || 0}}/5000</mat-hint>
                 <mat-error *ngIf="editedOffer.benefits && editedOffer.benefits.length > 5000">Los beneficios no pueden superar los 5000 caracteres</mat-error>
               </mat-form-field>
-            <div class="labels-actions" *ngIf="canEdit()">
-              <button *ngIf="!isEditingLabels" mat-button color="primary" (click)="startEditingLabels()">
-                <mat-icon>edit</mat-icon>
-                Editar etiquetas
-              </button>
-              <div *ngIf="isEditingLabels" class="edit-actions">
-                <button mat-button (click)="cancelEditingLabels()">
-                  <mat-icon>cancel</mat-icon>
-                  Cancelar
-                </button>
-                <button mat-raised-button color="primary" (click)="saveLabels()">
-                  <mat-icon>save</mat-icon>
-                  Guardar
-                </button>
-              </div>
             </div>
 
           <!-- Sección de Etiquetas Técnicas -->
