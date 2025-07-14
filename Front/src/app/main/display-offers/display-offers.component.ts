@@ -38,26 +38,71 @@ export class DisplayOffersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Si es candidato, cargar primero el caché antes de las ofertas para evitar parpadeos
+    // Establecer estado de carga desde el inicio
+    this.loading = true;
+    this.isLoading = true;
+    
+    // Si es candidato, cargar caché y ofertas en paralelo para mayor velocidad
     if (this.loginService.isLoggedAsCandidate()) {
-      this.loginService.loadApplicationsCacheIfCandidate()?.subscribe({
-        next: () => {
-          console.log('Caché de aplicaciones cargado - procediendo a cargar ofertas');
+      // Verificar si el caché ya está disponible para optimizar
+      const cachePromise = this.loginService.applicationsCacheLoaded ? 
+        Promise.resolve(this.loginService.candidateApplicationsCache || []) :
+        this.loginService.loadApplicationsCacheIfCandidate()?.toPromise() || Promise.resolve([]);
+      
+      const offersPromise = this.loadOffersAsync();
+      
+      Promise.all([cachePromise, offersPromise]).then(
+        ([cacheResult, offersResult]) => {
+          console.log('✅ Carga paralela completada - Caché y ofertas listos');
           this.applicationsCacheReady = true;
-          this.loadOffers();
-        },
-        error: (error) => {
-          console.error('Error cargando caché de aplicaciones:', error);
-          // Aunque falle el caché, marcarlo como "listo" y cargar las ofertas
-          this.applicationsCacheReady = true;
-          this.loadOffers();
+          // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
+          this.loading = false;
+          this.isLoading = false;
         }
-      });
+      ).catch(
+        (error) => {
+          console.error('❌ Error en carga paralela:', error);
+          this.applicationsCacheReady = true;
+          // Asegurar que el loading se detenga incluso si hay errores
+          this.loading = false;
+          this.isLoading = false;
+        }
+      );
     } else {
-      // Si no es candidato, el caché no es relevante
+      // Si no es candidato, cargar ofertas directamente
       this.applicationsCacheReady = true;
       this.loadOffers();
     }
+  }
+
+  // Método asíncrono para cargar ofertas (usado en carga paralela)
+  private loadOffersAsync(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.loginService.getOffersPaginated(this.currentPage, this.pageSize).subscribe({
+        next: (response) => {
+          this.offers = response.offers || [];
+          this.filteredOffers = [...this.offers];
+          this.totalOffers = response.totalElements || 0;
+          this.totalPages = response.totalPages || 0;
+          this.hasNextPage = this.currentPage < (this.totalPages - 1);
+          this.hasPreviousPage = this.currentPage > 0;
+          // NO establecer loading = false aquí cuando es candidato, esperar al Promise.all
+          if (!this.loginService.isLoggedAsCandidate()) {
+            this.loading = false;
+            this.isLoading = false;
+          }
+          this.updateDisplayOffers();
+          resolve(response);
+        },
+        error: (error) => {
+          console.error('Error loading offers:', error);
+          this.error = true;
+          this.loading = false;
+          this.isLoading = false;
+          reject(error);
+        }
+      });
+    });
   }
 
   loadOffers(): void {
@@ -218,7 +263,9 @@ export class DisplayOffersComponent implements OnInit {
 
   // Método para verificar si debe mostrar el estado de inscripción
   shouldShowApplicationStatus(): boolean {
-    return this.loginService.isLoggedAsCandidate() && this.applicationsCacheReady;
+    // Optimización: usar también el estado del caché del servicio como fallback
+    const isCacheReady = this.applicationsCacheReady || this.loginService.applicationsCacheLoaded;
+    return this.loginService.isLoggedAsCandidate() && isCacheReady;
   }
 
   nextPage(): void {

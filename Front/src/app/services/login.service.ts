@@ -15,8 +15,8 @@ import { ApplicationSummaryDTO } from '../model/application-summary';
 })
 export class LoginService {
   // Cache de aplicaciones del candidato
-  private candidateApplicationsCache: ApplicationSummaryDTO[] | null = null;
-  private applicationsCacheLoaded: boolean = false;
+  public candidateApplicationsCache: ApplicationSummaryDTO[] | null = null; // Público para optimización de UI
+  public applicationsCacheLoaded: boolean = false; // Público para optimización de UI
 
   //Método para obtener aplicaciones de un candidato
   getCandidateApplications(): Observable<ApplicationSummaryDTO[]> {
@@ -174,6 +174,22 @@ export class LoginService {
           // Ya no guardamos el rol en sessionStorage, se obtiene del token
           
           this.role = response.roles;
+          
+          // 🚀 OPTIMIZACIÓN: Precargar caché de aplicaciones para candidatos
+          // Esto mejora la velocidad de navegación posterior
+          setTimeout(() => {
+            if (this.isLoggedAsCandidate()) {
+              console.log('🔄 Precargando caché de aplicaciones tras login...');
+              this.loadApplicationsCacheIfCandidate()?.subscribe({
+                next: () => {
+                  console.log('✅ Caché precargado exitosamente tras login');
+                },
+                error: (error) => {
+                  console.warn('⚠️ Error precargando caché tras login:', error);
+                }
+              });
+            }
+          }, 100); // Pequeño delay para asegurar que el token esté guardado
         }),
         catchError(e => {
           if (e.status === 401) {

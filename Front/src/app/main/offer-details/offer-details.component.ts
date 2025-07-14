@@ -95,18 +95,34 @@ export class OfferDetailsComponent implements OnInit {
       console.log('OfferId obtenido de la URL:', this.offerId);
 
       if (this.offerId) {
-        // Si es candidato, cargar el caché antes de todo lo demás para evitar parpadeos
+        // Establecer loading desde el inicio
+        this.loading = true;
+        
+        // Si es candidato, optimizar carga con Promise.all para paralelismo
         if (this.loginService.isLoggedAsCandidate()) {
-          this.loginService.loadApplicationsCacheIfCandidate()?.subscribe({
-            next: () => {
-              console.log('Caché de aplicaciones cargado en detalles - procediendo');
-              this.loadOfferContent();
-            },
-            error: (error) => {
-              console.error('Error cargando caché de aplicaciones en detalles:', error);
-              this.loadOfferContent();
+          // Verificar si el caché ya está disponible para optimizar
+          const cachePromise = this.loginService.applicationsCacheLoaded ? 
+            Promise.resolve(this.loginService.candidateApplicationsCache || []) :
+            this.loginService.loadApplicationsCacheIfCandidate()?.toPromise() || Promise.resolve([]);
+          
+          const contentPromise = this.loadOfferContentAsync();
+          
+          Promise.all([cachePromise, contentPromise]).then(
+            ([cacheResult, contentResult]) => {
+              console.log('✅ Carga paralela completada en detalles');
+              // Ahora SÍ terminamos el loading y verificamos el estado
+              this.loading = false;
+              // Verificar estado de aplicación ahora que el caché está listo
+              this.checkApplicationStatusFromCache();
             }
-          });
+          ).catch(
+            (error) => {
+              console.error('❌ Error en carga paralela en detalles:', error);
+              // Continuar aún con errores
+              this.loading = false;
+              this.checkApplicationStatusFromCache();
+            }
+          );
         } else {
           this.loadOfferContent();
         }
@@ -115,6 +131,73 @@ export class OfferDetailsComponent implements OnInit {
         this.error = 'No se pudo cargar la oferta';
         this.loading = false;
       }
+    });
+  }
+
+  // Método asíncrono para cargar contenido de oferta (usado en carga paralela)
+  private loadOfferContentAsync(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // Intentar obtener la oferta del estado de navegación
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras.state?.['offer']) {
+        console.log('Oferta obtenida del estado de navegación');
+        this.offer = navigation.extras.state['offer'];
+        // Convertir active de int a boolean
+        if (this.offer && typeof this.offer.active === 'number') {
+          this.offer.active = this.offer.active === 1;
+        }
+        // NO establecer loading = false aquí cuando es candidato, esperar al Promise.all
+        if (!this.loginService.isLoggedAsCandidate()) {
+          this.loading = false;
+        }
+        
+        // Cargar candidatos si puede editar
+        if (this.canEdit()) {
+          this.loadCandidates();
+        }
+        
+        resolve(this.offer);
+      } else {
+        console.log('Cargando oferta desde la lista...');
+        this.loadOfferFromListAsync().then(resolve).catch(reject);
+      }
+    });
+  }
+
+  // Método asíncrono para cargar oferta desde servidor
+  private loadOfferFromListAsync(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.loginService.getOfferById(this.offerId).subscribe(
+        (offer: Offer) => {
+          console.log('Oferta obtenida del servidor:', offer);
+          this.offer = offer;
+          
+          // Convertir active de int a boolean si es necesario
+          if (this.offer && typeof this.offer.active === 'number') {
+            this.offer.active = this.offer.active === 1;
+          }
+          
+          this.loadOfferLabels(); // Cargar etiquetas de la oferta
+          
+          // NO establecer loading = false aquí cuando es candidato, esperar al Promise.all
+          if (!this.loginService.isLoggedAsCandidate()) {
+            this.loading = false;
+          }
+          
+          // Cargar candidatos si puede editar
+          if (this.canEdit()) {
+            this.loadCandidates();
+          }
+          
+          resolve(offer);
+        },
+        (error) => {
+          console.error('Error obteniendo la oferta:', error);
+          this.error = 'Error al cargar la oferta';
+          this.loading = false;
+          reject(error);
+        }
+      );
     });
   }
 
