@@ -49,9 +49,9 @@ export class LoginComponent implements OnInit {
         } else if (response.roles === 'role_candidate') {
           // Verificar si hay una redirección guardada
           const redirectPath = sessionStorage.getItem('redirectAfterLogin');
-          if (redirectPath) {
+          if (redirectPath && redirectPath !== '' && redirectPath !== null) {
             sessionStorage.removeItem('redirectAfterLogin');
-            this.router.navigate([redirectPath]);
+            this.router.navigate([`${redirectPath}`]);
           } else {
             this.router.navigate(['/main/ofertas']);
           }
