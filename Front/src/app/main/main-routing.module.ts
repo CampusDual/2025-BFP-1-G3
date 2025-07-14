@@ -17,7 +17,7 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
 const routes: Routes = [
   { path: '', redirectTo: 'ofertas', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
-  // { path: 'index', component: IndexComponent },
+  { path: 'index', component: IndexComponent },
   { path: 'publicar', component: PublishOfferComponent, canActivate: [AuthGuard] },
   { path: 'ofertas', component: DisplayOffersComponent },
   { path: 'registrarse', component: CandidateSignUpComponent, canActivate: [noAuthGuard] },
