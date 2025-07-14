@@ -14,6 +14,10 @@ import { ApplicationSummaryDTO } from '../model/application-summary';
   providedIn: 'root'
 })
 export class LoginService {
+  // Cache de aplicaciones del candidato
+  private candidateApplicationsCache: ApplicationSummaryDTO[] | null = null;
+  private applicationsCacheLoaded: boolean = false;
+
   //Método para obtener aplicaciones de un candidato
   getCandidateApplications(): Observable<ApplicationSummaryDTO[]> {
     const token = sessionStorage.getItem('token');
@@ -318,6 +322,9 @@ export class LoginService {
     sessionStorage.removeItem('empresa');
     // No necesitamos limpiar 'role' de sessionStorage porque ya no lo usamos
     this.role = '';
+    
+    // Limpiar caché de aplicaciones
+    this.clearApplicationsCache();
 
     console.log('Sesión cerrada correctamente');
 
@@ -582,5 +589,73 @@ export class LoginService {
     };
     
     return this.http.post(`${this.urlEndPoint}/applications/add`, applicationData, { headers });
+  }
+
+  // Método para obtener aplicaciones del candidato con caché
+  getCandidateApplicationsWithCache(): Observable<ApplicationSummaryDTO[]> {
+    // Si ya tenemos el caché cargado, devolverlo inmediatamente
+    if (this.applicationsCacheLoaded && this.candidateApplicationsCache) {
+      return new Observable(observer => {
+        observer.next(this.candidateApplicationsCache!);
+        observer.complete();
+      });
+    }
+
+    // Si no está cargado, cargar desde el servidor y guardar en caché
+    return this.getCandidateApplications().pipe(
+      tap(applications => {
+        this.candidateApplicationsCache = applications;
+        this.applicationsCacheLoaded = true;
+        // 🔍 TEMPORAL: Para que veas el caché en console
+        console.log('✅ CACHÉ CREADO:', this.candidateApplicationsCache);
+        console.log('📊 Cantidad de aplicaciones:', applications.length);
+      })
+    );
+  }
+
+  // Método para verificar si un candidato está inscrito en una oferta (usando caché)
+  isAppliedToOffer(offerId: number): boolean {
+    if (!this.applicationsCacheLoaded || !this.candidateApplicationsCache) {
+      console.log('⚠️ Caché no disponible para oferta:', offerId);
+      return false; // Si no está cargado el caché, asumir que no está inscrito
+    }
+
+    const isApplied = this.candidateApplicationsCache.some(
+      application => application.offer.id === offerId
+    );
+    
+    console.log(`🔍 Verificando oferta ${offerId}: ${isApplied ? '✅ YA INSCRITO' : '❌ NO INSCRITO'}`);
+    return isApplied;
+  }
+
+  // Método para agregar una nueva aplicación al caché
+  addApplicationToCache(application: ApplicationSummaryDTO): void {
+    if (this.candidateApplicationsCache) {
+      this.candidateApplicationsCache.push(application);
+    }
+  }
+
+  // Método para limpiar el caché (útil en logout)
+  clearApplicationsCache(): void {
+    this.candidateApplicationsCache = null;
+    this.applicationsCacheLoaded = false;
+  }
+
+  // Método para cargar el caché de aplicaciones si es candidato
+  loadApplicationsCacheIfCandidate(): Observable<ApplicationSummaryDTO[]> | null {
+    if (!this.isLoggedAsCandidate()) {
+      return null;
+    }
+
+    if (this.applicationsCacheLoaded) {
+      console.log('💾 Caché de aplicaciones ya disponible, retornando desde memoria');
+      return new Observable(observer => {
+        observer.next(this.candidateApplicationsCache || []);
+        observer.complete();
+      });
+    }
+
+    console.log('📡 Cargando caché de aplicaciones desde servidor...');
+    return this.getCandidateApplicationsWithCache();
   }
 }

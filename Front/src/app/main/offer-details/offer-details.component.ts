@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Offer } from 'src/app/model/offer';
 import { Candidate } from 'src/app/model/candidate';
 import { Application } from 'src/app/model/application';
+import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
 import { TechLabel } from 'src/app/model/tech-label';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -59,6 +60,7 @@ export class OfferDetailsComponent implements OnInit {
   // Propiedades para el estado de aplicación del candidato
   isAlreadyApplied: boolean = false;
   checkingApplicationStatus: boolean = false;
+  candidateApplications: ApplicationSummaryDTO[] = [];
   
   // Opciones para el tipo de trabajo
   workTypes = [
@@ -93,29 +95,20 @@ export class OfferDetailsComponent implements OnInit {
       console.log('OfferId obtenido de la URL:', this.offerId);
 
       if (this.offerId) {
-        // Intentar obtener la oferta del estado de navegación
-        const navigation = this.router.getCurrentNavigation();
-        if (navigation?.extras.state?.['offer']) {
-          console.log('Oferta obtenida del estado de navegación');
-          this.offer = navigation.extras.state['offer'];
-          // Convertir active de int a boolean
-          if (this.offer && typeof this.offer.active === 'number') {
-            this.offer.active = this.offer.active === 1;
-          }
-          this.loading = false;
-        } else {
-          console.log('Cargando oferta desde la lista...');
-          this.loadOfferFromList();
-        }
-
-        // Cargar candidatos solo si el usuario puede editar (es una empresa)
-        if (this.canEdit()) {
-          this.loadCandidates();
-        }
-
-        // Verificar estado de aplicación si es candidato
+        // Si es candidato, cargar el caché antes de todo lo demás para evitar parpadeos
         if (this.loginService.isLoggedAsCandidate()) {
-          this.checkApplicationStatus();
+          this.loginService.loadApplicationsCacheIfCandidate()?.subscribe({
+            next: () => {
+              console.log('Caché de aplicaciones cargado en detalles - procediendo');
+              this.loadOfferContent();
+            },
+            error: (error) => {
+              console.error('Error cargando caché de aplicaciones en detalles:', error);
+              this.loadOfferContent();
+            }
+          });
+        } else {
+          this.loadOfferContent();
         }
       } else {
         console.error('No se pudo obtener el ID de la oferta de la URL');
@@ -123,6 +116,33 @@ export class OfferDetailsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private loadOfferContent(): void {
+    // Intentar obtener la oferta del estado de navegación
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state?.['offer']) {
+      console.log('Oferta obtenida del estado de navegación');
+      this.offer = navigation.extras.state['offer'];
+      // Convertir active de int a boolean
+      if (this.offer && typeof this.offer.active === 'number') {
+        this.offer.active = this.offer.active === 1;
+      }
+      this.loading = false;
+    } else {
+      console.log('Cargando oferta desde la lista...');
+      this.loadOfferFromList();
+    }
+
+    // Cargar candidatos solo si el usuario puede editar (es una empresa)
+    if (this.canEdit()) {
+      this.loadCandidates();
+    }
+
+    // Verificar estado de aplicación si es candidato (usando caché ya cargado)
+    if (this.loginService.isLoggedAsCandidate()) {
+      this.checkApplicationStatusFromCache();
+    }
   }
 
 
@@ -144,14 +164,14 @@ export class OfferDetailsComponent implements OnInit {
         this.loadOfferLabels(); // Cargar etiquetas de la oferta
         this.loading = false;
         
-        // Verificar estado de aplicación si es candidato
+        // Verificar estado de aplicación si es candidato (el caché ya debería estar cargado)
         if (this.loginService.isLoggedAsCandidate()) {
-          this.checkApplicationStatus();
+          this.checkApplicationStatusFromCache();
         }
       },
       (error) => {
-        console.error('Error al cargar la oferta:', error);
-        this.error = 'Error al cargar la oferta. Inténtalo de nuevo más tarde.';
+        console.error('Error obteniendo la oferta:', error);
+        this.error = 'Error al cargar la oferta';
         this.loading = false;
       }
     );
@@ -518,6 +538,59 @@ export class OfferDetailsComponent implements OnInit {
       return;
     }
 
+    // Verificación instantánea usando el caché de aplicaciones
+    this.checkApplicationStatusLocally();
+  }
+
+  // Verificación instantánea usando el caché del servicio
+  checkApplicationStatusFromCache(): void {
+    if (!this.offer?.id || !this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
+    // Usar el caché del servicio para verificación instantánea
+    this.isAlreadyApplied = this.loginService.isAppliedToOffer(this.offer.id);
+  }
+
+  // Método para cargar las aplicaciones del candidato una sola vez
+  loadCandidateApplications(): void {
+    if (!this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
+    this.loginService.getCandidateApplications().subscribe({
+      next: (applications: ApplicationSummaryDTO[]) => {
+        this.candidateApplications = applications;
+        // Una vez cargadas las aplicaciones, verificar el estado localmente
+        this.checkApplicationStatusLocally();
+      },
+      error: (error) => {
+        console.error('Error cargando aplicaciones del candidato:', error);
+        this.candidateApplications = [];
+        // Si falla la carga, usar el método anterior como fallback
+        this.checkApplicationStatusFallback();
+      }
+    });
+  }
+
+  // Verificación instantánea usando aplicaciones cacheadas
+  private checkApplicationStatusLocally(): void {
+    if (!this.offer?.id) {
+      return;
+    }
+
+    // Buscar si ya existe una aplicación para esta oferta
+    this.isAlreadyApplied = this.candidateApplications.some(
+      application => application.offer.id === this.offer!.id
+    );
+  }
+
+  // Método de fallback usando la verificación HTTP original
+  private checkApplicationStatusFallback(): void {
+    if (!this.offer?.id || !this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
     const candidateId = this.loginService.getCandidateIdFromToken();
     if (!candidateId) {
       // Si no se puede obtener el candidateId, intentar cargar el perfil
@@ -565,9 +638,6 @@ export class OfferDetailsComponent implements OnInit {
 
   // Método para obtener el texto del botón de aplicación
   getApplyButtonText(): string {
-    if (this.checkingApplicationStatus) {
-      return 'Verificando...';
-    }
     if (this.isAlreadyApplied) {
       return 'Ya estás inscrito';
     }
@@ -576,7 +646,7 @@ export class OfferDetailsComponent implements OnInit {
 
   // Método para verificar si el botón de aplicación debe estar deshabilitado
   isApplyButtonDisabled(): boolean {
-    return this.checkingApplicationStatus || this.isAlreadyApplied;
+    return this.isAlreadyApplied;
   }
 
   // Método para que un candidato se inscriba a la oferta
@@ -637,25 +707,20 @@ export class OfferDetailsComponent implements OnInit {
   private proceedWithApplication(candidateId: number): void {
     if (!this.offer?.id) return;
 
-    // Verificar si ya está inscrito
-    this.loginService.checkApplicationExists(candidateId, this.offer.id!).subscribe({
-      next: (response: any) => {
-        if (response && response.exists) {
-          // Ya está inscrito, mostrar mensaje informativo
-          this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
-            duration: 5000,
-            panelClass: ['snackbar-info']
-          });
-        } else {
-          // No está inscrito, proceder con la inscripción
-          this.submitApplication();
-        }
-      },
-      error: () => {
-        // Si hay error en la verificación, intentar inscribir de todos modos
-        this.submitApplication();
-      }
-    });
+    // Verificar localmente usando el caché del servicio
+    const isAlreadyApplied = this.loginService.isAppliedToOffer(this.offer.id);
+
+    if (isAlreadyApplied) {
+      // Ya está inscrito, mostrar mensaje informativo
+      this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
+        duration: 5000,
+        panelClass: ['snackbar-info']
+      });
+      this.isAlreadyApplied = true;
+    } else {
+      // No está inscrito, proceder con la inscripción
+      this.submitApplication();
+    }
   }
 
   private submitApplication(): void {
@@ -667,8 +732,19 @@ export class OfferDetailsComponent implements OnInit {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
-        // Actualizar el estado para mostrar que ya está aplicado
+        
+        // Actualizar el estado local inmediatamente
         this.isAlreadyApplied = true;
+        
+        // Actualizar el caché del servicio
+        if (this.offer) {
+          const newApplication: ApplicationSummaryDTO = {
+            id: response.id || Date.now(), // Usar el ID de la respuesta o un temporal
+            state: 1, // Estado activo
+            offer: this.offer
+          };
+          this.loginService.addApplicationToCache(newApplication);
+        }
       },
       error: (error) => {
         console.error('Error en la inscripción:', error);

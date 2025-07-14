@@ -159,6 +159,62 @@ mat-card-subtitle {
   margin: 0 !important;
 }
 
+/* === ESTADO DE INSCRIPCIÓN === */
+.application-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.applied-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #6c757d;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.applied-badge mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.applied-text {
+  white-space: nowrap;
+}
+
+/* Nuevo estilo para badge solo con icono */
+.applied-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6c757d;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: default;
+}
+
+.applied-badge-icon mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.apply-button:hover {
+  background-color: #e61b15;
+  color: #f2f2f2;
+  transform: scale(1.05);
+}
+
 /* === CONTENEDOR DE ACCIONES === */
 .card-actions {
   display: flex;

@@ -42,10 +42,17 @@
           (click)="viewOfferDetails(offer.id)">
           <mat-icon id="info">info</mat-icon>
         </button>
-        <button *ngIf="isCandidate()" mat-icon-button matTooltip="Inscribirse a la oferta"
-          (click)="applyOffer(offer.id)" class="tooltip-button">
-          <mat-icon id="apply">outbox</mat-icon>
-        </button>
+        
+        <!-- Mostrar estado de inscripción para candidatos -->
+        <div *ngIf="shouldShowApplicationStatus()" class="application-status">
+          <button *ngIf="!isAppliedToOffer(offer.id)" mat-icon-button matTooltip="Inscribirse a la oferta"
+            (click)="applyOffer(offer.id)" class="tooltip-button apply-button">
+            <mat-icon id="apply">outbox</mat-icon>
+          </button>
+          <span *ngIf="isAppliedToOffer(offer.id)" class="applied-badge-icon" matTooltip="Ya estás inscrito a esta oferta">
+            <mat-icon>check_circle</mat-icon>
+          </span>
+        </div>
       </mat-card-actions>
     </mat-card>
   </div>
