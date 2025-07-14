@@ -23,6 +23,9 @@ export class DisplayOffersComponent implements OnInit {
   isSearchActive = false;
   applicationsCacheReady = false; // Indica si el caché de aplicaciones está listo
   
+  // Cache para evitar llamadas repetitivas en el template
+  private appliedOffersCache = new Map<number, boolean>();
+  
   // Pagination properties
   currentPage = 0;
   pageSize = 20;
@@ -55,6 +58,8 @@ export class DisplayOffersComponent implements OnInit {
         ([cacheResult, offersResult]) => {
           console.log('✅ Carga paralela completada - Caché y ofertas listos');
           this.applicationsCacheReady = true;
+          // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
+          this.updateAppliedOffersCache();
           // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
           this.loading = false;
           this.isLoading = false;
@@ -233,6 +238,8 @@ export class DisplayOffersComponent implements OnInit {
               offer: offer
             };
             this.loginService.addApplicationToCache(newApplication);
+            // Actualizar también nuestro caché local
+            this.appliedOffersCache.set(offerId, true);
           }
         },
         error: (error) => {
@@ -258,7 +265,20 @@ export class DisplayOffersComponent implements OnInit {
 
   // Método para verificar si el candidato está inscrito en una oferta
   isAppliedToOffer(offerId: number): boolean {
-    return this.loginService.isAppliedToOffer(offerId);
+    // Si no hay caché o no es candidato, devolver false
+    if (!this.loginService.isLoggedAsCandidate() || !this.applicationsCacheReady) {
+      return false;
+    }
+    
+    // Usar caché local para evitar llamadas repetitivas
+    if (this.appliedOffersCache.has(offerId)) {
+      return this.appliedOffersCache.get(offerId)!;
+    }
+    
+    // Solo hacer la verificación una vez por oferta
+    const isApplied = this.loginService.isAppliedToOffer(offerId);
+    this.appliedOffersCache.set(offerId, isApplied);
+    return isApplied;
   }
 
   // Método para verificar si debe mostrar el estado de inscripción
@@ -273,6 +293,7 @@ export class DisplayOffersComponent implements OnInit {
       this.currentPage++;
       // Al cambiar de página, no necesitamos recargar el caché (ya está en memoria)
       this.loadOffers();
+      this.updateAppliedOffersCache();
     }
   }
 
@@ -281,6 +302,7 @@ export class DisplayOffersComponent implements OnInit {
       this.currentPage--;
       // Al cambiar de página, no necesitamos recargar el caché (ya está en memoria)
       this.loadOffers();
+      this.updateAppliedOffersCache();
     }
   }
 
@@ -289,6 +311,7 @@ export class DisplayOffersComponent implements OnInit {
       this.currentPage = page;
       // Al cambiar de página, no necesitamos recargar el caché (ya está en memoria)
       this.loadOffers();
+      this.updateAppliedOffersCache();
     }
   }
 
@@ -302,5 +325,22 @@ export class DisplayOffersComponent implements OnInit {
 
   get endIndex(): number {
     return Math.min((this.currentPage + 1) * this.pageSize, this.totalOffers);
+  }
+
+  // Método para limpiar el caché de ofertas aplicadas
+  private clearAppliedOffersCache(): void {
+    this.appliedOffersCache.clear();
+  }
+
+  // Método para actualizar el caché cuando se cargan nuevas aplicaciones
+  private updateAppliedOffersCache(): void {
+    this.clearAppliedOffersCache();
+    // Pre-poblar el caché para todas las ofertas actuales
+    if (this.loginService.isLoggedAsCandidate() && this.applicationsCacheReady) {
+      this.offers.forEach(offer => {
+        const isApplied = this.loginService.isAppliedToOffer(offer.id);
+        this.appliedOffersCache.set(offer.id, isApplied);
+      });
+    }
   }
 }
