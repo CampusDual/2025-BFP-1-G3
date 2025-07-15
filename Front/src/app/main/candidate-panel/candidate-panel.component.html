@@ -2,7 +2,7 @@
   <div class="candidate-profile-container">
     <div class="candidate-header-card">
       <div class="avatar-section">
-        <div class="avatar">
+        <div class="avatar-placeholder">
           <mat-icon class="avatar-icon">person</mat-icon>
         </div>
         <div class="candidate-info">
@@ -81,6 +81,106 @@
             <button mat-raised-button color="primary" type="submit" [disabled]="submitting || profileForm.invalid">
               <mat-icon *ngIf="submitting">hourglass_empty</mat-icon>
               {{ submitting ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <!-- Nueva Pestaña de Perfil Profesional -->
+    <mat-tab label="Perfil Profesional">
+      <div class="tab-content">
+        <form [formGroup]="professionalForm" (ngSubmit)="onSubmitProfessional()">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Título Profesional</mat-label>
+              <input matInput formControlName="professionalTitle" placeholder="ej. Desarrollador Full Stack">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Años de Experiencia</mat-label>
+              <input matInput formControlName="yearsExperience" type="number" min="0" max="50">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Situación Laboral</mat-label>
+              <mat-select formControlName="employmentStatus">
+                <mat-option value="EMPLEADO">Empleado</mat-option>
+                <mat-option value="DESEMPLEADO">Desempleado</mat-option>
+                <mat-option value="FREELANCE">Freelance</mat-option>
+                <mat-option value="ESTUDIANTE">Estudiante</mat-option>
+                <mat-option value="BUSCA_ACTIVAMENTE">Buscando activamente</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Disponibilidad</mat-label>
+              <mat-select formControlName="availability">
+                <mat-option value="INMEDIATA">Inmediata</mat-option>
+                <mat-option value="UNA_SEMANA">En una semana</mat-option>
+                <mat-option value="DOS_SEMANAS">En dos semanas</mat-option>
+                <mat-option value="UN_MES">En un mes</mat-option>
+                <mat-option value="MAS_DE_UN_MES">Más de un mes</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Modalidad Preferida</mat-label>
+              <mat-select formControlName="preferredModality">
+                <mat-option value="PRESENCIAL">Presencial</mat-option>
+                <mat-option value="REMOTO">Remoto</mat-option>
+                <mat-option value="HIBRIDO">Híbrido</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Perfil GitHub</mat-label>
+              <input matInput formControlName="githubProfile" placeholder="https://github.com/tu-usuario">
+            </mat-form-field>
+          </div>
+
+          <!-- Campo de presentación ocupando todo el ancho -->
+          <div class="full-width-field">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Presentación Personal</mat-label>
+              <textarea matInput formControlName="presentation" rows="4" 
+                        placeholder="Cuéntanos sobre ti, tus objetivos profesionales y qué te motiva..."></textarea>
+            </mat-form-field>
+          </div>
+
+          <!-- Selección de áreas de especialización -->
+          <div class="tech-labels-section">
+            <h3>Áreas de Especialización (máximo 10)</h3>
+            <p class="helper-text">Selecciona hasta 10 tecnologías en las que tienes experiencia:</p>
+            
+            <div *ngIf="loadingTechLabels" class="loading-message">
+              <mat-spinner diameter="30"></mat-spinner>
+              <p>Cargando tecnologías...</p>
+            </div>
+
+            <div *ngIf="!loadingTechLabels" class="tech-labels-grid">
+              <mat-checkbox 
+                *ngFor="let techLabel of availableTechLabels" 
+                [checked]="isSelected(techLabel.id)"
+                [disabled]="!isSelected(techLabel.id) && selectedTechLabels.length >= 10"
+                (change)="onTechLabelChange(techLabel)">
+                {{ techLabel.name }}
+              </mat-checkbox>
+            </div>
+
+            <div class="selected-count">
+              Seleccionadas: {{ selectedTechLabels.length }}/10
+            </div>
+          </div>
+
+          <div class="error-message" *ngIf="professionalError">
+            {{ professionalError }}
+          </div>
+
+          <div class="button-container">
+            <button mat-raised-button color="primary" type="submit" [disabled]="submittingProfessional">
+              <mat-icon *ngIf="submittingProfessional">hourglass_empty</mat-icon>
+              {{ submittingProfessional ? 'Guardando...' : 'Guardar Perfil Profesional' }}
             </button>
           </div>
         </form>

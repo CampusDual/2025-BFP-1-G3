@@ -1,5 +1,11 @@
 package com.campusdual.bfp.model.dto;
 
+import com.campusdual.bfp.model.Availability;
+import com.campusdual.bfp.model.EmploymentStatus;
+import com.campusdual.bfp.model.PreferredModality;
+
+import java.util.List;
+
 public class CandidateDTO {
     private int id;
     private String name;
@@ -8,6 +14,16 @@ public class CandidateDTO {
     private String phone;
     private String email;
     private String linkedin;
+
+    // Nuevos campos para el perfil profesional
+    private String professionalTitle;
+    private Integer yearsExperience;
+    private EmploymentStatus employmentStatus;
+    private Availability availability;
+    private PreferredModality preferredModality;
+    private String presentation;
+    private String githubProfile;
+    private List<Long> techLabelIds; // IDs de las etiquetas técnicas seleccionadas
 
 
     public int getId() {
@@ -64,6 +80,72 @@ public class CandidateDTO {
 
     public void setLinkedin(String linkedin) {
         this.linkedin = linkedin;
+    }
+
+    // Getters y setters para los nuevos campos
+
+    public String getProfessionalTitle() {
+        return professionalTitle;
+    }
+
+    public void setProfessionalTitle(String professionalTitle) {
+        this.professionalTitle = professionalTitle;
+    }
+
+    public Integer getYearsExperience() {
+        return yearsExperience;
+    }
+
+    public void setYearsExperience(Integer yearsExperience) {
+        this.yearsExperience = yearsExperience;
+    }
+
+    public EmploymentStatus getEmploymentStatus() {
+        return employmentStatus;
+    }
+
+    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
+        this.employmentStatus = employmentStatus;
+    }
+
+    public Availability getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(Availability availability) {
+        this.availability = availability;
+    }
+
+    public PreferredModality getPreferredModality() {
+        return preferredModality;
+    }
+
+    public void setPreferredModality(PreferredModality preferredModality) {
+        this.preferredModality = preferredModality;
+    }
+
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
+    }
+
+    public String getGithubProfile() {
+        return githubProfile;
+    }
+
+    public void setGithubProfile(String githubProfile) {
+        this.githubProfile = githubProfile;
+    }
+
+    public List<Long> getTechLabelIds() {
+        return techLabelIds;
+    }
+
+    public void setTechLabelIds(List<Long> techLabelIds) {
+        this.techLabelIds = techLabelIds;
     }
 }
 

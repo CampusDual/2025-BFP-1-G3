@@ -3,10 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
 import { UserData } from 'src/app/model/userData';
+import { TechLabel } from 'src/app/model/tech-label';
+import { Candidate } from 'src/app/model/candidate';
 
 @Component({
   selector: 'app-candidate-panel',
@@ -17,6 +20,7 @@ export class CandidatePanelComponent implements OnInit {
 
   username: string = sessionStorage.getItem('user') ?? '';
   profileForm!: FormGroup;
+  professionalForm!: FormGroup;
   signUpError: string = '';
   submitting: boolean = false;
   successMessage: string = '';
@@ -28,6 +32,15 @@ export class CandidatePanelComponent implements OnInit {
   myApplications: ApplicationSummaryDTO[] = [];
   loadingApplications: boolean = false;
   applicationsError: string = '';
+
+  // Propiedades para el perfil profesional
+  professionalError: string = '';
+  submittingProfessional: boolean = false;
+  
+  // Propiedades para tech labels
+  availableTechLabels: TechLabel[] = [];
+  selectedTechLabels: TechLabel[] = [];
+  loadingTechLabels: boolean = false;
 
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -41,6 +54,16 @@ export class CandidatePanelComponent implements OnInit {
       phone: ['', Validators.required],
       email: ['', Validators.required],
       linkedin: null
+    });
+
+    this.professionalForm = this.fb.group({
+      professionalTitle: [''],
+      yearsExperience: [null],
+      employmentStatus: [''],
+      availability: [''],
+      preferredModality: [''],
+      presentation: [''],
+      githubProfile: ['']
     });
   }
 
@@ -60,6 +83,26 @@ export class CandidatePanelComponent implements OnInit {
             email: response.email,
             linkedin: response.linkedin
           });
+
+          // Cargar datos del perfil profesional
+          this.professionalForm.patchValue({
+            professionalTitle: response.professionalTitle || '',
+            yearsExperience: response.yearsExperience || null,
+            employmentStatus: response.employmentStatus || '',
+            availability: response.availability || '',
+            preferredModality: response.preferredModality || '',
+            presentation: response.presentation || '',
+            githubProfile: response.githubProfile || ''
+          });
+
+          // Cargar tech labels seleccionados
+          if (response.techLabelIds && response.techLabelIds.length > 0) {
+            // Filtrar las tech labels disponibles para marcar las seleccionadas
+            this.selectedTechLabels = this.availableTechLabels.filter(
+              label => response.techLabelIds.includes(label.id)
+            );
+          }
+
           this.userData = {
             candidate: {
               id: response.id,
@@ -130,6 +173,7 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadTechLabels();
     this.retrieveCandidateData();
   }
 
@@ -178,5 +222,79 @@ export class CandidatePanelComponent implements OnInit {
       window.location.reload();
 
       
+  }
+
+  // Nuevo método para cargar tech labels
+  loadTechLabels(): void {
+    this.loadingTechLabels = true;
+    this.loginService.getAllTechLabels().subscribe({
+      next: (labels: TechLabel[]) => {
+        this.availableTechLabels = labels;
+        this.loadingTechLabels = false;
+      },
+      error: (error) => {
+        console.error('Error cargando tech labels:', error);
+        this.loadingTechLabels = false;
+      }
+    });
+  }
+
+  // Métodos para manejar la selección de tech labels
+  isSelected(techLabelId: number): boolean {
+    return this.selectedTechLabels.some(label => label.id === techLabelId);
+  }
+
+  onTechLabelChange(techLabel: TechLabel): void {
+    const isCurrentlySelected = this.isSelected(techLabel.id);
+    
+    if (isCurrentlySelected) {
+      // Deseleccionar
+      this.selectedTechLabels = this.selectedTechLabels.filter(label => label.id !== techLabel.id);
+    } else {
+      // Seleccionar (si no hemos alcanzado el límite)
+      if (this.selectedTechLabels.length < 10) {
+        this.selectedTechLabels.push(techLabel);
+      }
+    }
+  }
+
+  // Método para enviar el perfil profesional
+  onSubmitProfessional(): void {
+    if (this.professionalForm.invalid) {
+      this.professionalError = 'Por favor, complete los campos correctamente.';
+      return;
+    }
+
+    const professionalData = {
+      ...this.profileForm.value, // Incluir datos básicos
+      ...this.professionalForm.value, // Incluir datos profesionales
+      techLabelIds: this.selectedTechLabels.map(label => label.id)
+    };
+
+    this.submittingProfessional = true;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+    });
+
+    this.http.put('http://localhost:30030/candidate/profile', professionalData, { headers })
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open('Perfil profesional actualizado con éxito.', 'Cerrar', {
+            duration: 10000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-success'],
+          });
+          console.log('Perfil profesional actualizado exitosamente');
+          this.professionalError = '';
+          this.submittingProfessional = false;
+        },
+        error: (error) => {
+          console.error('Error al actualizar perfil profesional:', error);
+          this.professionalError = 'Error al actualizar el perfil profesional.';
+          this.submittingProfessional = false;
+        }
+      });
   }
 }

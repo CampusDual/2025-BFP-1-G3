@@ -247,19 +247,77 @@ mat-icon {
   cursor: pointer;
 }
 
+/* Estilos específicos para el perfil profesional */
+.full-width-field {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.tech-labels-section {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.tech-labels-section h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.helper-text {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.tech-labels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tech-labels-grid mat-checkbox {
+  margin: 5px 0;
+}
+
+.selected-count {
+  text-align: center;
+  font-weight: 500;
+  color: #e61b15;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Responsivo para móviles */
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .applications-header {
-    flex-direction: column;
     gap: 15px;
-    text-align: center;
   }
-
-  .offer-details {
-    flex-direction: column;
-    gap: 10px;
+  
+  .tech-labels-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-labels-section {
+    padding: 15px;
   }
 }

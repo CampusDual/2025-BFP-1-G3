@@ -33,6 +33,7 @@ import { OfferDetailsComponent } from './offer-details/offer-details.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TechLabelsManagerComponent } from './tech-labels-manager/tech-labels-manager.component';
 import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/admin-tech-labels-manager.component';
 
@@ -75,7 +76,8 @@ import { AdminTechLabelsManagerComponent } from './admin-tech-labels-manager/adm
     MatTabsModule,
     MatSlideToggleModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatCheckboxModule
   ],
   providers: [
     DatePipe,

@@ -1,6 +1,8 @@
 package com.campusdual.bfp.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "candidate")
@@ -19,8 +21,43 @@ public class Candidate {
     @Column
     private String phone;
     @Column
-    private String email;    @Column
+    private String email;    
+    @Column
     private String linkedin;
+
+    // Nuevos campos para el perfil profesional
+    @Column(name = "professional_title")
+    private String professionalTitle;
+    
+    @Column(name = "years_experience")
+    private Integer yearsExperience;
+    
+    @Column(name = "employment_status", length = 50)
+    @Convert(converter = EmploymentStatusConverter.class)
+    private EmploymentStatus employmentStatus;
+    
+    @Column(name = "availability", length = 50)
+    @Convert(converter = AvailabilityConverter.class)
+    private Availability availability;
+    
+    @Column(name = "preferred_modality", length = 50)
+    @Convert(converter = PreferredModalityConverter.class)
+    private PreferredModality preferredModality;
+    
+    @Column(name = "presentation", columnDefinition = "TEXT")
+    private String presentation;
+    
+    @Column(name = "github_profile")
+    private String githubProfile;
+
+    // Relación many-to-many con TechLabels para áreas de especialización
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+        name = "candidate_tech_labels",
+        joinColumns = @JoinColumn(name = "id_candidate"),
+        inverseJoinColumns = @JoinColumn(name = "id_tech_label")
+    )
+    private Set<TechLabels> techLabels = new HashSet<>();
 
     public Candidate() {
     }
@@ -33,6 +70,7 @@ public class Candidate {
         this.phone = phone;
         this.email = email;
         this.linkedin = linkedin;
+        this.techLabels = new HashSet<>();
     }
 
     public int getId() {
@@ -89,5 +127,80 @@ public class Candidate {
 
     public void setLinkedin(String linkedin) {
         this.linkedin = linkedin;
+    }
+
+    // Getters y setters para los nuevos campos
+
+    public String getProfessionalTitle() {
+        return professionalTitle;
+    }
+
+    public void setProfessionalTitle(String professionalTitle) {
+        this.professionalTitle = professionalTitle;
+    }
+
+    public Integer getYearsExperience() {
+        return yearsExperience;
+    }
+
+    public void setYearsExperience(Integer yearsExperience) {
+        this.yearsExperience = yearsExperience;
+    }
+
+    public EmploymentStatus getEmploymentStatus() {
+        return employmentStatus;
+    }
+
+    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
+        this.employmentStatus = employmentStatus;
+    }
+
+    public Availability getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(Availability availability) {
+        this.availability = availability;
+    }
+
+    public PreferredModality getPreferredModality() {
+        return preferredModality;
+    }
+
+    public void setPreferredModality(PreferredModality preferredModality) {
+        this.preferredModality = preferredModality;
+    }
+
+    public String getPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(String presentation) {
+        this.presentation = presentation;
+    }
+
+    public String getGithubProfile() {
+        return githubProfile;
+    }
+
+    public void setGithubProfile(String githubProfile) {
+        this.githubProfile = githubProfile;
+    }
+
+    public Set<TechLabels> getTechLabels() {
+        return techLabels;
+    }
+
+    public void setTechLabels(Set<TechLabels> techLabels) {
+        this.techLabels = techLabels;
+    }
+
+    // Métodos auxiliares para manejar la relación many-to-many con TechLabels
+    public void addTechLabel(TechLabels techLabel) {
+        this.techLabels.add(techLabel);
+    }
+
+    public void removeTechLabel(TechLabels techLabel) {
+        this.techLabels.remove(techLabel);
     }
 }
