@@ -45,6 +45,11 @@ export class CandidatePanelComponent implements OnInit {
   // Datos completos del candidato para el avatar editable
   candidateData: Candidate | null = null;
 
+  // Propiedades para el modo de edición
+  isEditing: boolean = false;
+  isSubmitting: boolean = false;
+  originalFormData: any = null;
+
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private http: HttpClient,
@@ -274,17 +279,17 @@ export class CandidatePanelComponent implements OnInit {
     return this.selectedTechLabels.some(label => label.id === techLabelId);
   }
 
-  onTechLabelChange(techLabel: TechLabel): void {
-    const isCurrentlySelected = this.isSelected(techLabel.id);
+  onTechLabelChange(event: any, techLabel: TechLabel): void {
+    const isChecked = event.checked;
     
-    if (isCurrentlySelected) {
-      // Deseleccionar
-      this.selectedTechLabels = this.selectedTechLabels.filter(label => label.id !== techLabel.id);
-    } else {
-      // Seleccionar (si no hemos alcanzado el límite)
-      if (this.selectedTechLabels.length < 10) {
+    if (isChecked) {
+      // Add the tech label if not already selected and under the limit
+      if (!this.selectedTechLabels.some(label => label.id === techLabel.id) && this.selectedTechLabels.length < 10) {
         this.selectedTechLabels.push(techLabel);
       }
+    } else {
+      // Remove the tech label
+      this.selectedTechLabels = this.selectedTechLabels.filter(label => label.id !== techLabel.id);
     }
   }
 
@@ -328,11 +333,134 @@ export class CandidatePanelComponent implements OnInit {
       });
   }
 
+  // Métodos para el modo de edición del perfil
+  startEditing(): void {
+    this.isEditing = true;
+    // Guardar los datos originales del formulario para poder cancelar
+    this.originalFormData = {
+      profile: { ...this.profileForm.value },
+      professional: { ...this.professionalForm.value },
+      techLabels: [...this.selectedTechLabels]
+    };
+  }
+
+  cancelEditing(): void {
+    this.isEditing = false;
+    // Restaurar los datos originales
+    if (this.originalFormData) {
+      this.profileForm.patchValue(this.originalFormData.profile);
+      this.professionalForm.patchValue(this.originalFormData.professional);
+      this.selectedTechLabels = [...this.originalFormData.techLabels];
+      this.originalFormData = null;
+    }
+  }
+
+  saveChanges(): void {
+    if (this.profileForm.valid && this.professionalForm.valid) {
+      this.isSubmitting = true;
+      
+      // Crear los objetos de datos para enviar
+      const basicData = {
+        name: this.profileForm.get('name')?.value,
+        surname1: this.profileForm.get('surname1')?.value,
+        surname2: this.profileForm.get('surname2')?.value,
+        email: this.profileForm.get('email')?.value,
+        phone: this.profileForm.get('phone')?.value,
+        linkedin: this.profileForm.get('linkedin')?.value
+      };
+
+      const professionalData = {
+        professionalTitle: this.professionalForm.get('professionalTitle')?.value,
+        yearsExperience: this.professionalForm.get('yearsExperience')?.value,
+        employmentStatus: this.professionalForm.get('employmentStatus')?.value,
+        availability: this.professionalForm.get('availability')?.value,
+        preferredModality: this.professionalForm.get('preferredModality')?.value,
+        presentation: this.professionalForm.get('presentation')?.value,
+        githubProfile: this.professionalForm.get('githubProfile')?.value,
+        techLabelIds: this.selectedTechLabels.map(label => label.id)
+      };
+
+      // Combinar los datos
+      const combinedData = { ...basicData, ...professionalData };
+
+      const headers = new HttpHeaders({
+        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      });
+
+      this.http.put('http://localhost:30030/candidate/update', combinedData, { headers })
+        .subscribe({
+          next: (response) => {
+            this.isEditing = false;
+            this.isSubmitting = false;
+            this.originalFormData = null;
+            this.snackBar.open('Perfil actualizado exitosamente', 'Cerrar', {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['snackbar-success'],
+            });
+            // Recargar datos del candidato
+            this.retrieveCandidateData();
+          },
+          error: (error) => {
+            console.error('Error al guardar cambios:', error);
+            this.isSubmitting = false;
+            this.snackBar.open('Error al guardar los cambios', 'Cerrar', {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['snackbar-error'],
+            });
+          }
+        });
+    }
+  }
+
   // Método para manejar cambios en la foto de perfil desde el componente editable-avatar
   onPhotoChanged(event: {photoUrl?: string, filename?: string}): void {
     if (this.candidateData) {
       this.candidateData.profilePhotoUrl = event.photoUrl;
       this.candidateData.profilePhotoFilename = event.filename;
     }
+  }
+
+  // Helper methods for displaying enum values
+  getEmploymentStatusText(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'EMPLOYED': 'Empleado',
+      'UNEMPLOYED': 'Desempleado',
+      'STUDENT': 'Estudiante',
+      'FREELANCER': 'Freelancer'
+    };
+    return statusMap[status] || status;
+  }
+
+  getAvailabilityText(availability: string): string {
+    const availabilityMap: { [key: string]: string } = {
+      'IMMEDIATE': 'Inmediata',
+      'TWO_WEEKS': '2 semanas',
+      'ONE_MONTH': '1 mes',
+      'THREE_MONTHS': '3 meses'
+    };
+    return availabilityMap[availability] || availability;
+  }
+
+  getModalityText(modality: string): string {
+    const modalityMap: { [key: string]: string } = {
+      'REMOTE': 'Remoto',
+      'ONSITE': 'Presencial',
+      'HYBRID': 'Híbrido'
+    };
+    return modalityMap[modality] || modality;
+  }
+
+  // Method to check if a tech label is selected
+  isTechLabelSelected(labelId: number): boolean {
+    return this.selectedTechLabels.some(selected => selected.id === labelId);
+  }
+
+  // Method to check if we can select more tech labels
+  canSelectMoreTechLabels(labelId: number): boolean {
+    return this.isTechLabelSelected(labelId) || this.selectedTechLabels.length < 10;
   }
 }
