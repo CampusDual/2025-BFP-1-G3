@@ -24,6 +24,11 @@ public class CandidateDTO {
     private String presentation;
     private String githubProfile;
     private List<Long> techLabelIds; // IDs de las etiquetas técnicas seleccionadas
+    
+    // Campos para foto de perfil
+    private String profilePhotoUrl;
+    private String profilePhotoFilename;
+    private String profilePhotoContentType;
 
 
     public int getId() {
@@ -146,6 +151,30 @@ public class CandidateDTO {
 
     public void setTechLabelIds(List<Long> techLabelIds) {
         this.techLabelIds = techLabelIds;
+    }
+
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
+    }
+
+    public String getProfilePhotoFilename() {
+        return profilePhotoFilename;
+    }
+
+    public void setProfilePhotoFilename(String profilePhotoFilename) {
+        this.profilePhotoFilename = profilePhotoFilename;
+    }
+
+    public String getProfilePhotoContentType() {
+        return profilePhotoContentType;
+    }
+
+    public void setProfilePhotoContentType(String profilePhotoContentType) {
+        this.profilePhotoContentType = profilePhotoContentType;
     }
 }
 

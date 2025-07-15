@@ -21,7 +21,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 
+// Componentes
+import { EditableAvatarComponent } from './editable-avatar/editable-avatar.component';
+
 @NgModule({
+  declarations: [
+    EditableAvatarComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -64,7 +70,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSidenavModule,
     MatListModule,
     MatToolbarModule,
-    MatMenuModule
+    MatMenuModule,
+    EditableAvatarComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })

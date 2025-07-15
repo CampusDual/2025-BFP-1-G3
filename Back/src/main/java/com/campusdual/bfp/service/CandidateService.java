@@ -110,4 +110,54 @@ public class CandidateService implements ICandidateService {
         candidateDao.delete(candidate);
         return id;
     }
+
+    // Métodos para manejar foto de perfil
+    public boolean updateProfilePhoto(int candidateId, String photoUrl, String filename, String contentType) {
+        try {
+            Candidate candidate = candidateDao.findById(candidateId).orElse(null);
+            if (candidate != null) {
+                // Eliminar foto anterior si existe
+                String oldPhotoUrl = candidate.getProfilePhotoUrl();
+                
+                candidate.setProfilePhotoUrl(photoUrl);
+                candidate.setProfilePhotoFilename(filename);
+                candidate.setProfilePhotoContentType(contentType);
+                candidateDao.saveAndFlush(candidate);
+                
+                // Eliminar archivo anterior del sistema de archivos si existe
+                if (oldPhotoUrl != null && !oldPhotoUrl.equals(photoUrl)) {
+                    // Aquí se podría llamar al FileUploadService para eliminar el archivo anterior
+                }
+                
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deleteProfilePhoto(int candidateId) {
+        try {
+            Candidate candidate = candidateDao.findById(candidateId).orElse(null);
+            if (candidate != null) {
+                String oldPhotoUrl = candidate.getProfilePhotoUrl();
+                
+                candidate.setProfilePhotoUrl(null);
+                candidate.setProfilePhotoFilename(null);
+                candidate.setProfilePhotoContentType(null);
+                candidateDao.saveAndFlush(candidate);
+                
+                // Eliminar archivo del sistema de archivos si existe
+                if (oldPhotoUrl != null) {
+                    // Aquí se podría llamar al FileUploadService para eliminar el archivo
+                }
+                
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

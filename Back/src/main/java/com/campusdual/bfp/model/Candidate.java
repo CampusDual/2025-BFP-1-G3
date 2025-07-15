@@ -50,6 +50,16 @@ public class Candidate {
     @Column(name = "github_profile")
     private String githubProfile;
 
+    // Campos para foto de perfil
+    @Column(name = "profile_photo_url", length = 500)
+    private String profilePhotoUrl;
+    
+    @Column(name = "profile_photo_filename")
+    private String profilePhotoFilename;
+    
+    @Column(name = "profile_photo_content_type", length = 100)
+    private String profilePhotoContentType;
+
     // Relación many-to-many con TechLabels para áreas de especialización
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
@@ -185,6 +195,30 @@ public class Candidate {
 
     public void setGithubProfile(String githubProfile) {
         this.githubProfile = githubProfile;
+    }
+
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
+    }
+
+    public String getProfilePhotoFilename() {
+        return profilePhotoFilename;
+    }
+
+    public void setProfilePhotoFilename(String profilePhotoFilename) {
+        this.profilePhotoFilename = profilePhotoFilename;
+    }
+
+    public String getProfilePhotoContentType() {
+        return profilePhotoContentType;
+    }
+
+    public void setProfilePhotoContentType(String profilePhotoContentType) {
+        this.profilePhotoContentType = profilePhotoContentType;
     }
 
     public Set<TechLabels> getTechLabels() {

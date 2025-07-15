@@ -17,6 +17,11 @@ export interface Candidate {
   githubProfile?: string;
   techLabelIds?: number[]; // IDs de las etiquetas tecnológicas seleccionadas
   
+  // Campos para foto de perfil
+  profilePhotoUrl?: string;
+  profilePhotoFilename?: string;
+  profilePhotoContentType?: string;
+  
   // Campos adicionales que podrían ser útiles
   cvUrl?: string;
   applicationDate?: Date;

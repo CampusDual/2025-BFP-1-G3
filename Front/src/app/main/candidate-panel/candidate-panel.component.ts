@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
 import { UserData } from 'src/app/model/userData';
 import { TechLabel } from 'src/app/model/tech-label';
@@ -41,11 +42,15 @@ export class CandidatePanelComponent implements OnInit {
   selectedTechLabels: TechLabel[] = [];
   loadingTechLabels: boolean = false;
 
+  // Datos completos del candidato para el avatar editable
+  candidateData: Candidate | null = null;
+
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private router: Router,
-    private loginService: LoginService) {
+    private loginService: LoginService,
+    private fileUploadService: FileUploadService) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       surname1: ['', Validators.required],
@@ -74,6 +79,8 @@ export class CandidatePanelComponent implements OnInit {
       (response: any) => {
         console.log('Datos del candidato obtenidos:', response);
         if (response) {
+          this.candidateData = response; // Guardar datos completos del candidato
+          
           this.profileForm.patchValue({
             name: response.name,
             surname1: response.surname1,
@@ -111,8 +118,28 @@ export class CandidatePanelComponent implements OnInit {
               phone: response.phone,
               email: response.email,
               linkedin: response.linkedin
-
             }
+          };
+
+          // Cargar datos completos del candidato para el avatar editable
+          this.candidateData = {
+            id: response.id,
+            name: response.name,
+            surname1: response.surname1,
+            surname2: response.surname2,
+            phone: response.phone,
+            email: response.email,
+            linkedin: response.linkedin,
+            professionalTitle: response.professionalTitle,
+            yearsExperience: response.yearsExperience,
+            employmentStatus: response.employmentStatus,
+            availability: response.availability,
+            preferredModality: response.preferredModality,
+            presentation: response.presentation,
+            githubProfile: response.githubProfile,
+            profilePhotoUrl: response.profilePhotoUrl,
+            profilePhotoFilename: response.profilePhotoFilename,
+            profilePhotoContentType: response.profilePhotoContentType
           };
         }
       },
@@ -299,5 +326,13 @@ export class CandidatePanelComponent implements OnInit {
           this.submittingProfessional = false;
         }
       });
+  }
+
+  // Método para manejar cambios en la foto de perfil desde el componente editable-avatar
+  onPhotoChanged(event: {photoUrl?: string, filename?: string}): void {
+    if (this.candidateData) {
+      this.candidateData.profilePhotoUrl = event.photoUrl;
+      this.candidateData.profilePhotoFilename = event.filename;
+    }
   }
 }
