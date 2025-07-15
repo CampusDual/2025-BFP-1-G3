@@ -28,7 +28,7 @@
 }
 
 .avatar-wrapper:hover .avatar {
-  border-color: #2196f3;
+  border-color: #e61b15;
 }
 
 /* Imagen del avatar */
@@ -49,7 +49,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: #2196f3;
+  background-color: #e61b15;
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -61,7 +61,7 @@
 }
 
 .edit-icon:hover {
-  background-color: #1976d2;
+  background-color: #3d3d3d;
 }
 
 .edit-icon mat-icon {
