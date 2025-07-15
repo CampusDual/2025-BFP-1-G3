@@ -93,6 +93,16 @@ export class OfferDetailsComponent implements OnInit {
   ngOnInit(): void {
     console.log('OfferDetailsComponent ngOnInit iniciado');
 
+    // Suscribirse a eventos de navegación para refrescar estado al volver a esta ruta
+    this.router.events.subscribe(event => {
+      if (event.constructor.name === "NavigationEnd") {
+        if (this.loginService.isLoggedAsCandidate() && this.offerId) {
+          // Forzar recarga desde backend para asegurar estado actualizado
+          this.performApplicationCheck(this.loginService.getCandidateIdFromToken()!);
+        }
+      }
+    });
+
     // Primero, intentar obtener el ID de la URL
     this.route.params.subscribe(params => {
       this.offerId = Number(params['id']);
@@ -119,6 +129,8 @@ export class OfferDetailsComponent implements OnInit {
               this.loading = false;
               // Verificar estado de aplicación ahora que el caché está listo
               this.checkApplicationStatusFromCache();
+              // Forzar recarga desde backend para asegurar estado actualizado
+              this.performApplicationCheck(this.loginService.getCandidateIdFromToken()!);
             }
           ).catch(
             (error) => {
@@ -126,6 +138,8 @@ export class OfferDetailsComponent implements OnInit {
               // Continuar aún con errores
               this.loading = false;
               this.checkApplicationStatusFromCache();
+              // Forzar recarga desde backend para asegurar estado actualizado
+              this.performApplicationCheck(this.loginService.getCandidateIdFromToken()!);
             }
           );
         } else {
@@ -719,6 +733,8 @@ export class OfferDetailsComponent implements OnInit {
   redirectToLogin(): void {
     // Guardar el ID de la oferta para redirigir después del login
     if (this.offer?.id) {
+      this.loginService.clickedApplyOffer = true;
+      this.loginService.idOffer = this.offer.id;
       sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${this.offer.id}`);
     }
     this.router.navigate(['/main/login']);

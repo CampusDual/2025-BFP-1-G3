@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
 
         const candidateId = this.loginService.candidateId;
         const offerId = this.loginService.idOffer;
-        
+
         // Primero verificar si ya está inscrito
         this.http.get(`http://localhost:30030/applications/check/${candidateId}/${offerId}`, { headers })
           .subscribe({
@@ -93,8 +93,10 @@ export class LoginComponent implements OnInit {
                   verticalPosition: 'bottom',
                   panelClass: ['snackbar-info'],
                 });
-                // Navegar a ofertas
-                this.router.navigate(['/main/ofertas']);
+                // Navegar a ofertas si no estamos ya en detalles de oferta
+                // if (!this.router.url.startsWith('/main/offer-details')) {
+                //   this.router.navigate(['/main/ofertas']);
+                // }
               } else {
                 // No está inscrito, proceder con la inscripción
                 this.submitApplication(candidateId, offerId, headers);
@@ -115,18 +117,19 @@ export class LoginComponent implements OnInit {
           panelClass: ['snackbar-failed'],
         });
         // Navegar a ofertas incluso en caso de error
-        this.router.navigate(['/main/ofertas']);
+        // this.router.navigate(['/main/ofertas']);
+
       }
     });
   }
 
   // Método auxiliar para enviar la solicitud de inscripción
-  private submitApplication(candidateId: number, offerId: number, headers: HttpHeaders): void {
+private submitApplication(candidateId: number, offerId: number, headers: HttpHeaders): void {
     // Ya no enviamos id_candidate por seguridad - se obtiene del token en el backend
     const applicationData = {
       id_offer: offerId
     };
-    
+
     this.http.post('http://localhost:30030/applications/add', applicationData, { headers })
       .subscribe({
         next: (response) => {
@@ -136,8 +139,8 @@ export class LoginComponent implements OnInit {
             verticalPosition: 'bottom',
             panelClass: ['snackbar-success'],
           });
-          // Navegar después de completar la inscripción
-          this.router.navigate(['/main/ofertas']);
+          // Navegar después de completar la inscripción a detalles de la oferta para recargar el botón
+          this.router.navigate([`/main/offer-details/${offerId}`]);
         },
         error: (error) => {
           if (this.isAlreadyAppliedError(error)) {
@@ -177,7 +180,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-    
+
     // Verificar en error.error.message
     if (error.error && error.error.message) {
       if (error.error.message.includes('ya inscrito') ||
@@ -186,7 +189,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-    
+
     // Verificar en error.message
     if (error.message) {
       if (error.message.includes('ya inscrito') ||
@@ -195,7 +198,7 @@ export class LoginComponent implements OnInit {
         return true;
       }
     }
-    
+
     return false;
   }
 }
