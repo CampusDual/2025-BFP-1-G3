@@ -115,7 +115,7 @@
         <div *ngIf="!loadingApplications && myApplications.length > 0" class="applications-list">
           <mat-card *ngFor="let application of myApplications" class="application-card">
             <mat-card-header>
-              <mat-card-title>{{ application.offer.title || 'Sin título' }}</mat-card-title>
+            <mat-card-title  (click)="goToOfferDetails(application.offer.id)" id="offer-name">{{ application.offer.title || 'Sin título' }}</mat-card-title>
               <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa'
                 }}</mat-card-subtitle>
               <div class="state-badge" [ngClass]="getStateClass(application.state)">

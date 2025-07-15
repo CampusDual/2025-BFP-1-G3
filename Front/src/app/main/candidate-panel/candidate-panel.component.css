@@ -247,6 +247,12 @@ mat-icon {
   cursor: pointer;
 }
 
+#offer-name:hover {
+  cursor: pointer;
+  color: #e81c34;
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;

@@ -179,4 +179,8 @@ export class CandidatePanelComponent implements OnInit {
 
       
   }
+
+  goToOfferDetails(offerId: number): void {
+    this.router.navigate(['/main/offer-details', offerId]);
+  }
 }
