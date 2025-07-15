@@ -72,8 +72,21 @@ public class AuthController {
             String username = authentication.getName();
             String roles = userService.getRolesByUsername(username).get(0);
             
-            // Generar token incluyendo el rol
-            String token = jwtUtils.generateJWTToken(userDetails.getUsername(), roles);
+            // Debug logs
+            System.out.println("DEBUG - Login - Username: " + username);
+            System.out.println("DEBUG - Login - Role: " + roles);
+            
+            // Generar token incluyendo el rol y companyId si es empresa
+            String token;
+            if ("role_company".equals(roles)) {
+                Integer companyId = userService.getCompanyIdByUsername(username);
+                System.out.println("DEBUG - Login - Company ID: " + companyId);
+                token = jwtUtils.generateJWTToken(userDetails.getUsername(), roles, companyId);
+                System.out.println("DEBUG - Login - Token generado con companyId");
+            } else {
+                token = jwtUtils.generateJWTToken(userDetails.getUsername(), roles);
+                System.out.println("DEBUG - Login - Token generado sin companyId");
+            }
 
             // Obtener el nombre de la empresa
             String nombreEmpresa = userService.getCompanyNameByUsername(userDetails.getUsername());

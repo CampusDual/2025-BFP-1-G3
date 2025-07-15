@@ -1,3 +1,77 @@
+/* Contenedor único para toda la información */
+.single-content-container {
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.section-divider {
+  margin: 32px 0 16px 0;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.section-divider + h3 {
+  color: #e61b15;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Labels actions específico para dentro del contenedor único */
+.single-content-container .labels-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* == CONTENEDORES DE SECCIONES == */
+.section-container {
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado simplificado dentro del contenedor único */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e61b15;
+}
+
+.content-header h2 {
+  margin: 0;
+  color: #e61b15;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e61b15;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: #e61b15;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.section-content {
+  margin-top: 16px;
+}
+
 /* == CONTENEDOR PRINCIPAL == */
 .offer-details-container {
   max-width: 100dvh;
@@ -15,6 +89,12 @@
   background-color: #f8f9fa;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.offer-title-section {
+  flex: 1;
+  text-align: center;
+  margin: 0 16px;
 }
 
 mat-card-header {
@@ -112,14 +192,34 @@ mat-card-header {
   resize: vertical;
 }
 
-/* Mejorar la visualización de detalles */
-.detail-item h3 {
-  color: #e61b15;
+/* Contenido simple y limpio */
+.single-content-container h3 {
+  color: #333;
   font-weight: 600;
   font-size: 1.1rem;
+  margin-top: 24px;
   margin-bottom: 8px;
 }
 
+.single-content-container h3:first-of-type {
+  margin-top: 16px;
+}
+
+.single-content-container p {
+  margin: 0 0 16px 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Divisor simple */
+.simple-divider {
+  margin: 32px 0 16px 0;
+  border: none;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+/* Mejorar la visualización de detalles */
 .description-text {
   white-space: pre-wrap;
   line-height: 1.6;
@@ -142,34 +242,6 @@ mat-card-header {
 .mat-mdc-slide-toggle {
   display: flex;
   align-items: center;
-}
-
-.offer-details {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.detail-item {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 16px;
-}
-
-.detail-item:last-child {
-  border-bottom: none;
-}
-
-.detail-item strong {
-  color: #333;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.detail-item p {
-  margin: 0;
-  color: #666;
-  line-height: 1.6;
 }
 
 /* Sección de candidatos */
@@ -447,6 +519,37 @@ mat-card-header {
   font-weight: 500;
 }
 
+/* Estilos específicos para los nuevos campos de oferta */
+
+/* Formulario de edición mejorado */
+.offer-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.offer-edit-form .full-width {
+  width: 100%;
+}
+
+/* Agrupar campos relacionados en la edición */
+.form-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fafafa;
+}
+
+.form-section h4 {
+  margin: 0 0 16px 0;
+  color: #e61b15;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #e61b15;
+  padding-bottom: 8px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .offer-details-container {
@@ -456,7 +559,12 @@ mat-card-header {
   .offer-header {
     flex-direction: column;
     gap: 16px;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
+  }
+
+  .offer-title-section {
+    margin: 0;
   }
 
   .offer-title-section h1 {
@@ -511,6 +619,14 @@ mat-card-header {
   color: #dc3545;
   font-size: 12px;
   margin-top: 4px;
+}
+
+/* Mensaje para oferta inactiva */
+.inactive-offer-message {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  font-style: italic;
 }
 
 mat-elevation-z8 table-container {

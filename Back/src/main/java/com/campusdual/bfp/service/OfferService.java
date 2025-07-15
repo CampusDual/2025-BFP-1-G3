@@ -54,6 +54,13 @@ public class OfferService implements IOfferService {
     }
 
     @Override
+    public OfferDTO getOfferById(Long id) {
+        return offerDao.findById(id)
+                .map(OfferMapper.INSTANCE::toDTO)
+                .orElse(null);
+    }
+
+    @Override
     public List<OfferDTO> queryAllOffers() {
         List<Offer> offers = offerDao.findAll();
         // Asegurarse de que la relación company esté cargada con JPA (esto podría ser redundante si ya está configurado con EAGER)

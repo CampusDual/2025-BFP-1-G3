@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IOfferService {
     OfferDTO queryOffer(OfferDTO offerDto);
+    OfferDTO getOfferById(Long id);
     List<OfferDTO> queryAllOffers();
     Object queryAllOffersPaginated(int page, int size);
     List<OfferDTO> queryActiveOffers();
