@@ -377,17 +377,19 @@ export class CandidatePanelComponent implements OnInit {
         preferredModality: this.professionalForm.get('preferredModality')?.value,
         presentation: this.professionalForm.get('presentation')?.value,
         githubProfile: this.professionalForm.get('githubProfile')?.value,
-        techLabelIds: this.selectedTechLabels.map(label => label.id)
+        techLabelIds: this.selectedTechLabels.map(label => Number(label.id)) // Asegurar que sean números
       };
 
       // Combinar los datos
       const combinedData = { ...basicData, ...professionalData };
 
+      console.log('Datos a enviar:', combinedData); // Debug
+
       const headers = new HttpHeaders({
         'Authorization': 'Bearer ' + sessionStorage.getItem('token')
       });
 
-      this.http.put('http://localhost:30030/candidate/update', combinedData, { headers })
+      this.http.put('http://localhost:30030/candidate/profile', combinedData, { headers })
         .subscribe({
           next: (response) => {
             this.isEditing = false;
