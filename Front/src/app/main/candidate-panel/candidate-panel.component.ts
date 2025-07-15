@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
@@ -166,15 +165,15 @@ export class CandidatePanelComponent implements OnInit {
   // Método para manejar el cambio de pestaña
   onTabChanged(event: any): void {
     this.selectedTabIndex = event.index;
-    // Cargar aplicaciones cuando se selecciona la pestaña de aplicaciones
-    if (event.index === 1 && this.myApplications.length === 0) {
+    // Cargar aplicaciones cuando se selecciona la pestaña de aplicaciones (ahora es index 2)
+    if (event.index === 2 && this.myApplications.length === 0) {
       this.loadMyApplications();
     }
   }
 
   ngOnInit(): void {
+    // Cargar tech labels primero, luego los datos del candidato
     this.loadTechLabels();
-    this.retrieveCandidateData();
   }
 
   onSubmit(): void {
@@ -231,10 +230,14 @@ export class CandidatePanelComponent implements OnInit {
       next: (labels: TechLabel[]) => {
         this.availableTechLabels = labels;
         this.loadingTechLabels = false;
+        // Cargar datos del candidato después de que las tech labels estén disponibles
+        this.retrieveCandidateData();
       },
       error: (error) => {
         console.error('Error cargando tech labels:', error);
         this.loadingTechLabels = false;
+        // Aún así cargar los datos del candidato
+        this.retrieveCandidateData();
       }
     });
   }

@@ -159,24 +159,28 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   border: 1.5px solid var(--gray-lightest, #c6c0c1);
-  background-color: #f6f6f6;
 }
 
 .candidate-header-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 2rem 2rem 1.2rem 2rem;
-  /* border-bottom: 1px solid var(--gray-lightest, #C6C0C1); */
-  margin: 3%;
+  background: white;
+  border-bottom: 1px solid var(--gray-lightest, #C6C0C1);
+  margin: 0;
   box-shadow: none;
   position: relative;
   z-index: 2;
+  width: 100%;
+  box-sizing: border-box;
 }
 .avatar-section {
   display: flex;
   align-items: center;
+  width: 100%;
 }
+
 .avatar {
   width: 100px;
   height: 100px;
@@ -194,6 +198,43 @@
   margin-right: 1.5rem;
   box-shadow: 0 2px 8px rgba(232, 28, 52, 0.13);
 }
+
+/* Estilo específico y forzado para el ícono del avatar */
+.avatar .avatar-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Material Icons' !important;
+}
+
+/* Fallback para debugging */
+.avatar-fallback {
+  position: absolute;
+  z-index: 1;
+}
+
+.avatar .avatar-icon:not(:empty) + .avatar-fallback {
+  display: none;
+}
+
+.avatar-text {
+  font-size: 48px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.candidate-info {
+  flex: 1;
+}
+
 .candidate-info h2 {
   margin: 0 0 0.3rem 0;
   font-size: 2rem;
@@ -211,8 +252,18 @@
 }
 
 .avatar-icon {
-  font-size: xxx-large;
-  color: #fff;
+  font-size: 48px !important;
+  color: #fff !important;
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  word-wrap: normal !important;
+  white-space: nowrap !important;
+  direction: ltr !important;
 }
 
 mat-icon {
@@ -308,6 +359,32 @@ mat-icon {
 
 /* Responsivo para móviles */
 @media (max-width: 768px) {
+  .candidate-profile-container {
+    margin: 2% 1% 2% 1%;
+    border-radius: 12px;
+  }
+  
+  .candidate-header-card {
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .avatar-section {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .candidate-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  
   .form-grid {
     grid-template-columns: 1fr;
     gap: 15px;
