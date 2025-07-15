@@ -357,6 +357,36 @@ mat-icon {
   border: 1px solid #e0e0e0;
 }
 
+/* Alias para compatibilidad */
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(
+    135deg,
+    var(--primary, #e81c34) 60%,
+    var(--primary-light, #fa6f76) 100%
+  );
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 42px;
+  margin-right: 1.5rem;
+  box-shadow: 0 2px 8px rgba(232, 28, 52, 0.13);
+}
+
+.avatar-placeholder .avatar-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Material Icons' !important;
+}
+
 /* Responsivo para móviles */
 @media (max-width: 768px) {
   .candidate-profile-container {
