@@ -1,12 +1,37 @@
-<div class="welcome-container">
-  <div class="welcome-card">
-    <h1>Bienvenido, </h1>
-    <p class="username">{{ nombreEmpresa.toUpperCase() }}</p>
-  </div>
-</div>
+<div class="main-content">
+  <h3>Ofertas recomendadas</h3>
+  <div class="cards-grid">
+    <div class="card-container">
+      <section class="card-titles">
+        <mat-card-header>Tiítulo Oferta</mat-card-header>
+        <mat-card-subtitle>Empresa</mat-card-subtitle>
+      </section>
 
-<div class="button-container">
-  <button (click)="publicarOferta()" class="btn-publicar">
-    Publicar oferta
-  </button>
+      <section class="card-content">
+        <mat-card-content>Conteido</mat-card-content>
+      </section>
+
+      <section class="card-content">
+        <mat-card-content>Etiquetas</mat-card-content>
+      </section>
+    </div>
+  </div>
+
+  <h3>Todas las ofertas</h3>
+  <div class="cards-grid">
+    <div class="card-container">
+      <section class="card-titles">
+        <mat-card-header>Tiítulo Oferta</mat-card-header>
+        <mat-card-subtitle>Empresa</mat-card-subtitle>
+      </section>
+
+      <section class="card-content">
+        <mat-card-content>Conteido</mat-card-content>
+      </section>
+
+      <section class="card-content">
+        <mat-card-content>Etiquetas</mat-card-content>
+      </section>
+    </div>
+  </div>
 </div>

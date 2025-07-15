@@ -15,4 +15,5 @@ public interface IApplicationService {
     List<ApplicationDTO> getCandidatesByOfferId(int offerId);
     public List<ApplicationSummaryDTO> queryAplicationsByCandidate(String login);
     int toggleActiveStatus(Long id, ApplicationDTO applicationDTO);
+    boolean checkApplicationExists(Integer candidateId, Long offerId);
 }

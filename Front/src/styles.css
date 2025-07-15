@@ -1,45 +1,37 @@
-/* *{
-    display: grid;
-    grid-template-columns: 1 1fr 1;
-} */
- 
-html, body { 
-    height: 100%; 
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-body { 
-    margin: 0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    overflow-x: hidden;
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* Estilos para el snackbar de exito (verde) */
 .snackbar-success.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #3FCC33;
-  --mdc-snackbar-supporting-text-color: #E6FCD6; 
-  --mat-mdc-snack-bar-button-color: #E6FCD6; 
+  --mdc-snackbar-container-color: #3fcc33;
+  --mdc-snackbar-supporting-text-color: #e6fcd6;
+  --mat-mdc-snack-bar-button-color: #e6fcd6;
 }
 
 /* Estilos para el snackbar de error (rojo) */
 .snackbar-failed.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #D62032; 
-  --mdc-snackbar-supporting-text-color: #FCDDD1; 
-  --mat-mdc-snack-bar-button-color: #FCDDD1; 
+  --mdc-snackbar-container-color: #d62032;
+  --mdc-snackbar-supporting-text-color: #fcddd1;
+  --mat-mdc-snack-bar-button-color: #fcddd1;
 }
 
 /* Estilos para el snackbar informativo (azul) */
 .snackbar-info.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #006AC6; 
-  --mdc-snackbar-supporting-text-color: #C9EFFC; 
-  --mat-mdc-snack-bar-button-color: #C9EFFC; 
+  --mdc-snackbar-container-color: #006ac6;
+  --mdc-snackbar-supporting-text-color: #c9effc;
+  --mat-mdc-snack-bar-button-color: #c9effc;
 }
 
 /* Estilos para el snackbar aviso (amarillo) */
 .snackbar-warn.mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #BA7705; 
-  --mdc-snackbar-supporting-text-color: #FBF0CA; 
-  --mat-mdc-snack-bar-button-color: #FBF0CA; 
+  --mdc-snackbar-container-color: #ba7705;
+  --mdc-snackbar-supporting-text-color: #fbf0ca;
+  --mat-mdc-snack-bar-button-color: #fbf0ca;
 }

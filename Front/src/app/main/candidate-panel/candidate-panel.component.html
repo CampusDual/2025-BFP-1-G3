@@ -131,10 +131,6 @@
                   <mat-icon>location_on</mat-icon>
                   <span>{{ application.offer.location }}</span>
                 </div>
-                <div class="detail-item" *ngIf="application.offer.salary">
-                  <mat-icon>attach_money</mat-icon>
-                  <span>{{ application.offer.salary | currency:'EUR':'symbol':'1.0-0' }}</span>
-                </div>
                 <div class="detail-item" *ngIf="application.offer.startDate && application.offer.endDate">
                   <mat-icon>date_range</mat-icon>
                   <span>{{ application.offer.startDate | date:'dd/MM/yyyy' }} - {{ application.offer.endDate |

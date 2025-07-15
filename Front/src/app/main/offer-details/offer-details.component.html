@@ -18,23 +18,46 @@
       </div>
     </div>
 
-    <!-- Botones de acción para empresas -->
-    <div class="header-actions" *ngIf="canEdit()">
-      <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="startEditing()">
-        <mat-icon>edit</mat-icon>
-        Editar oferta
-      </button>
-
-      <div *ngIf="isEditing" class="edit-actions">
-        <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
-          <mat-icon>cancel</mat-icon>
-          Cancelar
+    <!-- Botones de acción -->
+    <div class="header-actions">
+      <!-- Botones para empresas -->
+      <div *ngIf="canEdit()">
+        <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="startEditing()">
+          <mat-icon>edit</mat-icon>
+          Editar oferta
         </button>
-        <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
-          <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
-          <mat-icon *ngIf="!isSubmitting">save</mat-icon>
-          <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar cambios</span>
-          <span *ngIf="isSubmitting">Guardando...</span>
+
+        <div *ngIf="isEditing" class="edit-actions">
+          <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+          <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
+            <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+            <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar cambios</span>
+            <span *ngIf="isSubmitting">Guardando...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón para candidatos logueados -->
+      <div *ngIf="isCandidate()">
+        <button mat-raised-button 
+                [color]="isAlreadyApplied ? 'warn' : 'accent'" 
+                (click)="applyToOffer()" 
+                [disabled]="!offer.active || isApplyButtonDisabled()">
+          <mat-icon>{{ isAlreadyApplied ? 'check_circle' : 'send' }}</mat-icon>
+          {{ getApplyButtonText() }}
+        </button>
+        <p *ngIf="!offer.active" class="inactive-offer-message">Esta oferta no está activa</p>
+      </div>
+
+      <!-- Botón para usuarios no logueados -->
+      <div *ngIf="!isLoggedIn() && shouldShowApplyButton()">
+        <button mat-raised-button color="primary" (click)="redirectToLogin()">
+          <mat-icon>login</mat-icon>
+          Iniciar sesión para inscribirse
         </button>
       </div>
     </div>
@@ -46,27 +69,44 @@
     <!-- Pestaña de Detalles de la Oferta -->
     <mat-tab label="Detalles de la oferta">
       <div class="tab-content">
-        <mat-card class="details-card">
-          <mat-card-header>
-            <mat-card-title>
-              <h2>Oferta</h2>
-            </mat-card-title>
-            <mat-slide-toggle [checked]="offer.active" (change)="toggleActive($event.checked)" color="primary">{{
-              toggleLabel }}</mat-slide-toggle>
-          </mat-card-header>
-          <mat-card-content>
+        <!-- Un solo contenedor para todo -->
+        <mat-card class="single-content-container">
+          <!-- Encabezado simple -->
+          <div class="content-header">
+            <h2>Información de la Oferta</h2>
+            <mat-slide-toggle *ngIf="canEdit()" [checked]="offer.active" (change)="toggleActive($event.checked)"
+              color="primary">{{ toggleLabel }}</mat-slide-toggle>
+          </div>
 
-            <!-- Vista normal (no editando) -->
-            <div class="offer-details" *ngIf="!isEditing">
-              <div class="detail-item">
-                <h3>Título:</h3>
-                <p>{{ offer.title }}</p>
-              </div>
-              <div class="detail-item">
-                <h3>Descripción:</h3>
-                <p class="description-text">{{ offer.offerDescription }}</p>
-              </div>
-            </div>
+          <!-- Contenido principal -->
+          <!-- Vista normal (no editando) -->
+          <div *ngIf="!isEditing">
+            <h3>Título:</h3>
+            <p>{{ offer.title }}</p>
+            
+            <h3>Descripción:</h3>
+            <p class="description-text">{{ offer.offerDescription }}</p>
+            
+            <h3>Ubicación:</h3>
+            <p>{{ offer.location || 'No especificada' }}</p>
+            
+            <h3>Modalidad de trabajo:</h3>
+            <p>
+              <span *ngIf="offer.type === 'remote'">Remoto</span>
+              <span *ngIf="offer.type === 'hybrid'">Híbrido</span>
+              <span *ngIf="offer.type === 'onsite'">Presencial</span>
+              <span *ngIf="!offer.type">No especificada</span>
+            </p>
+            
+            <h3>Requisitos obligatorios:</h3>
+            <p class="description-text">{{ offer.requirements || 'No especificados' }}</p>
+            
+            <h3 *ngIf="offer.desirable">Conocimientos deseables:</h3>
+            <p *ngIf="offer.desirable" class="description-text">{{ offer.desirable }}</p>
+            
+            <h3 *ngIf="offer.benefits">Beneficios y compensaciones:</h3>
+            <p *ngIf="offer.benefits" class="description-text">{{ offer.benefits }}</p>
+          </div>
 
             <!-- Vista de edición -->
             <div class="offer-edit-form" *ngIf="isEditing && editedOffer">
@@ -94,44 +134,82 @@
                 <mat-error *ngIf="editedOffer.offerDescription && editedOffer.offerDescription.length > 2500">La
                   descripción no puede superar los 2500 caracteres</mat-error>
               </mat-form-field>
-            </div>
-          </mat-card-content>
-        </mat-card>
 
-        <!-- Sección de Etiquetas Técnicas -->
-        <mat-card class="details-card">
-          <mat-card-header>
-            <mat-card-title>
-              <h3>Etiquetas Técnicas</h3>
-            </mat-card-title>
-            <div class="labels-actions" *ngIf="canEdit()">
-              <button *ngIf="!isEditingLabels" mat-button color="primary" (click)="startEditingLabels()">
-                <mat-icon>edit</mat-icon>
-                Editar etiquetas
-              </button>
-              <div *ngIf="isEditingLabels" class="edit-actions">
-                <button mat-button (click)="cancelEditingLabels()">
-                  <mat-icon>cancel</mat-icon>
-                  Cancelar
-                </button>
-                <button mat-raised-button color="primary" (click)="saveLabels()">
-                  <mat-icon>save</mat-icon>
-                  Guardar
-                </button>
-              </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Ubicación</mat-label>
+                <input matInput [(ngModel)]="editedOffer.location" placeholder="Ej. Madrid, España" required maxlength="255">
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.location.length || 0) >= 240">{{editedOffer.location.length || 0}}/255</mat-hint>
+                <mat-error *ngIf="!editedOffer.location">La ubicación es requerida</mat-error>
+                <mat-error *ngIf="editedOffer.location && editedOffer.location.length > 255">La ubicación no puede superar los 255 caracteres</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Modalidad de trabajo</mat-label>
+                <mat-select [(ngModel)]="editedOffer.type" required>
+                  <mat-option *ngFor="let workType of workTypes" [value]="workType.value">
+                    {{workType.label}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="!editedOffer.type">La modalidad de trabajo es requerida</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Requisitos obligatorios</mat-label>
+                <textarea matInput [(ngModel)]="editedOffer.requirements"
+                  placeholder="Detalles de los requisitos necesarios para el puesto" rows="6" required maxlength="5000">
+                </textarea>
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.requirements.length || 0) >= 4800">{{editedOffer.requirements.length || 0}}/5000</mat-hint>
+                <mat-error *ngIf="!editedOffer.requirements">Los requisitos son requeridos</mat-error>
+                <mat-error *ngIf="editedOffer.requirements && editedOffer.requirements.length > 5000">Los requisitos no pueden superar los 5000 caracteres</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Conocimientos deseables (opcional)</mat-label>
+                <textarea matInput [(ngModel)]="editedOffer.desirable"
+                  placeholder="Conocimientos adicionales que se valoran positivamente" rows="4" maxlength="5000">
+                </textarea>
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.desirable.length || 0) >= 4800">{{editedOffer.desirable.length || 0}}/5000</mat-hint>
+                <mat-error *ngIf="editedOffer.desirable && editedOffer.desirable.length > 5000">Los conocimientos deseables no pueden superar los 5000 caracteres</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Beneficios y compensaciones (opcional)</mat-label>
+                <textarea matInput [(ngModel)]="editedOffer.benefits"
+                  placeholder="Beneficios, compensaciones extra, formación, horarios flexibles, etc." rows="4" maxlength="5000">
+                </textarea>
+                <mat-hint align="end" [class.warn-limit]="(editedOffer.benefits.length || 0) >= 4800">{{editedOffer.benefits.length || 0}}/5000</mat-hint>
+                <mat-error *ngIf="editedOffer.benefits && editedOffer.benefits.length > 5000">Los beneficios no pueden superar los 5000 caracteres</mat-error>
+              </mat-form-field>
             </div>
-          </mat-card-header>
-          <mat-card-content class="tech-labels-content">
-            <app-tech-labels-manager [selectedLabels]="offer.techLabels || []" [maxLabels]="5"
-              [readonly]="!isEditingLabels" (labelsChanged)="onLabelsChanged($event)">
-            </app-tech-labels-manager>
-          </mat-card-content>
+
+          <!-- Sección de Etiquetas Técnicas -->
+          <hr class="simple-divider">
+          <h3>Etiquetas Técnicas</h3>
+          <div class="labels-actions" *ngIf="canEdit()">
+            <button *ngIf="!isEditingLabels" mat-button color="primary" (click)="startEditingLabels()">
+              <mat-icon>edit</mat-icon>
+              Editar etiquetas
+            </button>
+            <div *ngIf="isEditingLabels" class="edit-actions">
+              <button mat-button (click)="cancelEditingLabels()">
+                <mat-icon>cancel</mat-icon>
+                Cancelar
+              </button>
+              <button mat-raised-button color="primary" (click)="saveLabels()">
+                <mat-icon>save</mat-icon>
+                Guardar
+              </button>
+            </div>
+          </div>
+          <app-tech-labels-manager [selectedLabels]="offer.techLabels || []" [maxLabels]="5"
+            [readonly]="!isEditingLabels" (labelsChanged)="onLabelsChanged($event)">
+          </app-tech-labels-manager>
         </mat-card>
       </div>
     </mat-tab>
 
-    <!-- Pestaña de Candidatos -->
-    <mat-tab label="Candidatos inscritos">
+    <!-- Pestaña de Candidatos (solo para empresas) -->
+    <mat-tab label="Candidatos inscritos" *ngIf="canEdit()">
       <div class="tab-content">
         <div class="candidates-header">
           <h2>Candidatos inscritos</h2>

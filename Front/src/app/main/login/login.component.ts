@@ -31,12 +31,14 @@ export class LoginComponent implements OnInit {
         if (response.roles === 'role_admin') {
           // Si es admin, cancelar cualquier intento de aplicación pendiente
           this.loginService.clickedApplyOffer = false;
+          sessionStorage.removeItem('redirectAfterLogin'); // Limpiar redirección
           this.router.navigate(['/main/admin']);
         }
         // Comprobar si es empresa - también tiene prioridad
         else if (response.roles === 'role_company') {
           // Si es empresa, cancelar cualquier intento de aplicación pendiente
           this.loginService.clickedApplyOffer = false;
+          sessionStorage.removeItem('redirectAfterLogin'); // Limpiar redirección
           this.router.navigate(['/main/empresa']);
         }
         // Si no es admin ni empresa, seguir con la lógica normal
@@ -45,7 +47,14 @@ export class LoginComponent implements OnInit {
           this.applyOfferAfterLogIn();
           this.loginService.clickedApplyOffer = false;
         } else if (response.roles === 'role_candidate') {
-          this.router.navigate(['/main/ofertas']);
+          // Verificar si hay una redirección guardada
+          const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+          if (redirectPath && redirectPath !== '' && redirectPath !== null) {
+            sessionStorage.removeItem('redirectAfterLogin');
+            this.router.navigate([`${redirectPath}`]);
+          } else {
+            this.router.navigate(['/main/ofertas']);
+          }
         } else {
           this.router.navigate(['/main/empresa']);
         }

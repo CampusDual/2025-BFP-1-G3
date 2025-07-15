@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TechLabel } from 'src/app/model/tech-label';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+/** Error state matcher que muestra errores cuando el campo está sucio e inválido */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-publish-offer',
@@ -18,6 +27,16 @@ export class PublishOfferComponent implements OnInit {
   successMessage = '';
   companyId: number | null = null;
   selectedTechLabels: TechLabel[] = [];
+  
+  // Error state matcher personalizado
+  errorStateMatcher = new MyErrorStateMatcher();
+  
+  // Opciones para el tipo de trabajo
+  workTypes = [
+    { value: 'remote', label: 'Remoto' },
+    { value: 'hybrid', label: 'Híbrido' },
+    { value: 'onsite', label: 'Presencial' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +47,12 @@ export class PublishOfferComponent implements OnInit {
   ) {
     this.offerForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: ['', [Validators.required, Validators.maxLength(2500)]]
+      descripcion: ['', [Validators.required, Validators.maxLength(2500)]],
+      location: ['', [Validators.required, Validators.maxLength(255)]],
+      type: ['remote', [Validators.required]],
+      requirements: ['', [Validators.required, Validators.maxLength(5000)]],
+      desirable: ['', [Validators.maxLength(5000)]],
+      benefits: ['', [Validators.maxLength(5000)]]
     });
   }
 
@@ -79,8 +103,17 @@ export class PublishOfferComponent implements OnInit {
     const offerData = {
       title: String(this.offerForm.value.titulo).trim(),
       offerDescription: String(this.offerForm.value.descripcion).trim(),
-      companyId: this.companyId
+      companyId: this.companyId,
+      location: String(this.offerForm.value.location).trim(),
+      type: this.offerForm.value.type,
+      requirements: String(this.offerForm.value.requirements).trim(),
+      desirable: String(this.offerForm.value.desirable || '').trim(),
+      benefits: String(this.offerForm.value.benefits || '').trim()
     };
+
+    console.log('Datos que se van a enviar:', offerData);
+    console.log('FormGroup values:', this.offerForm.value);
+    console.log('FormGroup valid:', this.offerForm.valid);
 
     this.submitting = true;
 
@@ -117,9 +150,23 @@ export class PublishOfferComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error completo:', error);
+          console.error('Status:', error.status);
+          console.error('Error body:', error.error);
+          console.error('Message:', error.message);
           this.submitting = false;
           
-          if (error.status === 403) {
+          if (error.status === 400) {
+            let errorMsg = 'Error en los datos enviados (400)';
+            if (error.error && typeof error.error === 'string') {
+              errorMsg = error.error;
+            } else if (error.error && error.error.message) {
+              errorMsg = error.error.message;
+            }
+            this.snackBar.open(errorMsg, 'Cerrar', {
+              duration: 7000,
+              panelClass: ['snackbar-failed']
+            });
+          } else if (error.status === 403) {
             this.snackBar.open('No tienes permisos para publicar ofertas', 'Cerrar', {
               duration: 5000,
               panelClass: ['snackbar-failed']

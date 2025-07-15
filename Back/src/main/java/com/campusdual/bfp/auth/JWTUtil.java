@@ -47,6 +47,18 @@ public class JWTUtil {
                 .compact();
     }
 
+    // Método sobrecargado para incluir el rol y companyId en el token
+    public String generateJWTToken(String username, String role, Integer companyId){
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role) // Agregar el rol como claim personalizado
+                .claim("companyId", companyId) // Agregar el companyId para empresas
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + this.jwtExpiration))
+                .signWith(this.key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(this.key).build()
@@ -62,6 +74,15 @@ public class JWTUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role", String.class);
+    }
+
+    // Método para extraer el companyId del token
+    public Integer getCompanyIdFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.key).build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("companyId", Integer.class);
     }
 
     public boolean validateJwtToken(String token) {

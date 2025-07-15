@@ -15,6 +15,10 @@ import { ApplicationSummaryDTO } from '../model/application-summary';
   providedIn: 'root'
 })
 export class LoginService {
+  // Cache de aplicaciones del candidato
+  public candidateApplicationsCache: ApplicationSummaryDTO[] | null = null; // Público para optimización de UI
+  public applicationsCacheLoaded: boolean = false; // Público para optimización de UI
+
   //Método para obtener aplicaciones de un candidato
   getCandidateApplications(): Observable<ApplicationSummaryDTO[]> {
     const token = sessionStorage.getItem('token');
@@ -127,6 +131,72 @@ export class LoginService {
     return this.getRoleFromToken();
   }
 
+  // Método para obtener el ID del usuario del token JWT
+  getUserIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el ID del usuario del campo 'sub' o 'id' del payload
+      return payload.sub || payload.id || null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener ID de usuario:', error);
+      return null;
+    }
+  }
+
+  // Método para obtener el companyId del token (solo para empresas)
+  getCompanyIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Extraer el companyId del payload (solo estará presente si es una empresa)
+      return payload.companyId || null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener companyId:', error);
+      return null;
+    }
+  }
+
+  // Método para obtener el candidateId del token JWT
+  getCandidateIdFromToken(): number | null {
+    const token = sessionStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      console.log('DEBUG getCandidateIdFromToken - payload completo:', payload);
+      console.log('DEBUG getCandidateIdFromToken - candidateId desde token:', payload.candidateId);
+      console.log('DEBUG getCandidateIdFromToken - candidateId desde servicio:', this.candidateId);
+      
+      // Primero intentar obtener el candidateId del token
+      if (payload.candidateId) {
+        return payload.candidateId;
+      }
+      
+      // Si no está en el token, usar el que se cargó desde el perfil
+      if (this.candidateId) {
+        return this.candidateId;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error decodificando token para obtener candidateId:', error);
+      
+      // Como fallback, usar el candidateId del servicio si está disponible
+      return this.candidateId || null;
+    }
+  }
+
   login(user: string, password: string) {
     const url = this.urlEndPoint + "/auth/signin";
     const headers = new HttpHeaders({
@@ -143,6 +213,22 @@ export class LoginService {
           // Ya no guardamos el rol en sessionStorage, se obtiene del token
 
           this.role = response.roles;
+          
+          // 🚀 OPTIMIZACIÓN: Precargar caché de aplicaciones para candidatos
+          // Esto mejora la velocidad de navegación posterior
+          setTimeout(() => {
+            if (this.isLoggedAsCandidate()) {
+              console.log('🔄 Precargando caché de aplicaciones tras login...');
+              this.loadApplicationsCacheIfCandidate()?.subscribe({
+                next: () => {
+                  console.log('✅ Caché precargado exitosamente tras login');
+                },
+                error: (error) => {
+                  console.warn('⚠️ Error precargando caché tras login:', error);
+                }
+              });
+            }
+          }, 100); // Pequeño delay para asegurar que el token esté guardado
         }),
         catchError(e => {
           if (e.status === 401) {
@@ -236,6 +322,20 @@ export class LoginService {
     );
   }
 
+  // Método para obtener una oferta específica por ID (sin autenticación requerida)
+  getOfferById(id: number): Observable<Offer> {
+    return this.http.get<Offer>(`${this.urlEndPoint}/offers/${id}`).pipe(
+      map(response => {
+        console.log('Respuesta oferta por ID del servidor:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error obteniendo oferta por ID:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   isAuthenticated(): boolean {
     return sessionStorage.getItem('token') !== null;
   }
@@ -264,6 +364,12 @@ export class LoginService {
     return role === 'role_admin';
   }
 
+  // Verificar si el usuario está logueado (cualquier rol)
+  isLoggedIn(): boolean {
+    const token = sessionStorage.getItem('token');
+    return token !== null && token.trim() !== '';
+  }
+
   logout(): void {
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('password');
@@ -271,6 +377,9 @@ export class LoginService {
     sessionStorage.removeItem('empresa');
     // No necesitamos limpiar 'role' de sessionStorage porque ya no lo usamos
     this.role = '';
+    
+    // Limpiar caché de aplicaciones
+    this.clearApplicationsCache();
 
     console.log('Sesión cerrada correctamente');
 
@@ -513,6 +622,31 @@ export class LoginService {
     );
   }
 
+  // Método para verificar si un candidato ya está inscrito en una oferta
+  checkApplicationExists(candidateId: number, offerId: number): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get(`${this.urlEndPoint}/applications/check/${candidateId}/${offerId}`, { headers });
+  }
+
+  // Método para inscribirse a una oferta
+  applyToOfferService(offerId: number): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    const applicationData = {
+      id_offer: offerId
+    };
+    
+    return this.http.post(`${this.urlEndPoint}/applications/add`, applicationData, { headers });
+  }
+
+  // Método para actualizar el estado de una aplicación
   updateApplicationState(applicationId: number, newState: number): Observable<String> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({
@@ -520,21 +654,89 @@ export class LoginService {
       'Content-Type': 'application/json'
     });
 
-    const requesBody = {
+    const requestBody = {
       id: applicationId,
       state: newState
     };
 
-    return this.http.put(`${this.urlEndPoint}/applications/toggleActive/${applicationId}`, requesBody,
+    return this.http.put(`${this.urlEndPoint}/applications/toggleActive/${applicationId}`, requestBody,
       { headers, responseType: 'text' }).pipe(
         map(response => {
           console.log("Estado de la inscripción del candidato:", response);
           return response;
         }),
         catchError(error => {
-          console.error('Error al cambiar el estado de la inscipción del candidato:', error);
+          console.error('Error al cambiar el estado de la inscripción del candidato:', error);
           return throwError(() => error);
         })
       );
+  }
+
+  // Método para obtener aplicaciones del candidato con caché
+  getCandidateApplicationsWithCache(): Observable<ApplicationSummaryDTO[]> {
+    // Si ya tenemos el caché cargado, devolverlo inmediatamente
+    if (this.applicationsCacheLoaded && this.candidateApplicationsCache) {
+      return new Observable(observer => {
+        observer.next(this.candidateApplicationsCache!);
+        observer.complete();
+      });
+    }
+
+    // Si no está cargado, cargar desde el servidor y guardar en caché
+    return this.getCandidateApplications().pipe(
+      tap(applications => {
+        this.candidateApplicationsCache = applications;
+        this.applicationsCacheLoaded = true;
+        // 🔍 TEMPORAL: Para que veas el caché en console
+        console.log('✅ CACHÉ CREADO:', this.candidateApplicationsCache);
+        console.log('📊 Cantidad de aplicaciones:', applications.length);
+      })
+    );
+  }
+
+  // Método para verificar si un candidato está inscrito en una oferta (usando caché)
+  isAppliedToOffer(offerId: number): boolean {
+    if (!this.applicationsCacheLoaded || !this.candidateApplicationsCache) {
+      console.log('⚠️ Caché no disponible para oferta:', offerId);
+      return false; // Si no está cargado el caché, asumir que no está inscrito
+    }
+
+    const isApplied = this.candidateApplicationsCache.some(
+      application => application.offer.id === offerId
+    );
+    
+    console.log(`🔍 Verificando oferta ${offerId}: ${isApplied ? '✅ YA INSCRITO' : '❌ NO INSCRITO'}`);
+    return isApplied;
+  }
+
+  // Método para agregar una nueva aplicación al caché
+  addApplicationToCache(application: ApplicationSummaryDTO): void {
+    if (this.candidateApplicationsCache) {
+      this.candidateApplicationsCache.push(application);
+    }
+  }
+
+  // Método para limpiar el caché (útil en logout)
+  clearApplicationsCache(): void {
+    this.candidateApplicationsCache = null;
+    this.applicationsCacheLoaded = false;
+  }
+
+  // Método para cargar el caché de aplicaciones si es candidato
+  loadApplicationsCacheIfCandidate(): Observable<ApplicationSummaryDTO[]> | null {
+    if (!this.isLoggedAsCandidate()) {
+      return null;
+    }
+
+    if (this.applicationsCacheLoaded) {
+      console.log('💾 Caché de aplicaciones ya disponible, retornando desde memoria');
+      return new Observable(observer => {
+        observer.next(this.candidateApplicationsCache || []);
+        observer.complete();
+      });
+    }
+
+    console.log('📡 Cargando caché de aplicaciones desde servidor...');
+    return this.getCandidateApplicationsWithCache();
   }
 }
