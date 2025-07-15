@@ -383,7 +383,10 @@ export class CandidatePanelComponent implements OnInit {
       // Combinar los datos
       const combinedData = { ...basicData, ...professionalData };
 
-      console.log('Datos a enviar:', combinedData); // Debug
+      console.log('Datos básicos:', basicData); // Debug
+      console.log('Datos profesionales:', professionalData); // Debug
+      console.log('Datos combinados a enviar:', combinedData); // Debug
+      console.log('Selected tech labels:', this.selectedTechLabels); // Debug
 
       const headers = new HttpHeaders({
         'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -405,9 +408,21 @@ export class CandidatePanelComponent implements OnInit {
             this.retrieveCandidateData();
           },
           error: (error) => {
-            console.error('Error al guardar cambios:', error);
+            console.error('Error completo al guardar cambios:', error);
+            console.error('Error body:', error.error);
+            console.error('Error status:', error.status);
+            console.error('Error message:', error.message);
             this.isSubmitting = false;
-            this.snackBar.open('Error al guardar los cambios', 'Cerrar', {
+            
+            // Mostrar mensaje de error más específico
+            let errorMessage = 'Error al guardar los cambios';
+            if (error.error && error.error.message) {
+              errorMessage = error.error.message;
+            } else if (error.message) {
+              errorMessage = error.message;
+            }
+            
+            this.snackBar.open(errorMessage, 'Cerrar', {
               duration: 5000,
               horizontalPosition: 'center',
               verticalPosition: 'bottom',
@@ -429,29 +444,31 @@ export class CandidatePanelComponent implements OnInit {
   // Helper methods for displaying enum values
   getEmploymentStatusText(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'EMPLOYED': 'Empleado',
-      'UNEMPLOYED': 'Desempleado',
-      'STUDENT': 'Estudiante',
-      'FREELANCER': 'Freelancer'
+      'EMPLEADO': 'Empleado',
+      'DESEMPLEADO': 'Desempleado',
+      'ESTUDIANTE': 'Estudiante',
+      'FREELANCE': 'Freelance',
+      'BUSCA_ACTIVAMENTE': 'Buscando activamente'
     };
     return statusMap[status] || status;
   }
 
   getAvailabilityText(availability: string): string {
     const availabilityMap: { [key: string]: string } = {
-      'IMMEDIATE': 'Inmediata',
-      'TWO_WEEKS': '2 semanas',
-      'ONE_MONTH': '1 mes',
-      'THREE_MONTHS': '3 meses'
+      'INMEDIATA': 'Inmediata',
+      'UNA_SEMANA': 'En una semana',
+      'DOS_SEMANAS': 'En dos semanas',
+      'UN_MES': 'En un mes',
+      'MAS_DE_UN_MES': 'Más de un mes'
     };
     return availabilityMap[availability] || availability;
   }
 
   getModalityText(modality: string): string {
     const modalityMap: { [key: string]: string } = {
-      'REMOTE': 'Remoto',
-      'ONSITE': 'Presencial',
-      'HYBRID': 'Híbrido'
+      'PRESENCIAL': 'Presencial',
+      'REMOTO': 'Remoto',
+      'HIBRIDO': 'Híbrido'
     };
     return modalityMap[modality] || modality;
   }
