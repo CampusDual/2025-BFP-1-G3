@@ -56,6 +56,33 @@ public class OffersController {
         return offersService.queryActiveOffers();
     }
 
+    @GetMapping(value = "/recommended")
+    public ResponseEntity<?> getRecommendedOffers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        try {
+            // Extraer el token del header
+            String token = authHeader.substring(7); // Remover "Bearer "
+            String username = jwtUtil.getUsernameFromToken(token);
+            String role = jwtUtil.getRoleFromToken(token);
+
+            // Verificar que sea un candidato
+            if (role == null || (!role.equals("role_candidate") && !role.equalsIgnoreCase("role_candidate"))) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Solo los candidatos pueden acceder a ofertas recomendadas. Rol actual: " + role);
+            }
+
+            // Obtener ofertas recomendadas
+            Object result = offersService.getRecommendedOffersPaginated(username, page, size);
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al obtener ofertas recomendadas: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/getOffersByCompany/{companyId}")
     public List<OfferDTO> getOffersByCompanyId(@PathVariable int companyId) {
         return offersService.getOffersByCompanyId(companyId);
