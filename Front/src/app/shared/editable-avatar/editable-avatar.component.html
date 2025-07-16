@@ -1,0 +1,91 @@
+<div class="editable-avatar-container" [ngClass]="getAvatarSizeClass()">
+  <!-- Avatar con icono de edición -->
+  <div class="avatar-wrapper" (click)="openModal()">
+    <div class="avatar">
+      <img *ngIf="hasProfilePhoto()" [src]="getProfilePhotoUrl()" alt="Foto de perfil" class="avatar-image">
+      <mat-icon *ngIf="!hasProfilePhoto()" class="avatar-icon">person</mat-icon>
+    </div>
+    
+    <!-- Icono de edición -->
+    <div class="edit-icon">
+      <mat-icon>edit</mat-icon>
+      <!-- <mat-icon>photo_camera</mat-icon> <!-- Alternativa con icono de cámara -->
+    </div>
+  </div>
+
+  <!-- Modal para editar foto -->
+  <div *ngIf="showModal" class="modal-backdrop" (click)="onModalBackdropClick($event)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ hasProfilePhoto() ? 'Editar Foto de Perfil' : 'Subir Foto de Perfil' }}</h3>
+        <button mat-icon-button (click)="closeModal()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Vista previa de la imagen actual o seleccionada -->
+        <div class="preview-section">
+          <div class="preview-avatar">
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa" class="preview-image">
+            <img *ngIf="!imagePreview && hasProfilePhoto()" [src]="getProfilePhotoUrl()" alt="Foto actual" class="preview-image">
+            <mat-icon *ngIf="!imagePreview && !hasProfilePhoto()" class="preview-icon">person</mat-icon>
+          </div>
+        </div>
+
+        <!-- Input de archivo oculto -->
+        <input type="file" 
+               id="photo-input" 
+               accept="image/*" 
+               (change)="onFileSelected($event)" 
+               style="display: none;">
+
+        <!-- Opciones cuando NO hay foto -->
+        <div *ngIf="!hasProfilePhoto() && !imagePreview" class="action-buttons">
+          <button mat-raised-button color="primary" (click)="triggerFileInput()" class="action-button">
+            <mat-icon>add_photo_alternate</mat-icon>
+            Subir Foto
+          </button>
+        </div>
+
+        <!-- Opciones cuando HAY foto actual -->
+        <div *ngIf="hasProfilePhoto() && !imagePreview" class="action-buttons">
+          <button mat-raised-button color="primary" (click)="triggerFileInput()" class="action-button">
+            <mat-icon>photo_camera</mat-icon>
+            Cambiar Foto
+          </button>
+          <button mat-raised-button color="warn" (click)="deletePhoto()" class="action-button">
+            <mat-icon>delete</mat-icon>
+            Eliminar Foto
+          </button>
+        </div>
+
+        <!-- Opciones cuando hay vista previa de nueva foto -->
+        <div *ngIf="imagePreview" class="action-buttons">
+          <button mat-raised-button color="primary" 
+                  (click)="uploadPhoto()" 
+                  [disabled]="uploadingPhoto"
+                  class="action-button">
+            <mat-spinner *ngIf="uploadingPhoto" diameter="20" class="button-spinner"></mat-spinner>
+            <mat-icon *ngIf="!uploadingPhoto">cloud_upload</mat-icon>
+            {{ uploadingPhoto ? 'Subiendo...' : 'Guardar Foto' }}
+          </button>
+          <button mat-stroked-button (click)="cancelPhotoSelection()" class="action-button">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+        </div>
+
+        <!-- Información sobre requisitos -->
+        <div class="requirements-info">
+          <p class="requirements-title">Requisitos:</p>
+          <ul class="requirements-list">
+            <li>Formato: JPG, PNG, GIF, WebP</li>
+            <li>Tamaño máximo: 5MB</li>
+            <li>Recomendado: Imagen cuadrada</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -93,6 +93,21 @@ export class OfferDetailsComponent implements OnInit {
   ngOnInit(): void {
     console.log('OfferDetailsComponent ngOnInit iniciado');
 
+    // Suscribirse a eventos de navegación para refrescar estado al volver a esta ruta
+this.router.events.subscribe(event => {
+  if (event.constructor.name === "NavigationEnd") {
+    if (this.loginService.isLoggedAsCandidate() && this.offerId) {
+      const candidateId = this.loginService.getCandidateIdFromToken();
+      if (candidateId !== null && candidateId !== undefined) {
+        // Forzar recarga desde backend para asegurar estado actualizado
+        this.performApplicationCheck(candidateId);
+      } else {
+        console.warn('Candidate ID is null or undefined, skipping application check');
+      }
+    }
+  }
+});
+
     // Primero, intentar obtener el ID de la URL
     this.route.params.subscribe(params => {
       this.offerId = Number(params['id']);
@@ -112,22 +127,36 @@ export class OfferDetailsComponent implements OnInit {
           
           const contentPromise = this.loadOfferContentAsync();
           
-          Promise.all([cachePromise, contentPromise]).then(
-            ([cacheResult, contentResult]) => {
-              console.log('✅ Carga paralela completada en detalles');
-              // Ahora SÍ terminamos el loading y verificamos el estado
-              this.loading = false;
-              // Verificar estado de aplicación ahora que el caché está listo
-              this.checkApplicationStatusFromCache();
-            }
-          ).catch(
-            (error) => {
-              console.error('❌ Error en carga paralela en detalles:', error);
-              // Continuar aún con errores
-              this.loading = false;
-              this.checkApplicationStatusFromCache();
-            }
-          );
+Promise.all([cachePromise, contentPromise]).then(
+  ([cacheResult, contentResult]) => {
+    console.log('✅ Carga paralela completada en detalles');
+    // Ahora SÍ terminamos el loading y verificamos el estado
+    this.loading = false;
+    // Verificar estado de aplicación ahora que el caché está listo
+    this.checkApplicationStatusFromCache();
+    const candidateId = this.loginService.getCandidateIdFromToken();
+    if (candidateId !== null && candidateId !== undefined) {
+      // Forzar recarga desde backend para asegurar estado actualizado
+      this.performApplicationCheck(candidateId);
+    } else {
+      console.warn('Candidate ID is null or undefined, skipping application check');
+    }
+  }
+).catch(
+  (error) => {
+    console.error('❌ Error en carga paralela en detalles:', error);
+    // Continuar aún con errores
+    this.loading = false;
+    this.checkApplicationStatusFromCache();
+    const candidateId = this.loginService.getCandidateIdFromToken();
+    if (candidateId !== null && candidateId !== undefined) {
+      // Forzar recarga desde backend para asegurar estado actualizado
+      this.performApplicationCheck(candidateId);
+    } else {
+      console.warn('Candidate ID is null or undefined, skipping application check');
+    }
+  }
+);
         } else {
           this.loadOfferContent();
         }
@@ -719,6 +748,8 @@ export class OfferDetailsComponent implements OnInit {
   redirectToLogin(): void {
     // Guardar el ID de la oferta para redirigir después del login
     if (this.offer?.id) {
+      this.loginService.clickedApplyOffer = true;
+      this.loginService.idOffer = this.offer.id;
       sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${this.offer.id}`);
     }
     this.router.navigate(['/main/login']);

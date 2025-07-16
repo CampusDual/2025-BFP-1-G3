@@ -2,9 +2,12 @@
   <div class="candidate-profile-container">
     <div class="candidate-header-card">
       <div class="avatar-section">
-        <div class="avatar">
-          <mat-icon class="avatar-icon">person</mat-icon>
-        </div>
+        <app-editable-avatar 
+          [candidateId]="candidateData?.id ?? null" 
+          [profilePhotoUrl]="candidateData?.profilePhotoUrl"
+          size="large"
+          (photoChanged)="onPhotoChanged($event)">
+        </app-editable-avatar>
         <div class="candidate-info">
           <h2>{{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}
           </h2>
@@ -25,65 +28,324 @@
     <!-- Pestaña de Datos del Usuario -->
     <mat-tab label="Mis Datos">
       <div class="tab-content">
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>Nombre</mat-label>
-              <input matInput formControlName="name" required>
-              <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
-                El nombre es requerido
-              </mat-error>
-            </mat-form-field>
+        <!-- Botones de acción -->
+        <div class="profile-actions" *ngIf="!isEditing">
+          <button mat-raised-button color="primary" (click)="startEditing()">
+            <mat-icon>edit</mat-icon>
+            Editar Perfil
+          </button>
+        </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Primer Apellido</mat-label>
-              <input matInput formControlName="surname1" required>
-              <mat-error *ngIf="profileForm.get('surname1')?.hasError('required')">
-                El primer apellido es requerido
-              </mat-error>
-            </mat-form-field>
+        <div class="edit-actions" *ngIf="isEditing">
+          <button mat-button (click)="cancelEditing()" [disabled]="isSubmitting">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+          <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="isSubmitting">
+            <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+            <span *ngIf="!isSubmitting" style="margin-left: 4px;">Guardar Cambios</span>
+            <span *ngIf="isSubmitting">Guardando...</span>
+          </button>
+        </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Segundo Apellido</mat-label>
-              <input matInput formControlName="surname2" required>
-              <mat-error *ngIf="profileForm.get('surname2')?.hasError('required')">
-                El segundo apellido es requerido
-              </mat-error>
-            </mat-form-field>
+        <!-- Vista en modo lectura -->
+        <div *ngIf="!isEditing" class="profile-view">
+          <!-- Información Personal -->
+          <div class="profile-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">person</mat-icon>
+              <h3>Información Personal</h3>
+            </div>
+            <div class="modern-info-grid">
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>badge</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Nombre completo</span>
+                  <span class="info-value">{{ profileForm.get('name')?.value }} {{ profileForm.get('surname1')?.value }} {{ profileForm.get('surname2')?.value }}</span>
+                </div>
+              </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Teléfono</mat-label>
-              <input matInput formControlName="phone" required>
-              <mat-error *ngIf="profileForm.get('phone')?.hasError('required')">
-                El teléfono es requerido
-              </mat-error>
-            </mat-form-field>
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>email</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Email</span>
+                  <span class="info-value">{{ profileForm.get('email')?.value }}</span>
+                </div>
+              </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" type="email" required>
-              <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
-                El email es requerido
-              </mat-error>
-            </mat-form-field>
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>phone</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Teléfono</span>
+                  <span class="info-value">{{ profileForm.get('phone')?.value }}</span>
+                </div>
+              </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>LinkedIn (opcional)</mat-label>
-              <input matInput formControlName="linkedin">
-            </mat-form-field>
+              <div class="info-card" *ngIf="profileForm.get('linkedin')?.value">
+                <div class="info-icon">
+                  <i class="fa-brands fa-linkedin linkedin-brand-icon"></i>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">LinkedIn</span>
+                  <span class="info-value">
+                    <a [href]="profileForm.get('linkedin')?.value" target="_blank" class="social-link">
+                      Ver perfil <mat-icon class="external-link">open_in_new</mat-icon>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="error-message" *ngIf="signUpError">
-            {{ signUpError }}
-          </div>
+          <!-- Perfil Profesional - Solo se muestra si hay datos -->
+          <div class="profile-section" *ngIf="hasProfessionalData()">
+            <div class="section-header">
+              <mat-icon class="section-icon">work</mat-icon>
+              <h3>Perfil Profesional</h3>
+            </div>
+            <div class="modern-info-grid">
+              <div class="info-card" *ngIf="professionalForm.get('professionalTitle')?.value">
+                <div class="info-icon">
+                  <mat-icon>work_outline</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Título Profesional</span>
+                  <span class="info-value">{{ professionalForm.get('professionalTitle')?.value }}</span>
+                </div>
+              </div>
 
-          <div class="button-container">
-            <button mat-raised-button color="primary" type="submit" [disabled]="submitting || profileForm.invalid">
-              <mat-icon *ngIf="submitting">hourglass_empty</mat-icon>
-              {{ submitting ? 'Guardando...' : 'Guardar Cambios' }}
-            </button>
+              <div class="info-card" *ngIf="professionalForm.get('yearsExperience')?.value">
+                <div class="info-icon">
+                  <mat-icon>schedule</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Experiencia</span>
+                  <span class="info-value">{{ professionalForm.get('yearsExperience')?.value }} años</span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('employmentStatus')?.value">
+                <div class="info-icon">
+                  <mat-icon>business_center</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Situación Laboral</span>
+                  <span class="info-value status-badge" [ngClass]="getEmploymentStatusClass(professionalForm.get('employmentStatus')?.value)">
+                    {{ getEmploymentStatusText(professionalForm.get('employmentStatus')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('availability')?.value">
+                <div class="info-icon">
+                  <mat-icon>access_time</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Disponibilidad</span>
+                  <span class="info-value availability-badge" [ngClass]="getAvailabilityClass(professionalForm.get('availability')?.value)">
+                    {{ getAvailabilityText(professionalForm.get('availability')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('preferredModality')?.value">
+                <div class="info-icon">
+                  <mat-icon>location_on</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Modalidad Preferida</span>
+                  <span class="info-value modality-badge" [ngClass]="getModalityClass(professionalForm.get('preferredModality')?.value)">
+                    {{ getModalityText(professionalForm.get('preferredModality')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('githubProfile')?.value">
+                <div class="info-icon">
+                  <i class="fa-brands fa-github github-brand-icon"></i>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">GitHub</span>
+                  <span class="info-value">
+                    <a [href]="professionalForm.get('githubProfile')?.value" target="_blank" class="social-link">
+                      Ver repositorios <mat-icon class="external-link">open_in_new</mat-icon>
+                    </a>
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card full-width" *ngIf="professionalForm.get('presentation')?.value">
+                <div class="info-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Presentación Personal</span>
+                  <span class="info-value presentation-text">{{ professionalForm.get('presentation')?.value }}</span>
+                </div>
+              </div>
+
+              <div class="info-card full-width" *ngIf="selectedTechLabels.length > 0">
+                <div class="info-icon">
+                  <mat-icon>code</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Tecnologías</span>
+                  <div class="tech-labels-display">
+                    <span *ngFor="let label of selectedTechLabels" class="tech-chip-modern">
+                      {{ label.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
+
+
+        <!-- Vista en modo edición -->
+        <div *ngIf="isEditing">
+          <form [formGroup]="profileForm">
+            <div class="form-section">
+              <h3>Información Personal</h3>
+              <div class="form-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Nombre</mat-label>
+                  <input matInput formControlName="name" required>
+                  <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
+                    El nombre es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Primer Apellido</mat-label>
+                  <input matInput formControlName="surname1" required>
+                  <mat-error *ngIf="profileForm.get('surname1')?.hasError('required')">
+                    El primer apellido es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Segundo Apellido</mat-label>
+                  <input matInput formControlName="surname2" required>
+                  <mat-error *ngIf="profileForm.get('surname2')?.hasError('required')">
+                    El segundo apellido es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Teléfono</mat-label>
+                  <input matInput formControlName="phone" required>
+                  <mat-error *ngIf="profileForm.get('phone')?.hasError('required')">
+                    El teléfono es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" type="email" required>
+                  <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
+                    El email es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>LinkedIn (opcional)</mat-label>
+                  <input matInput formControlName="linkedin">
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+
+          <form [formGroup]="professionalForm">
+            <div class="form-section">
+              <h3>Perfil Profesional</h3>
+              <div class="form-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Título Profesional</mat-label>
+                  <input matInput formControlName="professionalTitle" placeholder="ej. Desarrollador Full Stack">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Años de Experiencia</mat-label>
+                  <input matInput type="number" formControlName="yearsExperience" min="0" max="50">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Situación Laboral</mat-label>
+                  <mat-select formControlName="employmentStatus">
+                    <mat-option value="EMPLEADO">Empleado</mat-option>
+                    <mat-option value="DESEMPLEADO">Desempleado</mat-option>
+                    <mat-option value="ESTUDIANTE">Estudiante</mat-option>
+                    <mat-option value="FREELANCE">Freelance</mat-option>
+                    <mat-option value="BUSCA_ACTIVAMENTE">Buscando activamente</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Disponibilidad</mat-label>
+                  <mat-select formControlName="availability">
+                    <mat-option value="INMEDIATA">Inmediata</mat-option>
+                    <mat-option value="UNA_SEMANA">En una semana</mat-option>
+                    <mat-option value="DOS_SEMANAS">En dos semanas</mat-option>
+                    <mat-option value="UN_MES">En un mes</mat-option>
+                    <mat-option value="MAS_DE_UN_MES">Más de un mes</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Modalidad Preferida</mat-label>
+                  <mat-select formControlName="preferredModality">
+                    <mat-option value="PRESENCIAL">Presencial</mat-option>
+                    <mat-option value="REMOTO">Remoto</mat-option>
+                    <mat-option value="HIBRIDO">Híbrido</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Perfil GitHub (opcional)</mat-label>
+                  <input matInput formControlName="githubProfile" placeholder="https://github.com/usuario">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-field">
+                  <mat-label>Presentación Personal</mat-label>
+                  <textarea matInput formControlName="presentation" rows="4" 
+                    placeholder="Cuéntanos un poco sobre ti, tus objetivos profesionales y lo que te motiva..."></textarea>
+                </mat-form-field>
+              </div>
+
+              <!-- Sección de Tecnologías -->
+              <div class="tech-labels-section">
+                <h3>Áreas de Especialización</h3>
+                <p class="helper-text">Selecciona hasta 10 tecnologías en las que tienes experiencia</p>
+                
+                <div *ngIf="loadingTechLabels" class="loading-message">
+                  <mat-spinner diameter="30"></mat-spinner>
+                  <span>Cargando tecnologías...</span>
+                </div>
+
+                <div *ngIf="!loadingTechLabels && availableTechLabels.length > 0" class="tech-labels-grid">
+                  <mat-checkbox *ngFor="let label of availableTechLabels" 
+                    [checked]="isTechLabelSelected(label.id)"
+                    [disabled]="!canSelectMoreTechLabels(label.id)"
+                    (change)="onTechLabelChange($event, label)">
+                    {{ label.name }}
+                  </mat-checkbox>
+                </div>
+
+                <div class="selected-count">
+                  Seleccionadas: {{ selectedTechLabels.length }}/10
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </mat-tab>
 
@@ -115,7 +377,7 @@
         <div *ngIf="!loadingApplications && myApplications.length > 0" class="applications-list">
           <mat-card *ngFor="let application of myApplications" class="application-card">
             <mat-card-header>
-              <mat-card-title>{{ application.offer.title || 'Sin título' }}</mat-card-title>
+            <mat-card-title  (click)="goToOfferDetails(application.offer.id)" id="offer-name">{{ application.offer.title || 'Sin título' }}</mat-card-title>
               <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa'
                 }}</mat-card-subtitle>
               <div class="state-badge" [ngClass]="getStateClass(application.state)">
