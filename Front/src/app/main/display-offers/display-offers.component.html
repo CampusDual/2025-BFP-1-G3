@@ -38,7 +38,10 @@
       <div class="recommended-carousel-container" 
            (scroll)="onRecommendedScroll()">
         
-        <mat-card class="recommended-offer-card" *ngFor="let offer of recommendedOffers; let i = index">
+        <mat-card class="recommended-offer-card clickable-card" 
+                  *ngFor="let offer of recommendedOffers; let i = index"
+                  (click)="viewOfferDetails(offer.id)"
+                  matRipple>
           
           <!-- Badge de recomendación -->
           <div class="recommendation-badge">
@@ -49,57 +52,36 @@
           <mat-card-header>
             <div class="header-content">
               <mat-card-title>{{ offer.title }}</mat-card-title>
-              <mat-card-subtitle>
-                <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span>
-              </mat-card-subtitle>
+              <mat-card-subtitle>{{ offer.companyName || 'Sin nombre' }}</mat-card-subtitle>
             </div>
           </mat-card-header>
 
           <mat-card-content>
             <p class="offer-description">{{ offer.offerDescription }}</p>
 
-            <!-- Indicador de coincidencias -->
-            <div class="affinity-indicator" *ngIf="offer.techLabels && offer.techLabels.length > 0">
-              <mat-icon>psychology</mat-icon>
-              <span>{{ offer.techLabels.length }} tecnologías coincidentes</span>
-            </div>
-
-            <!-- Etiquetas técnicas condensadas -->
+            <!-- Etiquetas técnicas compactas -->
             <div class="tech-labels-compact" *ngIf="offer.techLabels && offer.techLabels.length > 0">
-              <span *ngFor="let label of offer.techLabels.slice(0, 3)" class="tech-chip-small">
+              <span *ngFor="let label of offer.techLabels.slice(0, 3)" class="tech-chip-mini">
                 {{ label.name }}
               </span>
-              <span *ngIf="offer.techLabels.length > 3" class="more-labels">
+              <span *ngIf="offer.techLabels.length > 3" class="more-labels-mini">
                 +{{ offer.techLabels.length - 3 }}
               </span>
             </div>
-          </mat-card-content>
 
-          <mat-card-actions class="card-actions">
-            <button mat-raised-button color="primary" 
-                    (click)="viewOfferDetails(offer.id)"
-                    class="view-btn">
-              <mat-icon>visibility</mat-icon>
-              Ver
-            </button>
-            
-            <!-- Estado de inscripción -->
-            <div *ngIf="shouldShowApplicationStatus()" class="application-status-compact">
-              <button *ngIf="!isAppliedToOffer(offer.id)" 
-                      mat-raised-button color="accent"
-                      (click)="applyOffer(offer.id)" 
-                      class="apply-btn">
-                <mat-icon>send</mat-icon>
-              </button>
-              
-              <mat-icon *ngIf="isAppliedToOffer(offer.id)" 
-                        color="primary" 
-                        matTooltip="Ya inscrito"
-                        class="applied-icon">
+            <!-- Indicador de estado de aplicación -->
+            <div *ngIf="shouldShowApplicationStatus()" class="application-indicator">
+              <mat-icon *ngIf="isAppliedToOffer(offer.id)" class="applied-indicator">
                 check_circle
               </mat-icon>
+              <span *ngIf="!isAppliedToOffer(offer.id)" class="apply-indicator">
+                Clic para ver detalles
+              </span>
+              <span *ngIf="isAppliedToOffer(offer.id)" class="applied-text">
+                Ya aplicaste
+              </span>
             </div>
-          </mat-card-actions>
+          </mat-card-content>
         </mat-card>
       </div>
 
