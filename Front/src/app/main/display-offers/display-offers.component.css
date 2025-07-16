@@ -639,7 +639,7 @@ mat-card-content {
 }
 
 .clickable-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-5px) scale(1.02);
   box-shadow: 0 16px 32px rgba(230, 27, 21, 0.2);
   border-color: #e61b15;
   border-left-color: #e61b15;
