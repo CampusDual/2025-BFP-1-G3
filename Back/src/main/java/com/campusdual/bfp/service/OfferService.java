@@ -371,22 +371,44 @@ public class OfferService implements IOfferService {
 
             System.out.println("🚫 DEBUG - Ofertas ya aplicadas por el candidato: " + appliedOfferIds);
 
-            // Filtrar ofertas a las que ya se aplicó y ordenar por afinidad
+            // Filtrar ofertas ya aplicadas y aplicar algoritmo de ranking inteligente
+            // ALGORITMO DE RANKING:
+            // 1. Criterio PRINCIPAL: Mayor número de tech labels coincidentes (5 coincidencias > 3 coincidencias)
+            // 2. Criterio SECUNDARIO: Si empatan en coincidencias, más reciente en fecha de publicación
             List<Offer> sortedOffers = allRecommendedOffers.getContent().stream()
                 .filter(offer -> !appliedOfferIds.contains(offer.getId()))
                 .sorted((offer1, offer2) -> {
                     // Contar tech labels coincidentes para cada oferta
-                    long matches1 = offer1.getTechLabels().stream()
-                        .mapToLong(tl -> techLabelIds.contains(tl.getId()) ? 1 : 0)
-                        .sum();
-                    long matches2 = offer2.getTechLabels().stream()
-                        .mapToLong(tl -> techLabelIds.contains(tl.getId()) ? 1 : 0)
-                        .sum();
+                    long matches1 = calculateMatches(offer1, techLabelIds);
+                    long matches2 = calculateMatches(offer2, techLabelIds);
                     
                     System.out.println("⚖️ DEBUG - Oferta " + offer1.getId() + " tiene " + matches1 + " coincidencias, Oferta " + offer2.getId() + " tiene " + matches2 + " coincidencias");
                     
-                    // Ordenar descendente (más coincidencias primero)
-                    return Long.compare(matches2, matches1);
+                    // Criterio principal: Ordenar por número de coincidencias (descendente)
+                    int matchComparison = Long.compare(matches2, matches1);
+                    
+                    // Si tienen el mismo número de coincidencias, ordenar por fecha de publicación (más reciente primero)
+                    if (matchComparison == 0) {
+                        // Manejo seguro de fechas nulas
+                        if (offer1.getPublishingDate() == null && offer2.getPublishingDate() == null) {
+                            return 0; // Ambas sin fecha, son iguales
+                        }
+                        if (offer1.getPublishingDate() == null) {
+                            return 1; // offer1 sin fecha va después
+                        }
+                        if (offer2.getPublishingDate() == null) {
+                            return -1; // offer2 sin fecha va después
+                        }
+                        
+                        // Comparar fechas: más reciente primero (descendente)
+                        int dateComparison = offer2.getPublishingDate().compareTo(offer1.getPublishingDate());
+                        System.out.println("📅 DEBUG - Mismo número de coincidencias (" + matches1 + "), ordenando por fecha: Oferta " + 
+                                         offer1.getId() + " (" + offer1.getPublishingDate() + ") vs Oferta " + 
+                                         offer2.getId() + " (" + offer2.getPublishingDate() + ")");
+                        return dateComparison;
+                    }
+                    
+                    return matchComparison;
                 })
                 .collect(Collectors.toList());
 
@@ -415,7 +437,7 @@ public class OfferService implements IOfferService {
             result.put("totalPages", totalPages);
             result.put("currentPage", page);
             result.put("size", size);
-            result.put("message", "Ofertas recomendadas ordenadas por afinidad con tus áreas de especialización");
+            result.put("message", "Ofertas recomendadas ordenadas por afinidad (mayor coincidencia primero) y fecha de publicación (más recientes primero)");
 
             return result;
         } catch (Exception e) {
@@ -424,4 +446,39 @@ public class OfferService implements IOfferService {
             return errorResponse;
         }
     }
+
+    /**
+     * Calcula el número de tech labels coincidentes entre una oferta y el candidato
+     * @param offer La oferta a evaluar
+     * @param candidateTechLabelIds Set de IDs de tech labels del candidato
+     * @return Número de coincidencias
+     */
+    private long calculateMatches(Offer offer, Set<Long> candidateTechLabelIds) {
+        return offer.getTechLabels().stream()
+                .mapToLong(tl -> candidateTechLabelIds.contains(tl.getId()) ? 1 : 0)
+                .sum();
+    }
+    
+    /**
+     * ALGORITMO DE RANKING MEJORADO PARA RECOMENDACIONES
+     * 
+     * Ejemplo de funcionamiento:
+     * 
+     * CANDIDATO tiene: [Java, Spring, Angular, MySQL, Docker] (5 tech labels)
+     * 
+     * OFERTAS ENCONTRADAS:
+     * - Oferta A: [Java, Spring, React] → 2 coincidencias → Publicada: 2025-07-15
+     * - Oferta B: [Java, Angular, MySQL] → 3 coincidencias → Publicada: 2025-07-14  
+     * - Oferta C: [Python, Django] → 0 coincidencias → NO APARECE (filtrada por la query)
+     * - Oferta D: [Java, Spring, React] → 2 coincidencias → Publicada: 2025-07-16
+     * 
+     * RANKING RESULTANTE:
+     * 1. Oferta B (3 coincidencias) - PRIMERA por mayor afinidad
+     * 2. Oferta D (2 coincidencias, más reciente) - SEGUNDA por fecha
+     * 3. Oferta A (2 coincidencias, más antigua) - TERCERA por fecha
+     * 
+     * CRITERIOS:
+     * 1. PRINCIPAL: Número de tech labels coincidentes (descendente)
+     * 2. SECUNDARIO: Fecha de publicación (más reciente primero)
+     */
 }
