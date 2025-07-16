@@ -41,7 +41,15 @@
 
 /* Icono por defecto del avatar */
 .avatar-icon {
-  color: #666;
+  color: white;
+  font-size: 50%;
+  background: linear-gradient(135deg, #e61b15 0%, #c41e3a 100%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Icono de edición */
@@ -225,7 +233,14 @@
 
 .preview-icon {
   font-size: 75px;
-  color: #666;
+  color: white;
+  background: linear-gradient(135deg, #e61b15 0%, #c41e3a 100%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Botones de acción */
@@ -290,6 +305,14 @@
   
   .preview-icon {
     font-size: 60px;
+    color: white;
+    background: linear-gradient(135deg, #e61b15 0%, #c41e3a 100%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .action-buttons {
