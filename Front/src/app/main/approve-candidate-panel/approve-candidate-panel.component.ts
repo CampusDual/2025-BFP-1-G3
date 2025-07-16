@@ -64,8 +64,13 @@ export class ApproveCandidatePanelComponent {
               surname2: response.surname2,
               phone: response.phone,
               email: response.email,
-              linkedin: response.linkedin
-
+              linkedin: response.linkedin,
+              professionalTitle: response.professionalTitle,
+              yearsExperience: response.yearsExperience,
+              employmentStatus: response.employmentStatus,
+              availability: response.availability,
+              preferredModality: response.preferredModality,
+              presentation: response.presentation,
             }
           };
         }

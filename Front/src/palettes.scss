@@ -1,3 +1,9 @@
+/*1f1f1f: Este es el negro del header, footer y sidenav*/
+/*e61b15: Este es el rojo principal*/
+
+
+
+
 $m2-primary: ( /* Color primario: rojo */
     50 : #fff1f1, 
     100 : #ffe1e0,
@@ -31,7 +37,7 @@ $m2-primary: ( /* Color primario: rojo */
     )
 );
 
-$m2-accent: (
+$m2-accent: ( /* Color secundario: gris */
     50 : #f6f6f6,
     100 : #e7e7e7,
     200 : #d1d1d1,
@@ -46,7 +52,7 @@ $m2-accent: (
     A200 : #1f1f1f,
     A400 : #1f1f1f,
     A700 : #1f1f1f,
-    contrast: (
+    contrast: ( /*Color del texto*/
         50 : #1f1f1f,
         100 : #3d3d3d,
         200 : #454545,

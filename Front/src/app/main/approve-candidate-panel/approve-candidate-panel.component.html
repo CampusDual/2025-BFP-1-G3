@@ -1,5 +1,5 @@
-<div class="container" >
-  <div class="candidate-profile-container" [ngClass]="getStateClass(applicationState)">
+<div class="main-container" >
+  <div class="container" [ngClass]="getStateClass(applicationState)">
     <button mat-icon-button class="back-button" (click)="goBack()">
       <mat-icon>arrow_back</mat-icon>
     </button>
@@ -19,6 +19,12 @@
             target="_blank" class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
             <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
           </a>
+          <p class="professional-container" *ngIf="userData?.candidate?.professionalTitle">{{ userData?.candidate?.professionalTitle}}</p>
+          <p class="years-container" *ngIf="userData?.candidate?.yearsExperience">{{ userData?.candidate?.yearsExperience}}</p>
+          <p class="employment-container" *ngIf="userData?.candidate?.employmentStatus">{{ userData?.candidate?.employmentStatus}}</p>
+          <p class="availability-container" *ngIf="userData?.candidate?.availability">{{ userData?.candidate?.availability}}</p>
+          <p class="preferredModality-container" *ngIf="userData?.candidate?.preferredModality">{{ userData?.candidate?.preferredModality}}</p>
+          <p class="presentation-container" *ngIf="userData?.candidate?.presentation">{{ userData?.candidate?.presentation}}</p>
         </div>
       </div>
       <!-- Select para estado de la aplicación -->

@@ -7,15 +7,12 @@
 .back-button mat-icon {
   font-size: 1.8rem;
 }
-.candidate-profile-container {
-  max-width: 950px;
-  margin: 3% auto 3% auto;
-  background: var(--gray-megalightest, #ebe9e9);
-  border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-  overflow: hidden;
-  border: 1.5px solid var(--gray-lightest, #c6c0c1);
-  background-color: #f6f6f6;
+
+.container {
+  width: 60%;
+  margin: 8% auto 8% auto;
+  border-radius: 15px;
+  background-color: #ffffff; /*Color de cartas de la página*/
 }
 
 .candidate-header-card {

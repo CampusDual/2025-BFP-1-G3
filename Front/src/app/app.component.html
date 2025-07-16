@@ -1,5 +1,5 @@
-<div class="content">
-  <!-- Header fuera del sidenav-container -->
+<!-- Contenedor principal -->
+<div class="main-content">
   <app-header (sidenavToggle)="toggleSidenav()"></app-header>
   
   <!-- Sidenav container debajo del header -->
@@ -67,7 +67,7 @@
       </mat-sidenav>
 
       <mat-sidenav-content>
-        <div class="main-content">
+        <div class="content">
           <router-outlet></router-outlet>
         </div>
       </mat-sidenav-content>
