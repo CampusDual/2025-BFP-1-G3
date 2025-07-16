@@ -51,78 +51,163 @@
 
         <!-- Vista en modo lectura -->
         <div *ngIf="!isEditing" class="profile-view">
+          <!-- Información Personal -->
           <div class="profile-section">
-            <h3>Información Personal</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Nombre completo:</span>
-                <span class="info-value">{{ profileForm.get('name')?.value }} {{ profileForm.get('surname1')?.value }} {{ profileForm.get('surname2')?.value }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Email:</span>
-                <span class="info-value">{{ profileForm.get('email')?.value }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Teléfono:</span>
-                <span class="info-value">{{ profileForm.get('phone')?.value }}</span>
-              </div>
-              <div class="info-item" *ngIf="profileForm.get('linkedin')?.value">
-                <span class="info-label">LinkedIn:</span>
-                <span class="info-value">
-                  <a [href]="profileForm.get('linkedin')?.value" target="_blank" class="linkedin-link">
-                    {{ profileForm.get('linkedin')?.value }}
-                  </a>
-                </span>
-              </div>
+            <div class="section-header">
+              <mat-icon class="section-icon">person</mat-icon>
+              <h3>Información Personal</h3>
             </div>
-          </div>
+            <div class="modern-info-grid">
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>badge</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Nombre completo</span>
+                  <span class="info-value">{{ profileForm.get('name')?.value }} {{ profileForm.get('surname1')?.value }} {{ profileForm.get('surname2')?.value }}</span>
+                </div>
+              </div>
 
-          <div class="profile-section">
-            <h3>Perfil Profesional</h3>
-            <div class="info-grid">
-              <div class="info-item" *ngIf="professionalForm.get('professionalTitle')?.value">
-                <span class="info-label">Título Profesional:</span>
-                <span class="info-value">{{ professionalForm.get('professionalTitle')?.value }}</span>
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>email</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Email</span>
+                  <span class="info-value">{{ profileForm.get('email')?.value }}</span>
+                </div>
               </div>
-              <div class="info-item" *ngIf="professionalForm.get('yearsExperience')?.value">
-                <span class="info-label">Años de Experiencia:</span>
-                <span class="info-value">{{ professionalForm.get('yearsExperience')?.value }} años</span>
+
+              <div class="info-card">
+                <div class="info-icon">
+                  <mat-icon>phone</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Teléfono</span>
+                  <span class="info-value">{{ profileForm.get('phone')?.value }}</span>
+                </div>
               </div>
-              <div class="info-item" *ngIf="professionalForm.get('employmentStatus')?.value">
-                <span class="info-label">Situación Laboral:</span>
-                <span class="info-value">{{ getEmploymentStatusText(professionalForm.get('employmentStatus')?.value) }}</span>
-              </div>
-              <div class="info-item" *ngIf="professionalForm.get('availability')?.value">
-                <span class="info-label">Disponibilidad:</span>
-                <span class="info-value">{{ getAvailabilityText(professionalForm.get('availability')?.value) }}</span>
-              </div>
-              <div class="info-item" *ngIf="professionalForm.get('preferredModality')?.value">
-                <span class="info-label">Modalidad Preferida:</span>
-                <span class="info-value">{{ getModalityText(professionalForm.get('preferredModality')?.value) }}</span>
-              </div>
-              <div class="info-item" *ngIf="professionalForm.get('githubProfile')?.value">
-                <span class="info-label">Perfil GitHub:</span>
-                <span class="info-value">
-                  <a [href]="professionalForm.get('githubProfile')?.value" target="_blank" class="github-link">
-                    {{ professionalForm.get('githubProfile')?.value }}
-                  </a>
-                </span>
-              </div>
-              <div class="info-item" *ngIf="professionalForm.get('presentation')?.value">
-                <span class="info-label">Presentación Personal:</span>
-                <span class="info-value presentation-text">{{ professionalForm.get('presentation')?.value }}</span>
-              </div>
-              <div class="info-item" *ngIf="selectedTechLabels.length > 0">
-                <span class="info-label">Tecnologías:</span>
-                <div class="tech-labels-display">
-                  <span *ngFor="let label of selectedTechLabels" class="tech-chip-display">
-                    {{ label.name }}
+
+              <div class="info-card" *ngIf="profileForm.get('linkedin')?.value">
+                <div class="info-icon">
+                  <i class="fa-brands fa-linkedin linkedin-brand-icon"></i>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">LinkedIn</span>
+                  <span class="info-value">
+                    <a [href]="profileForm.get('linkedin')?.value" target="_blank" class="social-link">
+                      Ver perfil <mat-icon class="external-link">open_in_new</mat-icon>
+                    </a>
                   </span>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Perfil Profesional - Solo se muestra si hay datos -->
+          <div class="profile-section" *ngIf="hasProfessionalData()">
+            <div class="section-header">
+              <mat-icon class="section-icon">work</mat-icon>
+              <h3>Perfil Profesional</h3>
+            </div>
+            <div class="modern-info-grid">
+              <div class="info-card" *ngIf="professionalForm.get('professionalTitle')?.value">
+                <div class="info-icon">
+                  <mat-icon>work_outline</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Título Profesional</span>
+                  <span class="info-value">{{ professionalForm.get('professionalTitle')?.value }}</span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('yearsExperience')?.value">
+                <div class="info-icon">
+                  <mat-icon>schedule</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Experiencia</span>
+                  <span class="info-value">{{ professionalForm.get('yearsExperience')?.value }} años</span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('employmentStatus')?.value">
+                <div class="info-icon">
+                  <mat-icon>business_center</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Situación Laboral</span>
+                  <span class="info-value status-badge" [ngClass]="getEmploymentStatusClass(professionalForm.get('employmentStatus')?.value)">
+                    {{ getEmploymentStatusText(professionalForm.get('employmentStatus')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('availability')?.value">
+                <div class="info-icon">
+                  <mat-icon>access_time</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Disponibilidad</span>
+                  <span class="info-value availability-badge" [ngClass]="getAvailabilityClass(professionalForm.get('availability')?.value)">
+                    {{ getAvailabilityText(professionalForm.get('availability')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('preferredModality')?.value">
+                <div class="info-icon">
+                  <mat-icon>location_on</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Modalidad Preferida</span>
+                  <span class="info-value modality-badge" [ngClass]="getModalityClass(professionalForm.get('preferredModality')?.value)">
+                    {{ getModalityText(professionalForm.get('preferredModality')?.value) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card" *ngIf="professionalForm.get('githubProfile')?.value">
+                <div class="info-icon">
+                  <i class="fa-brands fa-github github-brand-icon"></i>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">GitHub</span>
+                  <span class="info-value">
+                    <a [href]="professionalForm.get('githubProfile')?.value" target="_blank" class="social-link">
+                      Ver repositorios <mat-icon class="external-link">open_in_new</mat-icon>
+                    </a>
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-card full-width" *ngIf="professionalForm.get('presentation')?.value">
+                <div class="info-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Presentación Personal</span>
+                  <span class="info-value presentation-text">{{ professionalForm.get('presentation')?.value }}</span>
+                </div>
+              </div>
+
+              <div class="info-card full-width" *ngIf="selectedTechLabels.length > 0">
+                <div class="info-icon">
+                  <mat-icon>code</mat-icon>
+                </div>
+                <div class="info-content">
+                  <span class="info-label">Tecnologías</span>
+                  <div class="tech-labels-display">
+                    <span *ngFor="let label of selectedTechLabels" class="tech-chip-modern">
+                      {{ label.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
 
         <!-- Vista en modo edición -->
         <div *ngIf="isEditing">

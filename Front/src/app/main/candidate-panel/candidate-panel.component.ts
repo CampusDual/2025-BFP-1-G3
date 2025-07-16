@@ -206,6 +206,7 @@ export class CandidatePanelComponent implements OnInit {
   ngOnInit(): void {
     // Cargar tech labels primero, luego los datos del candidato
     this.loadTechLabels();
+    this.loadMyApplications();
   }
 
   onSubmit(): void {
@@ -481,5 +482,51 @@ export class CandidatePanelComponent implements OnInit {
   // Method to check if we can select more tech labels
   canSelectMoreTechLabels(labelId: number): boolean {
     return this.isTechLabelSelected(labelId) || this.selectedTechLabels.length < 10;
+  }
+
+  // Method to check if there is professional data to display
+  hasProfessionalData(): boolean {
+    return !!(
+      this.professionalForm.get('professionalTitle')?.value ||
+      this.professionalForm.get('yearsExperience')?.value ||
+      this.professionalForm.get('employmentStatus')?.value ||
+      this.professionalForm.get('availability')?.value ||
+      this.professionalForm.get('preferredModality')?.value ||
+      this.professionalForm.get('presentation')?.value ||
+      this.professionalForm.get('githubProfile')?.value ||
+      this.selectedTechLabels.length > 0
+    );
+  }
+
+  // Method to get CSS class for employment status
+  getEmploymentStatusClass(status: string): string {
+    const classMap: { [key: string]: string } = {
+      'EMPLOYED': 'status-employed',
+      'UNEMPLOYED': 'status-unemployed',
+      'STUDENT': 'status-student',
+      'FREELANCER': 'status-freelancer'
+    };
+    return classMap[status] || '';
+  }
+
+  // Method to get CSS class for availability
+  getAvailabilityClass(availability: string): string {
+    const classMap: { [key: string]: string } = {
+      'IMMEDIATE': 'availability-immediate',
+      'TWO_WEEKS': 'availability-short',
+      'ONE_MONTH': 'availability-medium',
+      'THREE_MONTHS': 'availability-long'
+    };
+    return classMap[availability] || '';
+  }
+
+  // Method to get CSS class for modality
+  getModalityClass(modality: string): string {
+    const classMap: { [key: string]: string } = {
+      'REMOTE': 'modality-remote',
+      'ONSITE': 'modality-onsite',
+      'HYBRID': 'modality-hybrid'
+    };
+    return classMap[modality] || '';
   }
 }
