@@ -26,6 +26,14 @@ export class DisplayOffersComponent implements OnInit {
   // Cache para evitar llamadas repetitivas en el template
   private appliedOffersCache = new Map<number, boolean>();
   
+  // Recommended offers properties
+  recommendedOffers: Offer[] = [];
+  showRecommendedSection = false;
+  loadingRecommended = false;
+  recommendedScrollPosition = 0;
+  canScrollLeft = false;
+  canScrollRight = false;
+  
   // Pagination properties
   currentPage = 0;
   pageSize = 20;
@@ -60,6 +68,8 @@ export class DisplayOffersComponent implements OnInit {
           this.applicationsCacheReady = true;
           // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
           this.updateAppliedOffersCache();
+          // Cargar ofertas recomendadas después de cargar las ofertas normales
+          this.loadRecommendedOffers();
           // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
           this.loading = false;
           this.isLoading = false;
@@ -342,5 +352,107 @@ export class DisplayOffersComponent implements OnInit {
         this.appliedOffersCache.set(offer.id, isApplied);
       });
     }
+  }
+
+  // === MÉTODOS PARA OFERTAS RECOMENDADAS ===
+
+  /**
+   * Carga las 5 ofertas más recomendadas para el candidato
+   */
+  private loadRecommendedOffers(): void {
+    if (!this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
+    this.loadingRecommended = true;
+    
+    const token = sessionStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    
+    // Solicitar solo las 5 mejores ofertas (página 0, tamaño 5)
+    const url = `http://localhost:30030/offers/recommended?page=0&size=5`;
+
+    fetch(url, { headers })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('🎯 Top 5 ofertas recomendadas recibidas:', data);
+        
+        this.recommendedOffers = data.offers || [];
+        this.showRecommendedSection = this.recommendedOffers.length > 0;
+        this.loadingRecommended = false;
+        
+        // Inicializar estado del scroll
+        this.updateScrollButtons();
+        
+        if (this.recommendedOffers.length === 0) {
+          console.log('ℹ️ No hay ofertas recomendadas para este candidato');
+        }
+      })
+      .catch(error => {
+        console.error('❌ Error cargando ofertas recomendadas:', error);
+        this.loadingRecommended = false;
+        this.showRecommendedSection = false;
+      });
+  }
+
+  /**
+   * Navegar hacia la izquierda en el carrusel de ofertas recomendadas
+   */
+  scrollRecommendedLeft(): void {
+    const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+    if (container) {
+      const cardWidth = 320; // Ancho de cada card + gap
+      container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+      setTimeout(() => this.updateScrollButtons(), 300);
+    }
+  }
+
+  /**
+   * Navegar hacia la derecha en el carrusel de ofertas recomendadas
+   */
+  scrollRecommendedRight(): void {
+    const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+    if (container) {
+      const cardWidth = 320; // Ancho de cada card + gap
+      container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      setTimeout(() => this.updateScrollButtons(), 300);
+    }
+  }
+
+  /**
+   * Actualizar el estado de los botones de navegación del carrusel
+   */
+  private updateScrollButtons(): void {
+    setTimeout(() => {
+      const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+      if (container) {
+        this.canScrollLeft = container.scrollLeft > 0;
+        this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth);
+      }
+    }, 100);
+  }
+
+  /**
+   * Obtener el número de tech labels compartidas entre candidato y oferta
+   */
+  getSharedTechLabelsCount(offer: Offer): number {
+    // Esta es una aproximación - el backend ya ordenó por afinidad
+    // pero podríamos calcular esto para mostrar en la UI
+    return offer.techLabels?.length || 0;
+  }
+
+  /**
+   * Manejar scroll del carrusel para actualizar botones
+   */
+  onRecommendedScroll(): void {
+    this.updateScrollButtons();
   }
 }
