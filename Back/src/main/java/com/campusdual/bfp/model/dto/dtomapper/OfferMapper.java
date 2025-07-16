@@ -29,6 +29,7 @@ public interface OfferMapper {
 
     @Mapping(source = "companyId", target = "company", qualifiedByName = "companyIdToCompany")
     @Mapping(source = "techLabels", target = "techLabels", qualifiedByName = "techLabelsListToSet")
+    @Mapping(target = "publishingDate", ignore = true)
     Offer toEntity(OfferDTO offerDto);
     
     @Named("companyIdToCompany")

@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -161,6 +162,15 @@ public class OfferService implements IOfferService {
             }
 
             Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
+            
+            // Asegurar que el publishingDate esté establecido
+            if (offer.getPublishingDate() == null) {
+                offer.setPublishingDate(LocalDateTime.now());
+            }
+            
+            // Debug: Verificar que el publishingDate está establecido
+            System.out.println("DEBUG - Publishing Date before save: " + offer.getPublishingDate());
+            
             offerDao.saveAndFlush(offer);
             return offer.getId();
             
