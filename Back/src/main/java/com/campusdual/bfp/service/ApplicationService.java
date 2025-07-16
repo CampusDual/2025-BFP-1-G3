@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("ApplicationService")
-@Lazy
 @Transactional
 
 public class ApplicationService implements IApplicationService {
