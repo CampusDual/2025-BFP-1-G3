@@ -1,12 +1,7 @@
 <!-- == CONTENEDOR PRINCIPAL == -->
 <div class="offers-container" >
 
-  <!-- == FILTRO DE OFERTAS == -->
-  <div class="search-bar">
-    <input type="text" placeholder="Buscar oferta por título/descripción" [(ngModel)]="searchTerm"
-      (input)="updateDisplayOffers()"/>
-    <span id="iconSearch"><mat-icon>search</mat-icon></span>
-  </div>
+
 
   <!-- Loading indicator -->
   <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
@@ -15,6 +10,7 @@
   </div>
 
   <!-- == SECCIÓN DE OFERTAS RECOMENDADAS == -->
+  <!-- == FILTRO DE OFERTAS == -->
   <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section" [class.collapsed]="isRecommendedSectionCollapsed">
     <!-- Botones de control minimalistas en la parte superior izquierda -->
     <div class="recommended-top-controls" *ngIf="!loadingRecommended && recommendedOffers.length > 0">
@@ -117,6 +113,12 @@
       <mat-spinner diameter="30"></mat-spinner>
       <p>Analizando tu perfil...</p>
     </div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Buscar oferta por título/descripción" [(ngModel)]="searchTerm"
+      (input)="updateDisplayOffers()"/>
+    <span id="iconSearch"><mat-icon>search</mat-icon></span>
   </div>
 
   <!-- == TODAS LAS OFERTAS == -->
