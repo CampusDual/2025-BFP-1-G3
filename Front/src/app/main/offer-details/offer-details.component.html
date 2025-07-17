@@ -216,13 +216,10 @@
           <span class="candidates-count">{{ candidates.length }} candidatos</span>
         </div>
 
-        <!-- Filtro para candidatos -->
-        <div class="filter-section" *ngIf="!loadingCandidates && candidates.length > 0">
-          <mat-form-field appearance="outline">
-            <mat-label>Filtrar candidatos</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por nombre o email" #input>
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
+        <!-- == FILTRO DE CANDIDATOS == -->
+        <div class="search-bar" *ngIf="!loadingCandidates && candidates.length > 0">
+          <input type="text" placeholder="Buscar candidato por nombre o email" (input)="applyFilter($event)" />
+          <span id="iconSearch"><mat-icon>search</mat-icon></span>
         </div>
 
         <div class="loading-candidates" *ngIf="loadingCandidates">

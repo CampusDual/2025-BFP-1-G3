@@ -4,6 +4,26 @@
   margin-bottom: 16px;
 }
 
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-bar input[type="text"] {
+  flex-grow: 0.30;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#iconSearch {
+  margin-left: 8px;
+  color: #666;
+  cursor: pointer;
+}
+
 .section-divider {
   margin: 32px 0 16px 0;
   height: 1px;
