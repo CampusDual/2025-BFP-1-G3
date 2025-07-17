@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { Offer } from '../../model/offer';
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './display-offers.component.html',
   styleUrls: ['./display-offers.component.css']
 })
-export class DisplayOffersComponent implements OnInit {
+export class DisplayOffersComponent implements OnInit, OnDestroy {
   offers: Offer[] = [];
   filteredOffers: Offer[] = [];
   loading = false;
@@ -29,6 +29,7 @@ export class DisplayOffersComponent implements OnInit {
   // Recommended offers properties
   recommendedOffers: Offer[] = [];
   showRecommendedSection = false;
+  isRecommendedSectionCollapsed = false;
   loadingRecommended = false;
   recommendedScrollPosition = 0;
   canScrollLeft = false;
@@ -389,8 +390,10 @@ export class DisplayOffersComponent implements OnInit {
         this.showRecommendedSection = this.recommendedOffers.length > 0;
         this.loadingRecommended = false;
         
-        // Inicializar estado del scroll
-        this.updateScrollButtons();
+        // Inicializar estado del scroll después de que el DOM se actualice
+        setTimeout(() => {
+          this.updateScrollButtons();
+        }, 100);
         
         if (this.recommendedOffers.length === 0) {
           console.log('ℹ️ No hay ofertas recomendadas para este candidato');
@@ -409,7 +412,7 @@ export class DisplayOffersComponent implements OnInit {
   scrollRecommendedLeft(): void {
     const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
     if (container) {
-      const cardWidth = 320; // Ancho de cada card + gap
+      const cardWidth = 310; // Ancho de cada card (280px) + gap (1.5rem = 24px) + padding
       container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
       setTimeout(() => this.updateScrollButtons(), 300);
     }
@@ -421,7 +424,7 @@ export class DisplayOffersComponent implements OnInit {
   scrollRecommendedRight(): void {
     const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
     if (container) {
-      const cardWidth = 320; // Ancho de cada card + gap
+      const cardWidth = 310; // Ancho de cada card (280px) + gap (1.5rem = 24px) + padding
       container.scrollBy({ left: cardWidth, behavior: 'smooth' });
       setTimeout(() => this.updateScrollButtons(), 300);
     }
@@ -434,8 +437,25 @@ export class DisplayOffersComponent implements OnInit {
     setTimeout(() => {
       const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
       if (container) {
-        this.canScrollLeft = container.scrollLeft > 0;
-        this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth);
+        // Verificar si hay contenido que requiera scroll
+        const hasOverflow = container.scrollWidth > container.clientWidth;
+        
+        // Actualizar atributo data para CSS condicional
+        container.setAttribute('data-has-overflow', hasOverflow.toString());
+        
+        if (!hasOverflow) {
+          // Si no hay overflow, ocultar ambos botones
+          this.canScrollLeft = false;
+          this.canScrollRight = false;
+        } else {
+          // Si hay overflow, evaluar posición actual
+          this.canScrollLeft = container.scrollLeft > 5; // Pequeño margen para evitar flickering
+          this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 5);
+        }
+      } else {
+        // Si no se encuentra el contenedor, ocultar botones
+        this.canScrollLeft = false;
+        this.canScrollRight = false;
       }
     }, 100);
   }
@@ -464,9 +484,26 @@ export class DisplayOffersComponent implements OnInit {
   }
 
   /**
-   * Ocultar la sección de ofertas recomendadas
+   * Alternar la visibilidad de la sección de ofertas recomendadas
    */
-  hideRecommendedSection(): void {
-    this.showRecommendedSection = false;
+  toggleRecommendedSection(): void {
+    this.isRecommendedSectionCollapsed = !this.isRecommendedSectionCollapsed;
+    
+    // Actualizar botones después de la animación
+    setTimeout(() => {
+      this.updateScrollButtons();
+    }, 800); // Tiempo de la animación CSS
+  }
+
+  /**
+   * Listener para redimensionar ventana y actualizar botones
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any) {
+    this.updateScrollButtons();
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar cualquier suscripción o recurso si es necesario
   }
 }

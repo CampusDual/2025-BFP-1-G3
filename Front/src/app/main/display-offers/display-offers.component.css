@@ -436,6 +436,11 @@ mat-card-content {
     flex-direction: column;
     align-items: center;
   }
+
+  .recommended-carousel-container {
+    gap: 1rem;
+    padding: 8px 2px 16px 2px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -480,6 +485,10 @@ mat-card-content {
   #apply {
     font-size: 2rem;
   }
+
+  .recommended-carousel-container {
+    gap: 0.8rem;
+  }
 }
 
 /* === ETIQUETAS TÉCNICAS === */
@@ -522,6 +531,65 @@ mat-card-content {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 2px solid #e0e0e0;
   position: relative;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: visible;
+}
+
+/* Estado colapsado de la sección recomendada */
+.recommended-section.collapsed {
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  max-height: 80px;
+}
+
+.recommended-section.collapsed .recommended-header h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0;
+  transition: all 0.6s ease;
+}
+
+.recommended-section.collapsed .recommended-top-controls {
+  top: 12px;
+  right: 16px;
+  left: auto;
+}
+
+/* Animaciones para el contenido del carousel */
+.recommended-carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-height: 1000px;
+  overflow: visible;
+}
+
+.recommended-section.collapsed .recommended-carousel {
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Animación para el párrafo de descripción */
+.recommended-header p {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-height: 50px;
+  overflow: hidden;
+}
+
+.recommended-section.collapsed .recommended-header p {
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /* === BOTONES DE CONTROL MINIMALISTAS EN LA PARTE SUPERIOR === */
@@ -532,6 +600,7 @@ mat-card-content {
   display: flex;
   gap: 8px;
   z-index: 10;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .minimal-control-btn {
@@ -542,7 +611,7 @@ mat-card-content {
   font-size: 0.8rem;
   font-weight: 500;
   border-radius: 20px;
-  transition: all 0.2s ease;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 32px;
   background: rgba(255, 255, 255, 0.9);
   color: #666;
@@ -555,10 +624,12 @@ mat-card-content {
   font-size: 16px;
   height: 16px;
   width: 16px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .minimal-control-btn span {
   font-size: 0.8rem;
+  transition: all 0.5s ease;
 }
 
 .view-all-btn:hover {
@@ -614,16 +685,55 @@ mat-card-content {
 
 .recommended-carousel-container {
   display: flex;
-  gap: 3rem; /* Menos gap para tarjetas más pequeñas */
+  gap: 1.5rem;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-behavior: smooth;
-  padding: 8px 4px;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  padding: 16px 20px 20px 20px;
+  scrollbar-width: thin; /* Firefox - mostrar scrollbar delgada */
+  scrollbar-color: #e61b15 #f0f0f0; /* Firefox - colores del scrollbar */
+  /* Asegurar que las tarjetas no se salgan del contenedor */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 8px; /* Margen lateral para separar de los bordes */
+  /* Centrar contenido cuando no hay scroll */
+  justify-content: center;
+}
+
+/* Centrar tarjetas cuando no requieren scroll */
+.recommended-carousel-container:not([data-has-overflow="true"]) {
+  justify-content: center;
+  padding-left: 40px; /* Más espacio cuando están centradas */
+  padding-right: 40px;
+}
+
+/* Cuando hay overflow, remover el centrado y mantener scroll normal */
+.recommended-carousel-container[data-has-overflow="true"] {
+  justify-content: flex-start;
+}
+
+/* Asegurar que las tarjetas centradas se vean bien espaciadas */
+.recommended-carousel-container:not([data-has-overflow="true"]) .recommended-offer-card {
+  margin: 0 0.5rem; /* Espacio adicional entre tarjetas centradas */
 }
 
 .recommended-carousel-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  height: 8px; /* Altura del scrollbar horizontal */
+}
+
+.recommended-carousel-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.recommended-carousel-container::-webkit-scrollbar-thumb {
+  background: #e61b15;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.recommended-carousel-container::-webkit-scrollbar-thumb:hover {
+  background: #c5160f;
 }
 
 /* Botones de navegación del carrusel */
@@ -638,25 +748,31 @@ mat-card-content {
   width: 48px;
   height: 48px;
   color: #1f1f1f;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .carousel-nav-btn:hover:not(:disabled) {
   background: #f5f5f5;
   border-color: #e61b15;
   color: #e61b15;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .carousel-nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.8);
 }
 
 .left-btn {
-  left: -16px;
+  left: -20px;
 }
 
 .right-btn {
-  right: -16px;
+  right: -20px;
 }
 
 /* Cards de ofertas recomendadas - Versión compacta y clickeable */
@@ -665,6 +781,7 @@ mat-card-content {
   min-width: 280px;
   max-width: 280px;
   min-height: 200px; /* Reducido desde 280px */
+  flex-shrink: 0; /* Evita que las tarjetas se compriman en el scroll horizontal */
 
   /* Estilos base heredados */
   border-radius: 16px;
@@ -832,6 +949,11 @@ mat-card-content {
     padding: 8px 16px;
     font-size: 0.8rem;
   }
+
+  .recommended-carousel-container {
+    gap: 1rem;
+    padding: 8px 2px 16px 2px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -845,4 +967,98 @@ mat-card-content {
     min-width: 140px;
     max-width: 200px;
   }
+
+  .recommended-carousel-container {
+    gap: 0.8rem;
+  }
+}
+
+/* Animación para el icono del botón de colapso */
+.hide-btn mat-icon {
+  transform: rotate(0deg);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommended-section.collapsed .hide-btn mat-icon {
+  transform: rotate(180deg);
+}
+
+/* Animación suave para la posición de los controles */
+.recommended-top-controls {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animación para el botón "Ver todas" cuando se colapsa */
+.view-all-btn {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommended-section.collapsed .view-all-btn {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+/* Efecto de desvanecimiento para elementos que aparecen/desaparecen */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Mejora del hover en el botón de toggle */
+.hide-btn:hover mat-icon {
+  transform: rotate(180deg) scale(1.1);
+}
+
+.recommended-section:not(.collapsed) .hide-btn:hover mat-icon {
+  transform: rotate(0deg) scale(1.1);
+}
+
+/* Suavizar la transición del tamaño de la sección */
+.recommended-section {
+  will-change: transform, height, padding;
+}
+
+.recommended-section.collapsed {
+  will-change: auto;
+}
+
+/* Mejorar la usabilidad del scroll en dispositivos táctiles */
+.recommended-carousel-container {
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+  scroll-snap-type: x mandatory; /* Snap scrolling */
+}
+
+.recommended-offer-card {
+  scroll-snap-align: start; /* Snap cada tarjeta al inicio */
+}
+
+/* Estilos para mostrar que hay más contenido */
+.recommended-carousel-container:not(:hover)::-webkit-scrollbar-thumb {
+  background: rgba(230, 27, 21, 0.6);
 }

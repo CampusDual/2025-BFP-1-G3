@@ -15,7 +15,7 @@
   </div>
 
   <!-- == SECCIÓN DE OFERTAS RECOMENDADAS == -->
-  <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section">
+  <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section" [class.collapsed]="isRecommendedSectionCollapsed">
     <!-- Botones de control minimalistas en la parte superior izquierda -->
     <div class="recommended-top-controls" *ngIf="!loadingRecommended && recommendedOffers.length > 0">
       <button mat-button 
@@ -27,9 +27,9 @@
       
       <button mat-button 
               class="minimal-control-btn hide-btn"
-              (click)="hideRecommendedSection()">
-        <mat-icon>close</mat-icon>
-        <span>Ocultar</span>
+              (click)="toggleRecommendedSection()">
+        <mat-icon>{{ isRecommendedSectionCollapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+        <span>{{ isRecommendedSectionCollapsed ? 'Mostrar' : 'Ocultar' }}</span>
       </button>
     </div>
 
@@ -109,7 +109,7 @@
               (click)="scrollRecommendedRight()"
               *ngIf="recommendedOffers.length > 1">
         <mat-icon>chevron_right</mat-icon>
-      </button>-->
+      </button> -->
     </div> 
 
     <!-- Loading de ofertas recomendadas -->
