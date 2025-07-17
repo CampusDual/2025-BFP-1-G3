@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserData } from 'src/app/model/userData';
 import { LoginService } from 'src/app/services/login.service';
 import { Location } from '@angular/common';
+import { TechLabel } from 'src/app/model/tech-label';
 
 @Component({
   selector: 'app-approve-candidate-panel',
@@ -20,6 +21,10 @@ export class ApproveCandidatePanelComponent {
   candidateId!: number;
   applicationState: number = 0; // Estado actual de la aplicación
   applicationId: number = 0; // ID de la aplicación
+
+  availableTechLabels: TechLabel[] = [];
+  selectedTechLabels: TechLabel[] = [];
+  loadingTechLabels: boolean = false;
 
   constructor(private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -43,8 +48,33 @@ export class ApproveCandidatePanelComponent {
           console.log('Estado de la aplicación recibido en estado de navegación:', this.applicationState);
         }
       }
+      this.loadTechLabels();
       this.retrieveCandidateData(this.candidateId); // Guarda el parámetro 'id' en la variable offerId
     });
+  }
+
+  loadTechLabels(): void {
+    this.loadingTechLabels = true;
+    this.loginService.getAllTechLabels().subscribe({
+      next: (labels: TechLabel[]) => {
+        this.availableTechLabels = labels;
+        this.loadingTechLabels = false;
+        this.setSelectedTechLabels();
+      },
+      error: (error) => {
+        console.error('Error cargando tech labels:', error);
+        this.loadingTechLabels = false;
+        this.setSelectedTechLabels();
+      }
+    });
+  }
+
+  setSelectedTechLabels(): void {
+    if (this.userData && this.userData.candidate && this.userData.candidate.techLabelIds) {
+      this.selectedTechLabels = this.availableTechLabels.filter(label =>
+        this.userData!.candidate!.techLabelIds!.includes(label.id)
+      );
+    }
   }
 
   retrieveCandidateData(id: number) {
@@ -64,17 +94,19 @@ export class ApproveCandidatePanelComponent {
               surname2: response.surname2,
               phone: response.phone,
               email: response.email,
-          linkedin: response.linkedin,
-          professionalTitle: response.professionalTitle,
-          yearsExperience: response.yearsExperience,
-          employmentStatus: response.employmentStatus,
-          availability: response.availability,
-          preferredModality: response.preferredModality,
-          presentation: response.presentation,
-          githubProfile: response.githubProfile,
-          profilePhotoUrl: response.profilePhotoUrl
+              linkedin: response.linkedin,
+              professionalTitle: response.professionalTitle,
+              yearsExperience: response.yearsExperience,
+              employmentStatus: response.employmentStatus,
+              availability: response.availability,
+              preferredModality: response.preferredModality,
+              presentation: response.presentation,
+              githubProfile: response.githubProfile,
+              profilePhotoUrl: response.profilePhotoUrl,
+              techLabelIds: response.techLabelIds
             }
           };
+          this.setSelectedTechLabels();
         }
       },
       (error) => {

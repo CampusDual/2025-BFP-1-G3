@@ -170,8 +170,23 @@
             </div>
           </div>
 
+          <div class="info-card full-width" *ngIf="selectedTechLabels.length > 0">
+            <div class="info-icon">
+              <mat-icon>code</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Tecnologías</span>
+              <div class="tech-labels-display">
+                <span *ngFor="let label of selectedTechLabels" class="tech-chip-modern">
+                  {{ label.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
+
     </div>
   </div>
 </div>

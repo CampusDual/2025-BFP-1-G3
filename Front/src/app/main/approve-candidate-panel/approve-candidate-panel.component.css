@@ -4,6 +4,34 @@
   padding: 20px;
 }
 
+/* Copiado estilos para etiquetas de tecnologías de candidate-panel.component.css */
+
+.tech-labels-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tech-chip-modern {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #e61b15, #f44336);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tech-chip-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 27, 21, 0.4);
+}
+
 .header {
   margin-bottom: 30px;
   text-align: center;
