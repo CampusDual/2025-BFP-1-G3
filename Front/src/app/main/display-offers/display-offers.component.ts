@@ -372,8 +372,8 @@ export class DisplayOffersComponent implements OnInit {
       'Authorization': `Bearer ${token}`
     };
     
-    // Solicitar solo las 5 mejores ofertas (página 0, tamaño 5)
-    const url = `http://localhost:30030/offers/recommended?page=0&size=5`;
+    // Solicitar solo las 5 mejores ofertas (página 0, tamaño 4)
+    const url = `http://localhost:30030/offers/recommended?page=0&size=4`;
 
     fetch(url, { headers })
       .then(response => {

@@ -560,7 +560,7 @@ mat-card-content {
 
 .recommended-carousel-container {
   display: flex;
-  gap: 12px; /* Menos gap para tarjetas más pequeñas */
+  gap: 3rem; /* Menos gap para tarjetas más pequeñas */
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 8px 4px;
@@ -632,6 +632,8 @@ mat-card-content {
 
   /* Transición suave para interacciones */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* margin-left: 1rem;
+  margin-right: 1rem; */
 }
 
 /* Efecto hover para tarjetas clickeables */
@@ -665,7 +667,7 @@ mat-card-content {
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 20px;
   z-index: 10;
   box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
   border: 1px solid white; /* Borde más sutil */

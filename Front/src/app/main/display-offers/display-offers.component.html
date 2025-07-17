@@ -26,13 +26,13 @@
 
     <div class="recommended-carousel" *ngIf="!loadingRecommended">
       <!-- Botón izquierdo -->
-      <button mat-icon-button 
+      <!-- <button mat-icon-button 
               class="carousel-nav-btn left-btn" 
               [disabled]="!canScrollLeft"
               (click)="scrollRecommendedLeft()"
               *ngIf="recommendedOffers.length > 1">
         <mat-icon>chevron_left</mat-icon>
-      </button>
+      </button> -->
 
       <!-- Contenedor del carrusel -->
       <div class="recommended-carousel-container" 
@@ -75,10 +75,10 @@
                 check_circle
               </mat-icon>
               <span *ngIf="!isAppliedToOffer(offer.id)" class="apply-indicator">
-                Clic para ver detalles
+                Click para ver detalles
               </span>
               <span *ngIf="isAppliedToOffer(offer.id)" class="applied-text">
-                Ya aplicaste
+                Ya inscrito
               </span>
             </div>
           </mat-card-content>
@@ -86,14 +86,14 @@
       </div>
 
       <!-- Botón derecho -->
-      <button mat-icon-button 
+      <!-- <button mat-icon-button 
               class="carousel-nav-btn right-btn" 
               [disabled]="!canScrollRight"
               (click)="scrollRecommendedRight()"
               *ngIf="recommendedOffers.length > 1">
         <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
+      </button>-->
+    </div> 
 
     <!-- Loading de ofertas recomendadas -->
     <div *ngIf="loadingRecommended" class="recommended-loading">
