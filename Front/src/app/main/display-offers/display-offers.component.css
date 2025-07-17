@@ -8,9 +8,8 @@
 .search-bar {
   display: flex;
   width: 50%;
-
+  margin: 0 auto 2% auto; /* Centrar horizontalmente */
   align-items: center;
-  margin-bottom: 2%;
   border: 3px solid #1f1f1f;
   border-radius: 15px;
 }
@@ -29,7 +28,7 @@
   padding-left: 1%;
   border: none;
   border-radius: 15px;
-  background-color: #f2f2f2;
+  background-color: transparent;
   font-size: medium;
 }
 
@@ -454,12 +453,11 @@ mat-card-content {
   }
 
   .search-bar {
-    margin-bottom: 1rem;
-    width: max-content;
+    margin: 0 auto 1rem auto; /* Mantener centrado en móviles */
+    width: 90%; /* Usar 90% del ancho en lugar de max-content para mejor usabilidad */
   }
 
   .search-bar input {
-    width: max-content;
     font-size: small;
   }
 

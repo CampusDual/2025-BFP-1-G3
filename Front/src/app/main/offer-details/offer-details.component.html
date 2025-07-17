@@ -216,10 +216,13 @@
           <span class="candidates-count">{{ candidates.length }} candidatos</span>
         </div>
 
-        <!-- == FILTRO DE CANDIDATOS == -->
+        <!-- Barra de búsqueda para candidatos -->
         <div class="search-bar" *ngIf="!loadingCandidates && candidates.length > 0">
-          <input type="text" placeholder="Buscar candidato por nombre o email" (input)="applyFilter($event)" />
-          <span id="iconSearch"><mat-icon>search</mat-icon></span>
+          <input type="text" placeholder="Buscar candidato por correo o nombre" [(ngModel)]="searchTerm"
+            (input)="updateDisplayCandidates()"/>
+          <span id="iconSearch">
+            <mat-icon>search</mat-icon>
+          </span>
         </div>
 
         <div class="loading-candidates" *ngIf="loadingCandidates">

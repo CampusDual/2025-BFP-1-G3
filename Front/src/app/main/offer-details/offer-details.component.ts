@@ -77,6 +77,11 @@ export class OfferDetailsComponent implements OnInit {
   // Propiedades para la tabla de candidatos
   candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin', 'state'];
   candidatesDataSource!: MatTableDataSource<Application>;
+  
+  // Propiedades para búsqueda de candidatos
+  searchTerm = '';
+  isSearchActive = false;
+  filteredCandidates: Application[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -307,6 +312,7 @@ Promise.all([cachePromise, contentPromise]).then(
       (candidates: Application[]) => {
         console.log('Candidatos cargados exitosamente:', candidates);
         this.candidates = candidates;
+        this.filteredCandidates = [...candidates]; // Inicializar candidatos filtrados
 
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
@@ -344,7 +350,29 @@ Promise.all([cachePromise, contentPromise]).then(
       }
     );
   }
-
+  
+  // Método para filtrar candidatos basado en el término de búsqueda
+  updateDisplayCandidates(): void {
+    if (this.searchTerm) {
+      this.isSearchActive = true;
+      this.filteredCandidates = this.candidates.filter(application => {
+        const fullName = this.getCandidateFullName(application.candidate).toLowerCase();
+        const email = application.candidate?.email?.toLowerCase() || '';
+        const searchTermLower = this.searchTerm.toLowerCase();
+        
+        return fullName.includes(searchTermLower) || email.includes(searchTermLower);
+      });
+      
+      // Actualizar el dataSource de la tabla con los resultados filtrados
+      this.candidatesDataSource.data = this.filteredCandidates;
+    } else {
+      this.isSearchActive = false;
+      this.filteredCandidates = [...this.candidates];
+      // Restaurar todos los candidatos en la tabla
+      this.candidatesDataSource.data = this.candidates;
+    }
+  }
+  
   goBack(): void {
     this.location.back();
   }
@@ -533,7 +561,7 @@ Promise.all([cachePromise, contentPromise]).then(
   }
 
 
-  // == NO USADO ACUTLAMENTE ==
+  // == NO USADO ACUTLMENTE ==
 
   // Método: Recibe un string email
   // Abrir un email en la aplicación predeterminada
