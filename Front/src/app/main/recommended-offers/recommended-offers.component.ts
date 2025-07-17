@@ -22,6 +22,9 @@ export class RecommendedOffersComponent implements OnInit {
   isSearchActive = false;
   applicationsCacheReady = false;
   
+  // Tech labels del candidato para calcular coincidencias
+  candidateTechLabelIds: number[] = [];
+  
   // Cache para evitar llamadas repetitivas en el template
   private appliedOffersCache = new Map<number, boolean>();
   
@@ -54,32 +57,47 @@ export class RecommendedOffersComponent implements OnInit {
     this.loading = true;
     this.isLoading = true;
     
-    // Cargar caché y ofertas en paralelo para mayor velocidad
-    const cachePromise = this.loginService.applicationsCacheLoaded ? 
-      Promise.resolve(this.loginService.candidateApplicationsCache || []) :
-      this.loginService.loadApplicationsCacheIfCandidate()?.toPromise() || Promise.resolve([]);
-    
-    const offersPromise = this.loadRecommendedOffersAsync();
-    
-    Promise.all([cachePromise, offersPromise]).then(
-      ([cacheResult, offersResult]) => {
-        console.log('✅ Carga paralela completada - Caché y ofertas recomendadas listos');
-        this.applicationsCacheReady = true;
-        // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
-        this.updateAppliedOffersCache();
-        // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
+    // Cargar datos del candidato primero para obtener sus tech labels
+    this.loginService.getCandidateData().subscribe({
+      next: (candidateData) => {
+        // Guardar las tech labels del candidato
+        this.candidateTechLabelIds = candidateData.techLabelIds || [];
+        
+        // Luego cargar caché y ofertas en paralelo
+        const cachePromise = this.loginService.applicationsCacheLoaded ? 
+          Promise.resolve(this.loginService.candidateApplicationsCache || []) :
+          this.loginService.loadApplicationsCacheIfCandidate()?.toPromise() || Promise.resolve([]);
+        
+        const offersPromise = this.loadRecommendedOffersAsync();
+        
+        Promise.all([cachePromise, offersPromise]).then(
+          ([cacheResult, offersResult]) => {
+            this.applicationsCacheReady = true;
+            // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
+            this.updateAppliedOffersCache();
+            // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
+            this.loading = false;
+            this.isLoading = false;
+          }
+        ).catch(
+          (error) => {
+            this.applicationsCacheReady = true;
+            // Asegurar que el loading se detenga incluso si hay errores
+            this.loading = false;
+            this.isLoading = false;
+          }
+        );
+      },
+      error: (error) => {
+        // Error cargando datos del candidato
         this.loading = false;
         this.isLoading = false;
+        this.snackBar.open('Error cargando datos del candidato', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
       }
-    ).catch(
-      (error) => {
-        console.error('❌ Error en carga paralela:', error);
-        this.applicationsCacheReady = true;
-        // Asegurar que el loading se detenga incluso si hay errores
-        this.loading = false;
-        this.isLoading = false;
-      }
-    );
+    });
   }
 
   // Método asíncrono para cargar ofertas recomendadas (usado en carga paralela)
@@ -108,6 +126,13 @@ export class RecommendedOffersComponent implements OnInit {
             Array.isArray(offer.techLabels) && 
             offer.techLabels.length > 0
           );
+          
+          // Ordenar ofertas por número de coincidencias (de mayor a menor)
+          this.offers.sort((a, b) => {
+            const matchesA = this.getSharedTechLabelsCount(a);
+            const matchesB = this.getSharedTechLabelsCount(b);
+            return matchesB - matchesA; // Orden descendente
+          });
           
           this.filteredOffers = [...this.offers];
           this.totalOffers = data.totalElements || 0;
@@ -153,6 +178,13 @@ export class RecommendedOffersComponent implements OnInit {
           Array.isArray(offer.techLabels) && 
           offer.techLabels.length > 0
         );
+        
+        // Ordenar ofertas por número de coincidencias (de mayor a menor)
+        this.offers.sort((a, b) => {
+          const matchesA = this.getSharedTechLabelsCount(a);
+          const matchesB = this.getSharedTechLabelsCount(b);
+          return matchesB - matchesA; // Orden descendente
+        });
         
         this.filteredOffers = [...this.offers];
         this.totalOffers = data.totalElements || 0;
@@ -351,9 +383,16 @@ export class RecommendedOffersComponent implements OnInit {
     }
   }
 
-  // Método para obtener el número de tech labels compartidas
+  // Método para obtener el número de tech labels que coinciden con el candidato
   getSharedTechLabelsCount(offer: Offer): number {
-    return offer.techLabels?.length || 0;
+    if (!offer.techLabels || !Array.isArray(offer.techLabels) || !this.candidateTechLabelIds.length) {
+      return 0;
+    }
+    
+    // Contar cuántas tech labels de la oferta coinciden con las del candidato
+    return offer.techLabels.filter(label => 
+      this.candidateTechLabelIds.includes(label.id)
+    ).length;
   }
 
   // Método para volver a la vista principal de ofertas

@@ -739,4 +739,21 @@ export class LoginService {
     console.log('📡 Cargando caché de aplicaciones desde servidor...');
     return this.getCandidateApplicationsWithCache();
   }
+
+  // Método para obtener datos del candidato con tech labels
+  getCandidateData(): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<any>('http://localhost:30030/candidate/get', {}, { headers }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
 }

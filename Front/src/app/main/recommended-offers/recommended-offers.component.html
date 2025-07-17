@@ -9,7 +9,6 @@
       </button>
       <div class="title-section">
         <h1>
-          <mat-icon>star</mat-icon>
           Ofertas Recomendadas para Ti
         </h1>
         <p>Ofertas seleccionadas específicamente según tu perfil y especialización técnica</p>
@@ -45,7 +44,7 @@
         <!-- Indicador de afinidad -->
         <div class="affinity-indicator" *ngIf="offer.techLabels && offer.techLabels.length > 0">
           <mat-icon>psychology</mat-icon>
-          <span>{{ offer.techLabels.length }} {{ offer.techLabels.length === 1 ? 'tecnología coincidente' : 'tecnologías coincidentes' }} con tu perfil</span>
+          <span>{{ getSharedTechLabelsCount(offer) }} {{ getSharedTechLabelsCount(offer) === 1 ? 'tecnología coincidente' : 'tecnologías coincidentes' }} con tu perfil</span>
         </div>
 
         <!-- Etiquetas técnicas -->
