@@ -68,6 +68,11 @@
   transition: background-color 0.2s ease;
 }
 
+:host-context(.readonly) .edit-icon,
+:host-context([editable="false"]) .edit-icon {
+  display: none;
+}
+
 .edit-icon:hover {
   background-color: #3d3d3d;
 }

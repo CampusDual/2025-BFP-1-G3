@@ -11,6 +11,7 @@ export class EditableAvatarComponent implements OnInit {
   @Input() candidateId: number | null = null;
   @Input() profilePhotoUrl: string | undefined;
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  @Input() editable: boolean = true;  // Nuevo input para controlar edición
   @Output() photoChanged = new EventEmitter<{photoUrl?: string, filename?: string}>();
 
   showModal = false;
@@ -32,6 +33,7 @@ export class EditableAvatarComponent implements OnInit {
   }
 
   openModal(): void {
+    if (!this.editable) return;  // Solo abrir modal si es editable
     this.showModal = true;
   }
 

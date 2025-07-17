@@ -64,13 +64,15 @@ export class ApproveCandidatePanelComponent {
               surname2: response.surname2,
               phone: response.phone,
               email: response.email,
-              linkedin: response.linkedin,
-              professionalTitle: response.professionalTitle,
-              yearsExperience: response.yearsExperience,
-              employmentStatus: response.employmentStatus,
-              availability: response.availability,
-              preferredModality: response.preferredModality,
-              presentation: response.presentation,
+          linkedin: response.linkedin,
+          professionalTitle: response.professionalTitle,
+          yearsExperience: response.yearsExperience,
+          employmentStatus: response.employmentStatus,
+          availability: response.availability,
+          preferredModality: response.preferredModality,
+          presentation: response.presentation,
+          githubProfile: response.githubProfile,
+          profilePhotoUrl: response.profilePhotoUrl
             }
           };
         }
@@ -112,12 +114,46 @@ export class ApproveCandidatePanelComponent {
     this.location.back();
   }
 
-   getStateClass(state: number): string {
+  getStateClass(state: number): string {
     switch (state) {
       case 0: return 'state-pending';
       case 1: return 'state-accepted';
       case 2: return 'state-rejected';
       default: return 'state-unknown';
     }
+  }
+
+  getEmploymentStatusText(status: string | undefined): string {
+    if (!status) return '';
+    const statusMap: { [key: string]: string } = {
+      'EMPLEADO': 'Empleado',
+      'DESEMPLEADO': 'Desempleado',
+      'ESTUDIANTE': 'Estudiante',
+      'FREELANCE': 'Freelance',
+      'BUSCA_ACTIVAMENTE': 'Buscando activamente'
+    };
+    return statusMap[status] || status;
+  }
+
+  getAvailabilityText(availability: string | undefined): string {
+    if (!availability) return '';
+    const availabilityMap: { [key: string]: string } = {
+      'INMEDIATA': 'Inmediata',
+      'UNA_SEMANA': 'En una semana',
+      'DOS_SEMANAS': 'En dos semanas',
+      'UN_MES': 'En un mes',
+      'MAS_DE_UN_MES': 'Más de un mes'
+    };
+    return availabilityMap[availability] || availability;
+  }
+
+  getModalityText(modality: string | undefined): string {
+    if (!modality) return '';
+    const modalityMap: { [key: string]: string } = {
+      'PRESENCIAL': 'Presencial',
+      'REMOTO': 'Remoto',
+      'HIBRIDO': 'Híbrido'
+    };
+    return modalityMap[modality] || modality;
   }
 }

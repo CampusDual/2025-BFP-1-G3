@@ -17,7 +17,7 @@ app-footer {
 
 .sidenav-container {
   height: 100%;
-  background-color: aqua; /*Color principal*/
+  background-color: #e7e7e7; /*Color principal*/
 }
 
 mat-sidenav {
