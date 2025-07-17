@@ -25,18 +25,64 @@ mat-sidenav {
   background-color: #1f1f1f;
 }
 
-ng-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+mat-nav-list {
+  padding-top: 8px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-mat-icon {
-  color: #e61b15;
-  margin-right: 2%;
+mat-nav-list a {
+  margin: 4px 8px;
+  border-radius: 6px;
+  color: white !important;
+  background-color: transparent !important;
+  transition: all 0.2s ease;
+  height: 48px;
+  width: calc(100% - 16px); /* Ajustar para respetar los márgenes */
+  overflow: hidden; /* Prevenir overflow */
 }
 
-span {
-  color: #ffffff;
+mat-nav-list a span {
+  color: white;
+  background-color: transparent;
+  transform: translateY(-0.25rem);
+  display: inline-block;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  opacity: 0.95;
+  white-space: nowrap; /* Evitar saltos de línea */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Mostrar ... si el texto es largo */
+  max-width: calc(100% - 40px); /* Espacio para el ícono */
 }
 
+mat-nav-list a mat-icon {
+  color: #e61b15 !important;
+  background-color: transparent !important;
+  margin-right: 16px;
+  transition: transform 0.2s ease;
+}
+
+mat-nav-list a.active {
+  background-color: rgba(230, 27, 21, 0.15) !important;
+  /* border-left: 3px solid #e61b15; */
+}
+
+mat-nav-list a:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  transform: translateX(3px);
+}
+
+mat-nav-list a:hover mat-icon {
+  transform: scale(1.1);
+}
+
+mat-nav-list a span {
+  color: white;
+  background-color: transparent;
+  transform: translateY(0.1rem);
+  display: inline-block;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  opacity: 0.95;
+}
