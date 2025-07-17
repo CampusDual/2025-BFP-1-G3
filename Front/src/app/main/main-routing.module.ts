@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { IndexComponent } from './index/index.component';
 import { PublishOfferComponent } from './publish-offer/publish-offer.component';
 import { DisplayOffersComponent } from './display-offers/display-offers.component';
+import { RecommendedOffersComponent } from './recommended-offers/recommended-offers.component';
 import { CandidateSignUpComponent } from './candidate-sign-up/candidate-sign-up.component';
 import { CompanyPanelComponent } from './company-panel/company-panel.component';
 import { CandidatePanelComponent } from './candidate-panel/candidate-panel.component';
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'index', component: IndexComponent },
   { path: 'publicar', component: PublishOfferComponent, canActivate: [AuthGuard] },
   { path: 'ofertas', component: DisplayOffersComponent },
+  { path: 'recommended-offers', component: RecommendedOffersComponent, canActivate: [AuthGuard] },
   { path: 'registrarse', component: CandidateSignUpComponent, canActivate: [noAuthGuard] },
   { path: 'empresa', component: CompanyPanelComponent, canActivate: [AuthGuard] },
   { path: 'candidato', component: CandidatePanelComponent, canActivate: [AuthGuard] },

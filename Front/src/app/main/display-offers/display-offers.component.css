@@ -274,8 +274,8 @@ mat-card-subtitle {
   color: #6d6d6d;
 }
 
-/* Para elementos mat-card específicos */
-::ng-deep .mat-mdc-card-content {
+/* Para elementos mat-card específicos - ENCAPSULADO */
+:host ::ng-deep .mat-mdc-card-content {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
   word-break: break-word !important;
@@ -285,8 +285,8 @@ mat-card-subtitle {
   flex-direction: column !important;
 }
 
-/* Forzar estilos para la descripción de ofertas */
-::ng-deep .offer-description {
+/* Forzar estilos para la descripción de ofertas - ENCAPSULADO */
+:host ::ng-deep .offer-description {
   display: -webkit-box !important;
   -webkit-line-clamp: 3 !important;
   line-clamp: 3 !important;
@@ -521,6 +521,60 @@ mat-card-content {
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 2px solid #e0e0e0;
+  position: relative;
+}
+
+/* === BOTONES DE CONTROL MINIMALISTAS EN LA PARTE SUPERIOR === */
+.recommended-top-controls {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.minimal-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  min-height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  border: 1px solid #e0e0e0;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.minimal-control-btn mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+.minimal-control-btn span {
+  font-size: 0.8rem;
+}
+
+.view-all-btn:hover {
+  background: rgba(230, 27, 21, 0.1);
+  color: #e61b15;
+  border-color: #e61b15;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 27, 21, 0.2);
+}
+
+.hide-btn:hover {
+  background: rgba(102, 102, 102, 0.1);
+  color: #333;
+  border-color: #999;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .recommended-header {
@@ -762,3 +816,33 @@ mat-card-content {
 }
 
 /* Eliminar estilos duplicados - las tarjetas recomendadas heredan de .offer-card */
+
+/* Responsive para botones de control */
+@media (max-width: 768px) {
+  .recommended-top-controls {
+    position: relative;
+    top: auto;
+    left: auto;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .minimal-control-btn {
+    min-width: 120px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recommended-top-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .minimal-control-btn {
+    min-width: 140px;
+    max-width: 200px;
+  }
+}

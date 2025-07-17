@@ -455,4 +455,18 @@ export class DisplayOffersComponent implements OnInit {
   onRecommendedScroll(): void {
     this.updateScrollButtons();
   }
+
+  /**
+   * Navegar a la vista completa de ofertas recomendadas
+   */
+  viewAllRecommendedOffers(): void {
+    this.router.navigate(['/main/recommended-offers']);
+  }
+
+  /**
+   * Ocultar la sección de ofertas recomendadas
+   */
+  hideRecommendedSection(): void {
+    this.showRecommendedSection = false;
+  }
 }

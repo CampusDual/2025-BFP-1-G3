@@ -16,6 +16,23 @@
 
   <!-- == SECCIÓN DE OFERTAS RECOMENDADAS == -->
   <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section">
+    <!-- Botones de control minimalistas en la parte superior izquierda -->
+    <div class="recommended-top-controls" *ngIf="!loadingRecommended && recommendedOffers.length > 0">
+      <button mat-button 
+              class="minimal-control-btn view-all-btn"
+              (click)="viewAllRecommendedOffers()">
+        <mat-icon>visibility</mat-icon>
+        <span>Ver todas</span>
+      </button>
+      
+      <button mat-button 
+              class="minimal-control-btn hide-btn"
+              (click)="hideRecommendedSection()">
+        <mat-icon>close</mat-icon>
+        <span>Ocultar</span>
+      </button>
+    </div>
+
     <div class="recommended-header">
       <h3>
         <mat-icon>star</mat-icon>

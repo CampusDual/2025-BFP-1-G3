@@ -1,0 +1,124 @@
+<!-- == CONTENEDOR PRINCIPAL == -->
+<div class="offers-container">
+
+  <!-- == ENCABEZADO == -->
+  <div class="page-header">
+    <div class="header-content">
+      <button mat-icon-button (click)="goBackToOffers()" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="title-section">
+        <h1>
+          <mat-icon>star</mat-icon>
+          Ofertas Recomendadas para Ti
+        </h1>
+        <p>Ofertas seleccionadas específicamente según tu perfil y especialización técnica</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- == FILTRO DE OFERTAS == -->
+  <div class="search-bar">
+    <input type="text" placeholder="Buscar en tus ofertas recomendadas..." [(ngModel)]="searchTerm"
+      (input)="updateDisplayOffers()"/>
+    <span id="iconSearch"><mat-icon>search</mat-icon></span>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando ofertas recomendadas...</p>
+  </div>
+
+  <!-- == OFERTAS RECOMENDADAS == -->
+  <div class="cards-grid" *ngIf="filteredOffers && filteredOffers.length > 0 && !isLoading; else noOffersOrSearch">
+    <mat-card class="offer-card" *ngFor="let offer of filteredOffers; let i = index">
+      
+      <mat-card-header>
+        <mat-card-title>{{ offer.title }}</mat-card-title>
+        <mat-card-subtitle>Empresa: <span class="company-name">{{ offer.companyName || 'Sin nombre' }}</span></mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="offer-description">{{ offer.offerDescription }}</p>
+
+        <!-- Indicador de afinidad -->
+        <div class="affinity-indicator" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+          <mat-icon>psychology</mat-icon>
+          <span>{{ offer.techLabels.length }} {{ offer.techLabels.length === 1 ? 'tecnología coincidente' : 'tecnologías coincidentes' }} con tu perfil</span>
+        </div>
+
+        <!-- Etiquetas técnicas -->
+        <div class="tech-labels" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+          <div class="labels-container">
+            <span *ngFor="let label of offer.techLabels" class="tech-chip">
+              {{ label.name }}
+            </span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="card-actions">
+        <button mat-icon-button matTooltip="Ver detalles de la oferta" class="tooltip-button"
+          (click)="viewOfferDetails(offer.id)">
+          <mat-icon id="info">info</mat-icon>
+        </button>
+        
+        <!-- Mostrar estado de inscripción para candidatos -->
+        <div *ngIf="shouldShowApplicationStatus()" class="application-status">
+          <button *ngIf="!isAppliedToOffer(offer.id)" mat-icon-button matTooltip="Inscribirse a la oferta"
+            (click)="applyOffer(offer.id)" class="tooltip-button apply-button">
+            <mat-icon id="apply">outbox</mat-icon>
+          </button>
+          <span *ngIf="isAppliedToOffer(offer.id)" class="applied-badge-icon" matTooltip="Ya estás inscrito a esta oferta">
+            <mat-icon>check_circle</mat-icon>
+          </span>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Mensaje aviso: No hay ofertas -->
+  <ng-template #noOffers>
+    <div id="errorMessage">
+      <mat-icon>info</mat-icon>
+      <p>No hay ofertas recomendadas disponibles en este momento</p>
+      <p>Actualiza tu perfil para obtener mejores recomendaciones</p>
+    </div>
+  </ng-template>
+
+  <!-- Mensaje cuando el filtro no encuentra ofertas -->
+  <ng-template #noOffersSearch>
+    <div class="no-offers" *ngIf="!isLoading">
+      <mat-icon>search_off</mat-icon>
+      <p>No se han encontrado ofertas recomendadas que coincidan con tu búsqueda</p>
+    </div>
+  </ng-template>
+
+  <ng-template #noOffersOrSearch>
+    <ng-container *ngIf="!isLoading && offers.length === 0; else noOffersSearch">
+      <ng-container *ngTemplateOutlet="noOffers"></ng-container>
+    </ng-container>
+  </ng-template>
+
+  <!-- Controles de paginación -->
+  <div class="pagination-container" *ngIf="!isLoading && !isSearchActive && totalPages > 1">
+    <div class="pagination-info">
+      <p>Total: {{ totalOffers }} ofertas recomendadas</p>
+    </div>
+    <div class="pagination-controls">
+      <button mat-button [disabled]="currentPage === 0" (click)="previousPage()">
+        <mat-icon>navigate_before</mat-icon>
+        Anterior
+      </button>
+      <span class="page-numbers">
+        <span class="current-page">{{ currentPage + 1 }}</span> / {{ totalPages }}
+      </span>
+      <button mat-button [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+        Siguiente
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>
