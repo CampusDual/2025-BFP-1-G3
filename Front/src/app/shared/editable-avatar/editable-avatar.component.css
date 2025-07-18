@@ -52,6 +52,11 @@
   justify-content: center;
 }
 
+/* Spinner para cuando se está eliminando la foto */
+.deleting-spinner {
+  color: #e61b15 !important;
+}
+
 /* Icono de edición */
 .edit-icon {
   position: absolute;

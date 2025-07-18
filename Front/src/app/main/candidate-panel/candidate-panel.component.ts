@@ -441,8 +441,21 @@ export class CandidatePanelComponent implements OnInit {
   // Método para manejar cambios en la foto de perfil desde el componente editable-avatar
   onPhotoChanged(event: {photoUrl?: string, filename?: string}): void {
     if (this.candidateData) {
+      // Actualizar inmediatamente el estado local
       this.candidateData.profilePhotoUrl = event.photoUrl;
       this.candidateData.profilePhotoFilename = event.filename;
+      
+      // Forzar detección de cambios si es necesario
+      console.log('Photo changed event received:', event);
+      console.log('Updated candidateData.profilePhotoUrl:', this.candidateData.profilePhotoUrl);
+      
+      // Opcional: forzar una recarga completa de los datos del candidato para sincronizar
+      if (event.photoUrl) {
+        // Solo recargar si se subió una nueva foto, no si se eliminó
+        setTimeout(() => {
+          this.retrieveCandidateData();
+        }, 1000);
+      }
     }
   }
 
