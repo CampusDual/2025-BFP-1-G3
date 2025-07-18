@@ -1,8 +1,9 @@
 <div class="container">
-  <button mat-icon-button class="back-button" (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
   <div class="candidate-profile-container" [ngClass]="getStateClass(applicationState)">
+    <div class="back-container"> <button mat-icon-button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button></div>
+
     <div class="candidate-header-card">
       <div class="avatar-section">
         <app-editable-avatar class="readonly" [candidateId]="userData?.candidate?.id ?? null"

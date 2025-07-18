@@ -64,6 +64,10 @@
   margin-top: 20px;
 }
 
+.back-container {
+ background-color: #ffffff;
+}
+
 .back-button {
   color: #e61b15;
   margin-left: 2%;
@@ -204,7 +208,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 2rem 2rem 1.2rem 2rem;
+  padding: 0 2rem 1.2rem 2rem;
   background: white;
   border-bottom: 1px solid var(--gray-lightest, #C6C0C1);
   margin: 0;
