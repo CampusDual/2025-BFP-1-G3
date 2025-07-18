@@ -101,12 +101,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     this.loading = true;
     this.loginService.insertTechLabel({ name: trimmedName } as TechLabel).subscribe({
       next: () => {
+         this.snackBar.open('Etiqueta creada con éxito.', 'Cerrar', {
+            duration: 10000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snackbar-success'],
+          });
         this.newLabelName = '';
         this.loadLabels();
       },
       error: (error) => {
          this.snackBar.open('Error al crear la etiqueta. Ya existe.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
             panelClass: ['snackbar-failed'],
