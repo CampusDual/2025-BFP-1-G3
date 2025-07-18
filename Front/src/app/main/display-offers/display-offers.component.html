@@ -1,14 +1,6 @@
 <!-- == CONTENEDOR PRINCIPAL == -->
 <div class="offers-container" >
 
-
-
-  <!-- Loading indicator -->
-  <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
-    <mat-spinner diameter="40"></mat-spinner>
-    <p>Cargando ofertas...</p>
-  </div>
-
   <!-- == SECCIÓN DE OFERTAS RECOMENDADAS == -->
   <!-- == FILTRO DE OFERTAS == -->
   <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section" [class.collapsed]="isRecommendedSectionCollapsed">
@@ -178,6 +170,12 @@
   </div>
 </div>
 
+  <!-- Loading indicator -->
+  <div id="loadMeesage" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando ofertas...</p>
+  </div>
+
 <!-- Mensaje aviso: No hay ofertas -->
 <ng-template #noOffers>
   <div id="errorMessage">
@@ -188,7 +186,7 @@
 
 <!-- Mensaje cuando el filtro no encuentra ofertas -->
 <ng-template #noOffersSearch>
-  <div class="no-offers" *ngIf="!isLoading">
+  <div id="notFoundMessage" *ngIf="!isLoading">
     <mat-icon>info</mat-icon>
     <p>No se han encontrado resultados que cumplan los criterios de búsqueda</p>
   </div>

@@ -1,14 +1,15 @@
 /* === CONTENEDOR PRINCIPAL === */
 .offers-container {
   padding: 2%;
-  background-color:#e7e7e7;
+  background-color: #e7e7e7;
 }
 
 /* == FILTRO DE OFERTAS == */
 .search-bar {
   display: flex;
   width: 50%;
-  margin: 0 auto 2% auto; /* Centrar horizontalmente */
+  margin: 0 auto 2% auto;
+  /* Centrar horizontalmente */
   align-items: center;
   border: 3px solid #1f1f1f;
   border-radius: 15px;
@@ -258,19 +259,27 @@ mat-card-subtitle {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 4%;
+  margin-top: 5%;
   font-size: large;
   font-weight: bolder;
-  color: #6d6d6d;
+  color: #5d5d5d;
 }
 
 /* === MENSAJE SIN OFERTAS === */
 #errorMessage {
   text-align: center;
-  margin-top: 4%;
+  margin-top: 5%;
   font-size: large;
   font-weight: bolder;
-  color: #6d6d6d;
+  color: #5d5d5d;
+}
+
+#notFoundMessage {
+  text-align: center;
+  margin-top: 5%;
+  font-size: large;
+  font-weight: bolder;
+  color: #5d5d5d;
 }
 
 /* Para elementos mat-card específicos - ENCAPSULADO */
@@ -453,8 +462,10 @@ mat-card-content {
   }
 
   .search-bar {
-    margin: 0 auto 1rem auto; /* Mantener centrado en móviles */
-    width: 90%; /* Usar 90% del ancho en lugar de max-content para mejor usabilidad */
+    margin: 0 auto 1rem auto;
+    /* Mantener centrado en móviles */
+    width: 90%;
+    /* Usar 90% del ancho en lugar de max-content para mejor usabilidad */
   }
 
   .search-bar input {
@@ -688,12 +699,15 @@ mat-card-content {
   overflow-y: hidden;
   scroll-behavior: smooth;
   padding: 16px 20px 20px 20px;
-  scrollbar-width: thin; /* Firefox - mostrar scrollbar delgada */
-  scrollbar-color: #e61b15 #f0f0f0; /* Firefox - colores del scrollbar */
+  scrollbar-width: thin;
+  /* Firefox - mostrar scrollbar delgada */
+  scrollbar-color: #e61b15 #f0f0f0;
+  /* Firefox - colores del scrollbar */
   /* Asegurar que las tarjetas no se salgan del contenedor */
   width: 100%;
   max-width: 100%;
-  margin: 0 8px; /* Margen lateral para separar de los bordes */
+  margin: 0 8px;
+  /* Margen lateral para separar de los bordes */
   /* Centrar contenido cuando no hay scroll */
   justify-content: center;
 }
@@ -701,7 +715,8 @@ mat-card-content {
 /* Centrar tarjetas cuando no requieren scroll */
 .recommended-carousel-container:not([data-has-overflow="true"]) {
   justify-content: center;
-  padding-left: 40px; /* Más espacio cuando están centradas */
+  padding-left: 40px;
+  /* Más espacio cuando están centradas */
   padding-right: 40px;
 }
 
@@ -712,11 +727,13 @@ mat-card-content {
 
 /* Asegurar que las tarjetas centradas se vean bien espaciadas */
 .recommended-carousel-container:not([data-has-overflow="true"]) .recommended-offer-card {
-  margin: 0 0.5rem; /* Espacio adicional entre tarjetas centradas */
+  margin: 0 0.5rem;
+  /* Espacio adicional entre tarjetas centradas */
 }
 
 .recommended-carousel-container::-webkit-scrollbar {
-  height: 8px; /* Altura del scrollbar horizontal */
+  height: 8px;
+  /* Altura del scrollbar horizontal */
 }
 
 .recommended-carousel-container::-webkit-scrollbar-track {
@@ -778,15 +795,18 @@ mat-card-content {
   /* Dimensiones más compactas */
   min-width: 280px;
   max-width: 280px;
-  min-height: 200px; /* Reducido desde 280px */
-  flex-shrink: 0; /* Evita que las tarjetas se compriman en el scroll horizontal */
+  min-height: 200px;
+  /* Reducido desde 280px */
+  flex-shrink: 0;
+  /* Evita que las tarjetas se compriman en el scroll horizontal */
 
   /* Estilos base heredados */
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  padding: 12px; /* Reducido desde 16px */
+  padding: 12px;
+  /* Reducido desde 16px */
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -797,7 +817,8 @@ mat-card-content {
 
   /* Borde especial para recomendaciones */
   border: 2px solid #e0e0e0;
-  border-left: 4px solid #e61b15; /* Más sutil */
+  border-left: 4px solid #e61b15;
+  /* Más sutil */
 
   /* Transición suave para interacciones */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -839,7 +860,8 @@ mat-card-content {
   gap: 20px;
   z-index: 10;
   box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
-  border: 1px solid white; /* Borde más sutil */
+  border: 1px solid white;
+  /* Borde más sutil */
 }
 
 .recommendation-badge mat-icon {
@@ -850,12 +872,14 @@ mat-card-content {
 
 /* Header del card recomendado - ajuste para el badge más pequeño */
 .recommended-offer-card .header-content {
-  margin-right: 60px; /* Menos espacio para el badge más pequeño */
+  margin-right: 60px;
+  /* Menos espacio para el badge más pequeño */
 }
 
 /* Estilos para tarjetas compactas */
 .recommended-offer-card mat-card-header {
-  padding-bottom: 8px; /* Menos espacio */
+  padding-bottom: 8px;
+  /* Menos espacio */
 }
 
 .recommended-offer-card mat-card-content {
@@ -869,7 +893,8 @@ mat-card-content {
   margin-bottom: 12px;
   color: #555;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Máximo 2 líneas */
+  -webkit-line-clamp: 2;
+  /* Máximo 2 líneas */
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -907,7 +932,8 @@ mat-card-content {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: auto; /* Empuja hacia abajo */
+  margin-top: auto;
+  /* Empuja hacia abajo */
   padding-top: 8px;
   font-size: 0.75rem;
 }
@@ -941,7 +967,7 @@ mat-card-content {
     justify-content: center;
     margin-bottom: 16px;
   }
-  
+
   .minimal-control-btn {
     min-width: 120px;
     padding: 8px 16px;
@@ -960,7 +986,7 @@ mat-card-content {
     align-items: center;
     gap: 8px;
   }
-  
+
   .minimal-control-btn {
     min-width: 140px;
     max-width: 200px;
@@ -1011,6 +1037,7 @@ mat-card-content {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1022,6 +1049,7 @@ mat-card-content {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(-20px);
@@ -1048,12 +1076,15 @@ mat-card-content {
 
 /* Mejorar la usabilidad del scroll en dispositivos táctiles */
 .recommended-carousel-container {
-  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
-  scroll-snap-type: x mandatory; /* Snap scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* iOS smooth scrolling */
+  scroll-snap-type: x mandatory;
+  /* Snap scrolling */
 }
 
 .recommended-offer-card {
-  scroll-snap-align: start; /* Snap cada tarjeta al inicio */
+  scroll-snap-align: start;
+  /* Snap cada tarjeta al inicio */
 }
 
 /* Estilos para mostrar que hay más contenido */
