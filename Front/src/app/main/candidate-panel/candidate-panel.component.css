@@ -110,6 +110,11 @@
 .application-card {
   margin-bottom: 0;
 }
+.application-card:hover {
+  cursor: pointer;
+  transform: translateY(-1px);
+  box-shadow: 10px 10px 10px -5px rgba(230, 27, 21, 0.5);
+}
 
 .application-card mat-card-header {
   display: flex;
@@ -186,7 +191,7 @@
   justify-content: flex-start;
   padding: 2rem 2rem 1.2rem 2rem;
   background: white;
-  border-bottom: 1px solid var(--gray-lightest, #C6C0C1);
+  border-bottom: 1px solid var(--gray-lightest, #c6c0c1);
   margin: 0;
   box-shadow: none;
   position: relative;
@@ -228,7 +233,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-family: 'Material Icons' !important;
+  font-family: "Material Icons" !important;
 }
 
 /* Fallback para debugging */
@@ -276,7 +281,7 @@
 .avatar-icon {
   font-size: 48px !important;
   color: #fff !important;
-  font-family: 'Material Icons' !important;
+  font-family: "Material Icons" !important;
   font-weight: normal !important;
   font-style: normal !important;
   display: inline-block !important;
@@ -318,12 +323,6 @@ mat-icon {
   text-decoration: underline;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   cursor: pointer;
-}
-
-#offer-name:hover {
-  cursor: pointer;
-  color: #e81c34;
-  text-decoration: underline;
 }
 
 /* Estilos específicos para el perfil profesional */
@@ -412,11 +411,12 @@ mat-icon {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-family: 'Material Icons' !important;
+  font-family: "Material Icons" !important;
 }
 
 /* Profile view/edit mode styles */
-.profile-actions, .edit-actions {
+.profile-actions,
+.edit-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
