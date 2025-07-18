@@ -67,12 +67,11 @@
 /* Sección de crear nueva etiqueta */
 .create-label {
   width: 90%;
-  max-width: 700px;
+  max-width: 50rem;
   margin: 0 auto 24px auto;
-  background-color: white;
+  background-color: #ffffff;
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 15px;
   display: flex;
   gap: 16px;
   align-items: center;
@@ -89,55 +88,51 @@
 }
 
 .create-label button {
-  height: 53px;
-  padding: 0 24px;
+  height: 3.5rem;
+  padding: 0 2%;
   background-color: #e61b15;
-  color: white;
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: small;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 100px;
-  box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
-  flex-shrink: 0;
+  min-width: 7rem;
+  box-shadow: none;
+  margin-top: 0.2%;
 }
 
 .create-label button:disabled {
-  background-color: #cccccc;
-  color: #666666;
+  background-color: #d1d1d1;
+  color: #5d5d5d;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .create-label button:hover:not(:disabled) {
-  background-color: #d81a14;
+  background-color: #a31511;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(230, 27, 21, 0.4);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(197, 21, 16, 1);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(197, 21, 16, 1);
+  box-shadow: 0px 0px 5px 0px rgba(197, 21, 16, 1);
 }
 
 /* Contenedor de tabla */
 .table-container {
   width: 90%;
-  max-width: 800px;
+  max-width: 50rem;
   margin: 0 auto 24px auto;
-  background-color: white;
-  border-radius: 12px;
+  background-color: #ffffff;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
-}
-
-.table-container:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transition: box-shadow 0.2s ease;
 }
 
 /* Tabla */
 .labels-table {
   width: 100%;
-  background-color: white;
+  background-color: #ffffff;
 }
 
 /* Filas y celdas de tabla */
@@ -150,16 +145,15 @@
   height: 6rem;
   vertical-align: middle;
   padding-top: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 2px solid #f6f6f6;
 }
 
 ::ng-deep .admin-tech-labels-manager .labels-table th {
-  background-color: #f5f5f5;
-  color: #333333;
-  font-weight: 600;
-  font-size: 14px;
+  background-color: #f6f6f6;
+  color: #1f1f1f;
+  font-weight: bolder;
+  font-size: medium;
   border-bottom: 2px solid #e61b15;
-  height: 48px;
 }
 
 /* Columnas */
@@ -171,16 +165,6 @@
 .mat-column-actions {
   width: 130px;
   text-align: center;
-}
-
-/* Filas hover */
-.labels-table tr.mat-row:hover {
-  background-color: rgba(230, 27, 21, 0.05);
-  transition: background-color 0.2s ease;
-}
-
-.labels-table tr.mat-row:nth-child(even) {
-  background-color: #fafafa;
 }
 
 /* Inputs dentro de la tabla */
@@ -197,11 +181,11 @@
 /* Estilo para el nombre de la etiqueta */
 .label-name {
   font-weight: 500;
-  color: #333333;
+  color: #1f1f1f;
   padding: 8px 12px;
   background-color: rgba(230, 27, 21, 0.1);
-  border-radius: 20px;
-  border-left: 4px solid #e61b15;
+  border-radius: 15px;
+  border-left: 6px solid #e61b15;
   display: inline-block;
   min-width: 120px;
 }
@@ -209,7 +193,7 @@
 /* Contenedor de botones de acciones */
 .actions-cell {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
   align-items: center;
 }
@@ -220,13 +204,12 @@
   height: 32px;
   padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .actions-cell button[color="primary"] {
@@ -318,35 +301,35 @@
   .admin-tech-labels-manager {
     padding: 16px 12px;
   }
-  
+
   .admin-tech-labels-manager h2 {
     font-size: 24px;
     width: 95%;
   }
-  
+
   .create-label {
     width: 95%;
     flex-direction: column;
     gap: 12px;
     padding: 20px 16px;
   }
-  
+
   .create-label mat-form-field,
   .create-label button {
     width: 100%;
   }
-  
+
   .table-container,
   .pagination-controls {
     width: 95%;
   }
-  
+
   .pagination-controls {
     flex-direction: column;
     gap: 12px;
     padding: 16px;
   }
-  
+
   .pagination-controls button {
     width: 100%;
     max-width: 200px;
@@ -357,39 +340,39 @@
   .admin-tech-labels-manager {
     padding: 12px 8px;
   }
-  
+
   .admin-tech-labels-manager h2 {
     font-size: 20px;
     width: 98%;
   }
-  
+
   .create-label {
     width: 98%;
     padding: 16px 12px;
   }
-  
+
   .table-container,
   .pagination-controls {
     width: 98%;
   }
-  
+
   .pagination-controls {
     padding: 12px;
   }
-  
+
   .mat-column-actions {
     width: 110px;
   }
-  
+
   .actions-cell {
     gap: 4px;
   }
-  
+
   .actions-cell button {
     width: 28px;
     height: 28px;
   }
-  
+
   .actions-cell button mat-icon {
     font-size: 16px;
     width: 16px;
@@ -401,31 +384,31 @@
   .admin-tech-labels-manager {
     padding: 8px 4px;
   }
-  
+
   .admin-tech-labels-manager h2 {
     font-size: 18px;
     width: 99%;
   }
-  
+
   .create-label {
     width: 99%;
     padding: 12px 8px;
   }
-  
+
   .table-container,
   .pagination-controls {
     width: 99%;
   }
-  
+
   .mat-column-actions {
     width: 100px;
   }
-  
+
   .actions-cell button {
     width: 24px;
     height: 24px;
   }
-  
+
   .actions-cell button mat-icon {
     font-size: 14px;
     width: 14px;
