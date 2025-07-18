@@ -2,12 +2,13 @@
   <!-- Avatar con icono de edición -->
   <div class="avatar-wrapper" (click)="openModal()">
     <div class="avatar">
-      <img *ngIf="hasProfilePhoto()" [src]="getProfilePhotoUrl()" alt="Foto de perfil" class="avatar-image">
-      <mat-icon *ngIf="!hasProfilePhoto()" class="avatar-icon">person</mat-icon>
+      <img *ngIf="hasProfilePhoto() && !deletingPhoto" [src]="getProfilePhotoUrl()" alt="Foto de perfil" class="avatar-image">
+      <mat-icon *ngIf="!hasProfilePhoto() && !deletingPhoto" class="avatar-icon">person</mat-icon>
+      <mat-spinner *ngIf="deletingPhoto" diameter="40" class="deleting-spinner"></mat-spinner>
     </div>
     
     <!-- Icono de edición -->
-    <div class="edit-icon">
+    <div class="edit-icon" *ngIf="!deletingPhoto">
       <mat-icon>edit</mat-icon>
       <!-- <mat-icon>photo_camera</mat-icon> Alternativa con icono de cámara -->
     </div>
@@ -54,9 +55,13 @@
             <mat-icon>photo_camera</mat-icon>
             Cambiar Foto
           </button>
-          <button mat-raised-button color="warn" (click)="deletePhoto()" class="action-button">
-            <mat-icon>delete</mat-icon>
-            Eliminar Foto
+          <button mat-raised-button color="warn" 
+                  (click)="deletePhoto()" 
+                  [disabled]="deletingPhoto"
+                  class="action-button">
+            <mat-spinner *ngIf="deletingPhoto" diameter="20" class="button-spinner"></mat-spinner>
+            <mat-icon *ngIf="!deletingPhoto">delete</mat-icon>
+            {{ deletingPhoto ? 'Eliminando...' : 'Eliminar Foto' }}
           </button>
         </div>
 

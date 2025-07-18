@@ -18,7 +18,10 @@ export class FileUploadService {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    return this.http.post(`${this.baseUrl}/upload-profile-photo/${candidateId}`, formData, { headers });
+    return this.http.post(`${this.baseUrl}/upload-profile-photo/${candidateId}`, formData, { 
+      headers,
+      responseType: 'json' // Asegurar que esperamos JSON
+    });
   }
 
   deleteProfilePhoto(candidateId: number): Observable<any> {
@@ -26,7 +29,10 @@ export class FileUploadService {
       'Authorization': 'Bearer ' + sessionStorage.getItem('token')
     });
 
-    return this.http.delete(`${this.baseUrl}/delete-profile-photo/${candidateId}`, { headers });
+    return this.http.delete(`${this.baseUrl}/delete-profile-photo/${candidateId}`, { 
+      headers,
+      responseType: 'text' // El backend devuelve texto plano para delete
+    });
   }
 
   getPhotoUrl(photoUrl: string): string {
