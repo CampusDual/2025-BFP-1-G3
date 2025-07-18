@@ -92,7 +92,7 @@ export class CompanyPanelComponent implements OnInit {
 
   viewOfferDetails(offer: Offer): void {
     // Pasar la oferta completa como estado de navegación
-    this.router.navigate(['/main/offer-details', offer.id], {
+    this.router.navigate(['/main/detalles-de-la-oferta', offer.id], {
       state: { offer: offer }
     });
   }

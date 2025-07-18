@@ -217,7 +217,7 @@ export class RecommendedOffersComponent implements OnInit {
   }
 
   viewOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/offer-details', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
   }
 
   isCandidate(): boolean {

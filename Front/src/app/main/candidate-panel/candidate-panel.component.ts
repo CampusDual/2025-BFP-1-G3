@@ -257,7 +257,7 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   goToOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/offer-details', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
   }
 
   // Nuevo método para cargar tech labels

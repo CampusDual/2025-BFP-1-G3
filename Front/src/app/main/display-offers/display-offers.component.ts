@@ -178,7 +178,7 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
   }
 
   viewOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/offer-details', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
   }
 
   isCandidate(): boolean {
@@ -194,7 +194,7 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
       // Si no es candidato, verificar si está logueado
       if (!this.loginService.isLoggedIn()) {
         // No está logueado, redirigir al login
-        sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${offerId}`);
+        sessionStorage.setItem('redirectAfterLogin', `/main/detalles-de-la-oferta/${offerId}`);
         this.router.navigate(['/main/login']);
         return;
       } else {
@@ -520,7 +520,7 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
    * Navegar a la vista completa de ofertas recomendadas
    */
   viewAllRecommendedOffers(): void {
-    this.router.navigate(['/main/recommended-offers']);
+    this.router.navigate(['/main/ofertas-recomendadas']);
   }
 
   /**

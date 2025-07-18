@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
           const redirectPath = sessionStorage.getItem('redirectAfterLogin');
           if (redirectPath && redirectPath !== '' && redirectPath !== null) {
             sessionStorage.removeItem('redirectAfterLogin');
-            this.router.navigate([`${redirectPath}`]);
+          this.router.navigate([`${redirectPath.replace('/main/offer-details', '/main/detalles-de-la-oferta')}`]);
           } else {
             this.router.navigate(['/main/ofertas']);
           }
@@ -140,7 +140,7 @@ private submitApplication(candidateId: number, offerId: number, headers: HttpHea
             panelClass: ['snackbar-success'],
           });
           // Navegar después de completar la inscripción a detalles de la oferta para recargar el botón
-          this.router.navigate([`/main/offer-details/${offerId}`]);
+          this.router.navigate([`/main/detalles-de-la-oferta/${offerId}`]);
         },
         error: (error) => {
           if (this.isAlreadyAppliedError(error)) {
