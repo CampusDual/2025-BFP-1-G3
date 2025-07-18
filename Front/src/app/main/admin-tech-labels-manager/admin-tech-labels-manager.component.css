@@ -25,60 +25,43 @@
 }
 
 /* Estados de carga y error */
-.loading {
+#loadMeesage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40px;
-  color: #666;
-  font-size: 16px;
+  margin-top: 5%;
+  font-size: large;
+  font-weight: bolder;
+  color: #5d5d5d;
 }
 
-.error {
+#errorMessage {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: #f44336;
-  background-color: rgba(244, 67, 54, 0.1);
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-weight: 500;
+  margin-top: 5%;
+  text-align: center;
+  font-size: large;
+  font-weight: bolder;
+  color: #5d5d5d;
 }
 
 /* Mensaje cuando no hay etiquetas */
-.no-labels {
+#EmptyLabels {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 40px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 5%;
   text-align: center;
-  color: #666;
-  margin-bottom: 24px;
+  font-size: large;
+  font-weight: bolder;
+  color: #5d5d5d;
 }
 
-.no-labels mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: #ccc;
-  margin-bottom: 16px;
-}
-
-.no-labels h3 {
-  margin: 0 0 8px 0;
-  color: #333;
-  font-weight: 500;
-}
-
-.no-labels p {
+#EmptyLabels p {
   margin: 0;
-  font-size: 14px;
+  font-size: small;
 }
 
 /* Sección de crear nueva etiqueta */
