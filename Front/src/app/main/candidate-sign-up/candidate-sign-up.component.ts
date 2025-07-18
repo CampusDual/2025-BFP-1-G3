@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class CandidateSignUpComponent implements OnInit, AfterViewInit {
   @ViewChild('cardContent', { static: false }) cardContent!: ElementRef;
-  
+
   hide = true;
   signUpForm!: FormGroup;
   signUpError: string = '';
@@ -51,7 +51,7 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.isGridReady = true;
       this.cdr.detectChanges();
-      
+
       // Aplicar estilos grid manualmente si es necesario
       if (this.cardContent && this.cardContent.nativeElement) {
         const element = this.cardContent.nativeElement;
@@ -75,8 +75,8 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       surname2: String(this.signUpForm.value.surname2).trim(),
       phone: String(this.signUpForm.value.phone).trim(),
       email: String(this.signUpForm.value.email).trim(),
-      linkedin: (String(this.signUpForm.value.linkedin).trim() !== '') ? 
-      String(this.signUpForm.value.linkedin).trim():null
+      linkedin: (String(this.signUpForm.value.linkedin).trim() !== '')
+        ? String(this.signUpForm.value.linkedin).trim() : null
     };
 
     this.submitting = true;
@@ -88,9 +88,9 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
-            duration: 1000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Registro exitoso, navegando a login...');
@@ -108,7 +108,9 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
           } else if (error.status === 409) {
             this.signUpError = 'Error al registrarse el nombre de usuario ya existe.';
             this.submitting = false;
-
+          } else {
+            this.signUpError = 'Error de conexión con el servidor';
+            this.submitting = false;
           }
         }
       });

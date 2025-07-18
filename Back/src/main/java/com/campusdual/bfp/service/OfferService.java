@@ -4,10 +4,14 @@ import com.campusdual.bfp.api.IOfferService;
 import com.campusdual.bfp.model.Offer;
 import com.campusdual.bfp.model.User;
 import com.campusdual.bfp.model.Company;
+import com.campusdual.bfp.model.Candidate;
+import com.campusdual.bfp.model.Application;
 import com.campusdual.bfp.model.TechLabels;
 import com.campusdual.bfp.model.dao.CompanyDao;
 import com.campusdual.bfp.model.dao.OfferDao;
 import com.campusdual.bfp.model.dao.UserDao;
+import com.campusdual.bfp.model.dao.CandidateDao;
+import com.campusdual.bfp.model.dao.ApplicationDao;
 import com.campusdual.bfp.model.dao.TechLabelsDao;
 import com.campusdual.bfp.model.dto.OfferDTO;
 import com.campusdual.bfp.model.dto.TechLabelsDTO;
@@ -18,6 +22,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -25,12 +30,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service("OfferService")
-@Lazy
 @Transactional
 public class OfferService implements IOfferService {
     @Autowired
@@ -41,6 +46,12 @@ public class OfferService implements IOfferService {
 
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private CandidateDao candidateDao;
+
+    @Autowired
+    private ApplicationDao applicationDao;
 
     @Autowired
     private TechLabelsDao techLabelsDao;
@@ -161,6 +172,15 @@ public class OfferService implements IOfferService {
             }
 
             Offer offer = OfferMapper.INSTANCE.toEntity(offerDto);
+            
+            // Asegurar que el publishingDate esté establecido
+            if (offer.getPublishingDate() == null) {
+                offer.setPublishingDate(LocalDateTime.now());
+            }
+            
+            // Debug: Verificar que el publishingDate está establecido
+            System.out.println("DEBUG - Publishing Date before save: " + offer.getPublishingDate());
+            
             offerDao.saveAndFlush(offer);
             return offer.getId();
             
@@ -286,4 +306,179 @@ public class OfferService implements IOfferService {
             return false;
         }
     }
+
+    @Override
+    public Object getRecommendedOffersPaginated(String username, int page, int size) {
+        try {
+            // Buscar el usuario por login (username)
+            User user = userDao.findByLogin(username);
+            if (user == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Usuario no encontrado");
+                return errorResponse;
+            }
+
+            // Obtener el candidato asociado al usuario
+            Candidate candidate = user.getCandidate();
+            if (candidate == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "El usuario no es un candidato");
+                return errorResponse;
+            }
+
+            // Obtener las tech labels del candidato
+            Set<TechLabels> candidateTechLabels = candidate.getTechLabels();
+            if (candidateTechLabels.isEmpty()) {
+                // Si el candidato no tiene tech labels, devolver todas las ofertas activas
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Offer> offerPage = offerDao.findByActive(1, pageable);
+                
+                List<OfferDTO> offerDtos = offerPage.getContent().stream()
+                    .map(OfferMapper.INSTANCE::toDTO)
+                    .collect(Collectors.toList());
+
+                Map<String, Object> result = new HashMap<>();
+                result.put("offers", offerDtos);
+                result.put("totalElements", offerPage.getTotalElements());
+                result.put("totalPages", offerPage.getTotalPages());
+                result.put("currentPage", page);
+                result.put("size", size);
+                result.put("message", "No tienes áreas de especialización definidas. Mostrando todas las ofertas activas.");
+                return result;
+            }
+
+            // Extraer los IDs de las tech labels del candidato
+            Set<Long> techLabelIds = candidateTechLabels.stream()
+                .map(TechLabels::getId)
+                .collect(Collectors.toSet());
+
+            System.out.println("🔍 DEBUG - Tech Labels del candidato: " + techLabelIds);
+
+            // Obtener TODAS las ofertas recomendadas sin paginación para poder ordenar por afinidad
+            Pageable allResultsPageable = PageRequest.of(0, Integer.MAX_VALUE);
+            Page<Offer> allRecommendedOffers = offerDao.findRecommendedOffers(
+                techLabelIds, 
+                allResultsPageable
+            );
+
+            System.out.println("📊 DEBUG - Ofertas encontradas con tech labels coincidentes: " + allRecommendedOffers.getTotalElements());
+
+            // Obtener las aplicaciones del candidato para filtrar ofertas ya aplicadas
+            List<Application> candidateApplications = applicationDao.findByCandidateId(candidate.getId());
+            Set<Long> appliedOfferIds = candidateApplications.stream()
+                .map(app -> app.getOffer().getId())
+                .collect(Collectors.toSet());
+
+            System.out.println("🚫 DEBUG - Ofertas ya aplicadas por el candidato: " + appliedOfferIds);
+
+            // Filtrar ofertas ya aplicadas y aplicar algoritmo de ranking inteligente
+            // ALGORITMO DE RANKING:
+            // 1. Criterio PRINCIPAL: Mayor número de tech labels coincidentes (5 coincidencias > 3 coincidencias)
+            // 2. Criterio SECUNDARIO: Si empatan en coincidencias, más reciente en fecha de publicación
+            List<Offer> sortedOffers = allRecommendedOffers.getContent().stream()
+                .filter(offer -> !appliedOfferIds.contains(offer.getId()))
+                .sorted((offer1, offer2) -> {
+                    // Contar tech labels coincidentes para cada oferta
+                    long matches1 = calculateMatches(offer1, techLabelIds);
+                    long matches2 = calculateMatches(offer2, techLabelIds);
+                    
+                    System.out.println("⚖️ DEBUG - Oferta " + offer1.getId() + " tiene " + matches1 + " coincidencias, Oferta " + offer2.getId() + " tiene " + matches2 + " coincidencias");
+                    
+                    // Criterio principal: Ordenar por número de coincidencias (descendente)
+                    int matchComparison = Long.compare(matches2, matches1);
+                    
+                    // Si tienen el mismo número de coincidencias, ordenar por fecha de publicación (más reciente primero)
+                    if (matchComparison == 0) {
+                        // Manejo seguro de fechas nulas
+                        if (offer1.getPublishingDate() == null && offer2.getPublishingDate() == null) {
+                            return 0; // Ambas sin fecha, son iguales
+                        }
+                        if (offer1.getPublishingDate() == null) {
+                            return 1; // offer1 sin fecha va después
+                        }
+                        if (offer2.getPublishingDate() == null) {
+                            return -1; // offer2 sin fecha va después
+                        }
+                        
+                        // Comparar fechas: más reciente primero (descendente)
+                        int dateComparison = offer2.getPublishingDate().compareTo(offer1.getPublishingDate());
+                        System.out.println("📅 DEBUG - Mismo número de coincidencias (" + matches1 + "), ordenando por fecha: Oferta " + 
+                                         offer1.getId() + " (" + offer1.getPublishingDate() + ") vs Oferta " + 
+                                         offer2.getId() + " (" + offer2.getPublishingDate() + ")");
+                        return dateComparison;
+                    }
+                    
+                    return matchComparison;
+                })
+                .collect(Collectors.toList());
+
+            System.out.println("✅ DEBUG - Total de ofertas recomendadas después del filtrado: " + sortedOffers.size());
+
+            // Aplicar paginación manual
+            int totalElements = sortedOffers.size();
+            int totalPages = (int) Math.ceil((double) totalElements / size);
+            int fromIndex = page * size;
+            int toIndex = Math.min(fromIndex + size, totalElements);
+
+            List<Offer> paginatedOffers = new ArrayList<>();
+            if (fromIndex < totalElements) {
+                paginatedOffers = sortedOffers.subList(fromIndex, toIndex);
+            }
+
+            // Convertir las ofertas paginadas a DTOs
+            List<OfferDTO> offerDtos = paginatedOffers.stream()
+                .map(OfferMapper.INSTANCE::toDTO)
+                .collect(Collectors.toList());
+
+            // Crear la respuesta con información de paginación
+            Map<String, Object> result = new HashMap<>();
+            result.put("offers", offerDtos);
+            result.put("totalElements", totalElements);
+            result.put("totalPages", totalPages);
+            result.put("currentPage", page);
+            result.put("size", size);
+            result.put("message", "Ofertas recomendadas ordenadas por afinidad (mayor coincidencia primero) y fecha de publicación (más recientes primero)");
+
+            return result;
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener ofertas recomendadas: " + e.getMessage());
+            return errorResponse;
+        }
+    }
+
+    /**
+     * Calcula el número de tech labels coincidentes entre una oferta y el candidato
+     * @param offer La oferta a evaluar
+     * @param candidateTechLabelIds Set de IDs de tech labels del candidato
+     * @return Número de coincidencias
+     */
+    private long calculateMatches(Offer offer, Set<Long> candidateTechLabelIds) {
+        return offer.getTechLabels().stream()
+                .mapToLong(tl -> candidateTechLabelIds.contains(tl.getId()) ? 1 : 0)
+                .sum();
+    }
+    
+    /**
+     * ALGORITMO DE RANKING MEJORADO PARA RECOMENDACIONES
+     * 
+     * Ejemplo de funcionamiento:
+     * 
+     * CANDIDATO tiene: [Java, Spring, Angular, MySQL, Docker] (5 tech labels)
+     * 
+     * OFERTAS ENCONTRADAS:
+     * - Oferta A: [Java, Spring, React] → 2 coincidencias → Publicada: 2025-07-15
+     * - Oferta B: [Java, Angular, MySQL] → 3 coincidencias → Publicada: 2025-07-14  
+     * - Oferta C: [Python, Django] → 0 coincidencias → NO APARECE (filtrada por la query)
+     * - Oferta D: [Java, Spring, React] → 2 coincidencias → Publicada: 2025-07-16
+     * 
+     * RANKING RESULTANTE:
+     * 1. Oferta B (3 coincidencias) - PRIMERA por mayor afinidad
+     * 2. Oferta D (2 coincidencias, más reciente) - SEGUNDA por fecha
+     * 3. Oferta A (2 coincidencias, más antigua) - TERCERA por fecha
+     * 
+     * CRITERIOS:
+     * 1. PRINCIPAL: Número de tech labels coincidentes (descendente)
+     * 2. SECUNDARIO: Fecha de publicación (más reciente primero)
+     */
 }

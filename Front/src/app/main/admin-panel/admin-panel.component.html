@@ -3,13 +3,10 @@
   <div class="admin-container">
  
     <div class="search-bar">
-      <section class="filter-section">
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrar empresas</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por nombre o email" #input>
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </section>
+      <input type="text" placeholder="Buscar empresa por nombre o email" (keyup)="applyFilter($event)" #input>
+      <span id="iconSearch">
+        <mat-icon>search</mat-icon>
+      </span>
     </div>
 
     <!-- Indicador de carga -->

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 
@@ -7,16 +7,18 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
   templateUrl: './editable-avatar.component.html',
   styleUrls: ['./editable-avatar.component.css']
 })
-export class EditableAvatarComponent implements OnInit {
+export class EditableAvatarComponent implements OnInit, OnChanges {
   @Input() candidateId: number | null = null;
   @Input() profilePhotoUrl: string | undefined;
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  @Input() editable: boolean = true;  // Nuevo input para controlar edición
   @Output() photoChanged = new EventEmitter<{photoUrl?: string, filename?: string}>();
 
   showModal = false;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
   uploadingPhoto = false;
+  deletingPhoto = false; // Nuevo estado para manejar la eliminación
 
   constructor(
     private fileUploadService: FileUploadService,
@@ -31,7 +33,17 @@ export class EditableAvatarComponent implements OnInit {
     console.log('- getProfilePhotoUrl():', this.getProfilePhotoUrl());
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    // Cuando cambia la URL de la foto desde el componente padre, 
+    // asegurarse de que el estado de eliminación se resetee
+    if (changes['profilePhotoUrl']) {
+      this.deletingPhoto = false;
+      console.log('Profile photo URL changed:', changes['profilePhotoUrl'].currentValue);
+    }
+  }
+
   openModal(): void {
+    if (!this.editable) return;  // Solo abrir modal si es editable
     this.showModal = true;
   }
 
@@ -53,7 +65,8 @@ export class EditableAvatarComponent implements OnInit {
       if (!file.type.startsWith('image/')) {
         this.snackBar.open('Por favor seleccione un archivo de imagen válido.', 'Cerrar', {
           duration: 5000,
-          panelClass: ['snackbar-error']
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -62,7 +75,8 @@ export class EditableAvatarComponent implements OnInit {
       if (file.size > 5 * 1024 * 1024) {
         this.snackBar.open('El archivo es demasiado grande. Máximo 5MB.', 'Cerrar', {
           duration: 5000,
-          panelClass: ['snackbar-error']
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -88,15 +102,21 @@ export class EditableAvatarComponent implements OnInit {
     this.fileUploadService.uploadProfilePhoto(this.candidateId, this.selectedFile)
       .subscribe({
         next: (response) => {
+          console.log('Upload response:', response);
+          
           this.snackBar.open('Foto de perfil actualizada con éxito.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-success']
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
+          
+          // Actualizar la URL localmente para mostrar inmediatamente
+          this.profilePhotoUrl = response.profilePhotoUrl || response.photoUrl || response.url;
           
           // Emitir el cambio para actualizar el componente padre
           this.photoChanged.emit({
-            photoUrl: response.profilePhotoUrl,
-            filename: response.profilePhotoFilename
+            photoUrl: this.profilePhotoUrl,
+            filename: response.profilePhotoFilename || response.filename
           });
           
           this.uploadingPhoto = false;
@@ -106,7 +126,8 @@ export class EditableAvatarComponent implements OnInit {
           console.error('Error subiendo foto:', error);
           this.snackBar.open('Error al subir la foto de perfil.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-error']
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
           this.uploadingPhoto = false;
         }
@@ -118,13 +139,21 @@ export class EditableAvatarComponent implements OnInit {
       return;
     }
 
+    this.deletingPhoto = true; // Establecer estado de eliminación
+
     this.fileUploadService.deleteProfilePhoto(this.candidateId)
       .subscribe({
         next: (response) => {
+          console.log('Delete response:', response);
+          
           this.snackBar.open('Foto de perfil eliminada con éxito.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-success']
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
+          
+          // Limpiar inmediatamente el estado local para evitar parpadeo
+          this.profilePhotoUrl = undefined;
           
           // Emitir el cambio para actualizar el componente padre
           this.photoChanged.emit({
@@ -132,14 +161,42 @@ export class EditableAvatarComponent implements OnInit {
             filename: undefined
           });
           
+          this.deletingPhoto = false;
           this.closeModal();
         },
         error: (error) => {
           console.error('Error eliminando foto:', error);
-          this.snackBar.open('Error al eliminar la foto de perfil.', 'Cerrar', {
-            duration: 5000,
-            panelClass: ['snackbar-error']
-          });
+          
+          // Manejar casos donde el backend devuelve 200 con texto
+          if (error.status === 200 && error.error && typeof error.error === 'string') {
+            // La eliminación fue exitosa, pero el parsing falló
+            console.log('Eliminación exitosa (parsing error):', error.error);
+            
+            this.snackBar.open('Foto de perfil eliminada con éxito.', 'Cerrar', {
+              duration: 5000,
+              panelClass: ['snackbar-success'],
+              verticalPosition: 'top'
+            });
+            
+            // Limpiar inmediatamente el estado local
+            this.profilePhotoUrl = undefined;
+            
+            // Emitir el cambio para actualizar el componente padre
+            this.photoChanged.emit({
+              photoUrl: undefined,
+              filename: undefined
+            });
+            
+            this.deletingPhoto = false;
+            this.closeModal();
+          } else {
+            this.snackBar.open('Error al eliminar la foto de perfil.', 'Cerrar', {
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
+            });
+            this.deletingPhoto = false;
+          }
         }
       });
   }
@@ -164,7 +221,11 @@ export class EditableAvatarComponent implements OnInit {
 
   getProfilePhotoUrl(): string {
     if (this.profilePhotoUrl) {
-      const fullUrl = this.fileUploadService.getPhotoUrl(this.profilePhotoUrl);
+      const baseUrl = this.fileUploadService.getPhotoUrl(this.profilePhotoUrl);
+      // Agregar timestamp para evitar caché del navegador
+      const timestamp = new Date().getTime();
+      const separator = baseUrl.includes('?') ? '&' : '?';
+      const fullUrl = `${baseUrl}${separator}t=${timestamp}`;
       console.log('Building photo URL:', this.profilePhotoUrl, '->', fullUrl);
       return fullUrl;
     }
@@ -172,6 +233,10 @@ export class EditableAvatarComponent implements OnInit {
   }
 
   hasProfilePhoto(): boolean {
+    // Durante la eliminación, retornar false inmediatamente para evitar parpadeo
+    if (this.deletingPhoto) {
+      return false;
+    }
     return !!this.profilePhotoUrl;
   }
 

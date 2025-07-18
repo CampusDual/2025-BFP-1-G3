@@ -61,6 +61,13 @@ public class Offer {
         this.active = 1; // Oferta activa por defecto
     }
 
+    @PrePersist
+    protected void onCreate() {
+        if (this.publishingDate == null) {
+            this.publishingDate = LocalDateTime.now();
+        }
+    }
+
     public Offer(Long id, String title, String offerDescription, Company company, int active) {
         this.id = id;
         this.title = title;

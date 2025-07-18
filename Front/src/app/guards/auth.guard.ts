@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     const url = state.url;
 
     // Definir rutas permitidas para cada rol
-    const candidateRoutes = ['/main/candidato', '/main/ofertas', '/main/offer-details'];
+    const candidateRoutes = ['/main/candidato', '/main/ofertas', '/main/offer-details', '/main/ofertas-recomendadas'];
     const companyRoutes = ['/main/empresa', '/main/publicar', '/main/ofertas', '/main/offer-details', '/main/detallesCandidato'];
     const adminRoutes = ['/main/admin', '/main/admin/etiquetas'];
 

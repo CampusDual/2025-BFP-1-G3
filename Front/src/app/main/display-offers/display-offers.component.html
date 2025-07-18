@@ -1,20 +1,131 @@
 <!-- == CONTENEDOR PRINCIPAL == -->
 <div class="offers-container" >
 
+  <!-- == SECCIÓN DE OFERTAS RECOMENDADAS == -->
   <!-- == FILTRO DE OFERTAS == -->
+  <div *ngIf="!isLoading && showRecommendedSection" class="recommended-section" [class.collapsed]="isRecommendedSectionCollapsed">
+    <!-- Botones de control minimalistas en la parte superior izquierda -->
+    <div class="recommended-top-controls" *ngIf="!loadingRecommended && recommendedOffers.length > 0">
+      <button mat-button 
+              class="minimal-control-btn view-all-btn"
+              (click)="viewAllRecommendedOffers()">
+        <mat-icon>visibility</mat-icon>
+        <span>Ver todas</span>
+      </button>
+      
+      <button mat-button 
+              class="minimal-control-btn hide-btn"
+              (click)="toggleRecommendedSection()">
+        <mat-icon>{{ isRecommendedSectionCollapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+        <span>{{ isRecommendedSectionCollapsed ? 'Mostrar' : 'Ocultar' }}</span>
+      </button>
+    </div>
+
+    <div class="recommended-header">
+      <h3>
+        <mat-icon>star</mat-icon>
+        Recomendado para ti
+      </h3>
+      <p>Ofertas seleccionadas según tu perfil y especialización</p>
+    </div>
+
+    <div class="recommended-carousel" *ngIf="!loadingRecommended">
+      <!-- Botón izquierdo -->
+      <!-- <button mat-icon-button 
+              class="carousel-nav-btn left-btn" 
+              [disabled]="!canScrollLeft"
+              (click)="scrollRecommendedLeft()"
+              *ngIf="recommendedOffers.length > 1">
+        <mat-icon>chevron_left</mat-icon>
+      </button> -->
+
+      <!-- Contenedor del carrusel -->
+      <div class="recommended-carousel-container" 
+           (scroll)="onRecommendedScroll()">
+        
+        <mat-card class="recommended-offer-card clickable-card" 
+                  *ngFor="let offer of recommendedOffers; let i = index"
+                  (click)="viewOfferDetails(offer.id)"
+                  matRipple>
+          
+          <!-- Badge de recomendación -->
+          <div class="recommendation-badge">
+            <mat-icon>stars</mat-icon>
+            <span>Top {{ i + 1 }}</span>
+          </div>
+
+          <mat-card-header>
+            <div class="header-content">
+              <mat-card-title>{{ offer.title }}</mat-card-title>
+              <mat-card-subtitle>{{ offer.companyName || 'Sin nombre' }}</mat-card-subtitle>
+            </div>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="offer-description">{{ offer.offerDescription }}</p>
+
+            <!-- Etiquetas técnicas compactas -->
+            <div class="tech-labels-compact" *ngIf="offer.techLabels && offer.techLabels.length > 0">
+              <span *ngFor="let label of offer.techLabels.slice(0, 3)" class="tech-chip-mini">
+                {{ label.name }}
+              </span>
+              <span *ngIf="offer.techLabels.length > 3" class="more-labels-mini">
+                +{{ offer.techLabels.length - 3 }}
+              </span>
+            </div>
+
+            <!-- Indicador de coincidencias de tech labels -->
+            <!-- <div class="tech-match-indicator" *ngIf="isLoggedAsCandidate() && candidateTechLabelIds.length > 0">
+              <mat-icon>stars</mat-icon>
+              <span>{{ getSharedTechLabelsCount(offer) }} {{ getSharedTechLabelsCount(offer) === 1 ? 'tecnología coincidente' : 'tecnologías coincidentes' }} con tu perfil</span>
+            </div> -->
+
+            <!-- Indicador de estado de aplicación -->
+            <div *ngIf="shouldShowApplicationStatus()" class="application-indicator">
+              <mat-icon *ngIf="isAppliedToOffer(offer.id)" class="applied-indicator">
+                check_circle
+              </mat-icon>
+              <span *ngIf="!isAppliedToOffer(offer.id)" class="apply-indicator">
+                Click para ver detalles
+              </span>
+              <span *ngIf="isAppliedToOffer(offer.id)" class="applied-text">
+                Ya inscrito
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Botón derecho -->
+      <!-- <button mat-icon-button 
+              class="carousel-nav-btn right-btn" 
+              [disabled]="!canScrollRight"
+              (click)="scrollRecommendedRight()"
+              *ngIf="recommendedOffers.length > 1">
+        <mat-icon>chevron_right</mat-icon>
+      </button> -->
+    </div> 
+
+    <!-- Loading de ofertas recomendadas -->
+    <div *ngIf="loadingRecommended" class="recommended-loading">
+      <mat-spinner diameter="30"></mat-spinner>
+      <p>Analizando tu perfil...</p>
+    </div>
+  </div>
+
   <div class="search-bar">
     <input type="text" placeholder="Buscar oferta por título/descripción" [(ngModel)]="searchTerm"
       (input)="updateDisplayOffers()"/>
     <span id="iconSearch"><mat-icon>search</mat-icon></span>
   </div>
 
-  <!-- Loading indicator -->
-  <div *ngIf="isLoading" class="loading-container" id="loadMeesage">
-    <mat-spinner diameter="40"></mat-spinner>
-    <p>Cargando ofertas...</p>
-  </div>
+  <!-- == TODAS LAS OFERTAS == -->
+  <div class="all-offers-section" *ngIf="!isLoading">
+    <div class="section-divider" *ngIf="showRecommendedSection">
+      <h3>Todas las ofertas disponibles</h3>
+    </div>
 
-  <div class="cards-grid" *ngIf="!isLoading && filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
+  <div class="cards-grid" *ngIf="filteredOffers && filteredOffers.length > 0; else noOffersOrSearch">
     <mat-card class="offer-card" *ngFor="let offer of filteredOffers">
       <mat-card-header>
         <div class="header-content">
@@ -56,7 +167,14 @@
       </mat-card-actions>
     </mat-card>
   </div>
+  </div>
 </div>
+
+  <!-- Loading indicator -->
+  <div id="loadMeesage" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando ofertas...</p>
+  </div>
 
 <!-- Mensaje aviso: No hay ofertas -->
 <ng-template #noOffers>
@@ -68,7 +186,7 @@
 
 <!-- Mensaje cuando el filtro no encuentra ofertas -->
 <ng-template #noOffersSearch>
-  <div class="no-offers" *ngIf="!isLoading">
+  <div id="notFoundMessage" *ngIf="!isLoading">
     <mat-icon>info</mat-icon>
     <p>No se han encontrado resultados que cumplan los criterios de búsqueda</p>
   </div>

@@ -90,7 +90,7 @@ export class AdminPanelComponent implements OnInit {
 
   showSnackBar(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
+      duration: 5000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-failed']

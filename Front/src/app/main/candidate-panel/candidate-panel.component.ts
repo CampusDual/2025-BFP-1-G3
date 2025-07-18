@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { LoginService } from 'src/app/services/login.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
@@ -55,7 +56,8 @@ export class CandidatePanelComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private loginService: LoginService,
-    private fileUploadService: FileUploadService) {
+    private fileUploadService: FileUploadService,
+    private location: Location) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       surname1: ['', Validators.required],
@@ -234,9 +236,9 @@ export class CandidatePanelComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil actualizado exitosamente');
@@ -257,7 +259,7 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   goToOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/offer-details', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
   }
 
   // Nuevo método para cargar tech labels
@@ -321,9 +323,9 @@ export class CandidatePanelComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil profesional actualizado con éxito.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil profesional actualizado exitosamente');
@@ -406,7 +408,7 @@ export class CandidatePanelComponent implements OnInit {
             this.snackBar.open('Perfil actualizado exitosamente', 'Cerrar', {
               duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
+              verticalPosition: 'top',
               panelClass: ['snackbar-success'],
             });
             // Recargar datos del candidato
@@ -430,8 +432,8 @@ export class CandidatePanelComponent implements OnInit {
             this.snackBar.open(errorMessage, 'Cerrar', {
               duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
-              panelClass: ['snackbar-error'],
+              verticalPosition: 'top',
+              panelClass: ['snackbar-failed'],
             });
           }
         });
@@ -441,8 +443,21 @@ export class CandidatePanelComponent implements OnInit {
   // Método para manejar cambios en la foto de perfil desde el componente editable-avatar
   onPhotoChanged(event: {photoUrl?: string, filename?: string}): void {
     if (this.candidateData) {
+      // Actualizar inmediatamente el estado local
       this.candidateData.profilePhotoUrl = event.photoUrl;
       this.candidateData.profilePhotoFilename = event.filename;
+      
+      // Forzar detección de cambios si es necesario
+      console.log('Photo changed event received:', event);
+      console.log('Updated candidateData.profilePhotoUrl:', this.candidateData.profilePhotoUrl);
+      
+      // Opcional: forzar una recarga completa de los datos del candidato para sincronizar
+      if (event.photoUrl) {
+        // Solo recargar si se subió una nueva foto, no si se eliminó
+        setTimeout(() => {
+          this.retrieveCandidateData();
+        }, 1000);
+      }
     }
   }
 
@@ -532,5 +547,9 @@ export class CandidatePanelComponent implements OnInit {
       'HYBRID': 'modality-hybrid'
     };
     return classMap[modality] || '';
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

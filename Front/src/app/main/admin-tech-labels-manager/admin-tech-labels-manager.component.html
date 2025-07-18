@@ -2,13 +2,13 @@
   <h2>Gestión de Áreas de Interés</h2>
 
   <!-- Indicador de carga -->
-  <div *ngIf="loading" class="loading">
+  <div id="loadMeesage" *ngIf="loading">
     <mat-spinner diameter="40"></mat-spinner>
     <p>Cargando etiquetas...</p>
   </div>
 
   <!-- Mensaje de error -->
-  <div *ngIf="errorMessage" class="error">
+  <div id="errorMessage" *ngIf="errorMessage">
     <mat-icon>error</mat-icon>
     <span>{{ errorMessage }}</span>
   </div>
@@ -86,23 +86,30 @@
     </div>
 
     <!-- Mensaje cuando no hay etiquetas -->
-    <div *ngIf="allLabels.length === 0" class="no-labels">
+    <div id="EmptyLabels" *ngIf="allLabels.length === 0">
       <mat-icon>label_off</mat-icon>
       <h3>No hay etiquetas disponibles</h3>
       <p>Crea la primera etiqueta usando el formulario de arriba.</p>
     </div>
 
     <!-- Controles de paginación -->
-    <div class="pagination-controls" *ngIf="allLabels.length > 0">
-      <button mat-raised-button (click)="previousPage()" [disabled]="currentPage === 1">
-        <mat-icon>chevron_left</mat-icon>
-        Anterior
-      </button>
-      <span>Página {{ currentPage }} de {{ totalPages }}</span>
-      <button mat-raised-button (click)="nextPage()" [disabled]="currentPage === totalPages">
-        Siguiente
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+    <div class="pagination-container" *ngIf="allLabels.length > 0 && totalPages > 1">
+      <div class="pagination-info">
+        <p>Total: {{ allLabels.length }} etiquetas</p>
+      </div>
+      <div class="pagination-controls">
+        <button mat-button [disabled]="currentPage === 1" (click)="previousPage()">
+          <mat-icon>navigate_before</mat-icon>
+          Anterior
+        </button>
+        <span class="page-numbers">
+          <span class="current-page">{{ currentPage }}</span> / {{ totalPages }}
+        </span>
+        <button mat-button [disabled]="currentPage === totalPages" (click)="nextPage()">
+          Siguiente
+          <mat-icon>navigate_next</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </div>

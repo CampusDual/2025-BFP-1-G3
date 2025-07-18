@@ -138,7 +138,8 @@ export class PublishOfferComponent implements OnInit {
                 // Mostrar éxito de la oferta pero advertir sobre etiquetas
                 this.snackBar.open('Oferta creada, pero hubo un error al guardar las etiquetas', 'Cerrar', {
                   duration: 5000,
-                  panelClass: ['snackbar-warning']
+                  panelClass: ['snackbar-warning'],
+                  verticalPosition: 'top'
                 });
                 this.router.navigate(['/main/empresa']);
                 this.submitting = false;
@@ -163,18 +164,21 @@ export class PublishOfferComponent implements OnInit {
               errorMsg = error.error.message;
             }
             this.snackBar.open(errorMsg, 'Cerrar', {
-              duration: 7000,
-              panelClass: ['snackbar-failed']
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           } else if (error.status === 403) {
             this.snackBar.open('No tienes permisos para publicar ofertas', 'Cerrar', {
               duration: 5000,
-              panelClass: ['snackbar-failed']
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           } else {
             this.snackBar.open('Error al publicar la oferta. Inténtalo de nuevo.', 'Cerrar', {
               duration: 5000,
-              panelClass: ['snackbar-failed']
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           }
         }
@@ -188,7 +192,8 @@ export class PublishOfferComponent implements OnInit {
   private showSuccessAndRedirect(): void {
     this.snackBar.open('¡Oferta publicada exitosamente!', 'Cerrar', {
       duration: 5000,
-      panelClass: ['snackbar-success']
+      panelClass: ['snackbar-success'],
+      verticalPosition: 'top'
     });
     this.router.navigate(['/main/empresa']);
     this.submitting = false;

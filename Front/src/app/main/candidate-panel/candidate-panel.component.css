@@ -2,6 +2,25 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
+}
+
+.back-container {
+  position: absolute;
+  left: 20px;
+  top: 50px;
+  z-index: 100;
+}
+
+.back-button {
+  color: #e61b15;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.back-button mat-icon {
+  font-size: 1.8rem;
 }
 
 .header {
@@ -179,12 +198,12 @@
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 2rem; /* Añadir espacio entre avatar y información */
+  gap: 1.5rem;
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   background: linear-gradient(
     135deg,
     var(--primary, #e81c34) 60%,
@@ -195,15 +214,16 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 42px;
+  font-size: 38px;
   box-shadow: 0 2px 8px rgba(232, 28, 52, 0.13);
+  flex-shrink: 0; /* Evitar que el avatar se encoja */
 }
 
 /* Estilo específico y forzado para el ícono del avatar */
 .avatar .avatar-icon {
-  font-size: 48px !important;
-  width: 48px !important;
-  height: 48px !important;
+  font-size: 42px !important;
+  width: 42px !important;
+  height: 42px !important;
   color: white !important;
   display: flex !important;
   align-items: center !important;
@@ -232,8 +252,9 @@
 }
 
 .candidate-info {
-  flex: 1;
-  margin-left: 1rem; /* Añadir margen izquierdo adicional */
+  flex: 2;
+  min-width: 0;
+  width: 100%;
 }
 
 .candidate-info h2 {

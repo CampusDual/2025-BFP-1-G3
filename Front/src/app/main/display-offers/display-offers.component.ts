@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { Offer } from '../../model/offer';
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './display-offers.component.html',
   styleUrls: ['./display-offers.component.css']
 })
-export class DisplayOffersComponent implements OnInit {
+export class DisplayOffersComponent implements OnInit, OnDestroy {
   offers: Offer[] = [];
   filteredOffers: Offer[] = [];
   loading = false;
@@ -25,6 +25,18 @@ export class DisplayOffersComponent implements OnInit {
   
   // Cache para evitar llamadas repetitivas en el template
   private appliedOffersCache = new Map<number, boolean>();
+  
+  // Tech labels del candidato para calcular coincidencias
+  candidateTechLabelIds: number[] = [];
+  
+  // Recommended offers properties
+  recommendedOffers: Offer[] = [];
+  showRecommendedSection = false;
+  isRecommendedSectionCollapsed = false;
+  loadingRecommended = false;
+  recommendedScrollPosition = 0;
+  canScrollLeft = false;
+  canScrollRight = false;
   
   // Pagination properties
   currentPage = 0;
@@ -60,6 +72,22 @@ export class DisplayOffersComponent implements OnInit {
           this.applicationsCacheReady = true;
           // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
           this.updateAppliedOffersCache();
+          
+          // Si es candidato, cargar tech labels primero y luego ofertas recomendadas
+          if (this.loginService.isLoggedAsCandidate()) {
+            this.loginService.getCandidateData().subscribe({
+              next: (candidateData) => {
+                this.candidateTechLabelIds = candidateData.techLabelIds || [];
+                this.loadRecommendedOffers();
+              },
+              error: (error) => {
+                console.error('Error cargando datos del candidato:', error);
+                // Intentar cargar ofertas recomendadas de todos modos
+                this.loadRecommendedOffers();
+              }
+            });
+          }
+          
           // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
           this.loading = false;
           this.isLoading = false;
@@ -150,7 +178,7 @@ export class DisplayOffersComponent implements OnInit {
   }
 
   viewOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/offer-details', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
   }
 
   isCandidate(): boolean {
@@ -166,14 +194,15 @@ export class DisplayOffersComponent implements OnInit {
       // Si no es candidato, verificar si está logueado
       if (!this.loginService.isLoggedIn()) {
         // No está logueado, redirigir al login
-        sessionStorage.setItem('redirectAfterLogin', `/main/offer-details/${offerId}`);
+        sessionStorage.setItem('redirectAfterLogin', `/main/detalles-de-la-oferta/${offerId}`);
         this.router.navigate(['/main/login']);
         return;
       } else {
         // Está logueado pero no es candidato (probablemente empresa)
         this.snackBar.open('Solo los candidatos pueden inscribirse a ofertas', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -193,15 +222,17 @@ export class DisplayOffersComponent implements OnInit {
             this.proceedWithApplicationCheck(updatedCandidateId, offerId);
           } else {
             this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           }
         },
         error: () => {
           this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
+            duration: 5000,
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });
@@ -218,15 +249,17 @@ export class DisplayOffersComponent implements OnInit {
     if (isAlreadyApplied) {
       this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
         duration: 5000,
-        panelClass: ['snackbar-info']
+        panelClass: ['snackbar-info'],
+        verticalPosition: 'top'
       });
     } else {
       // No está inscrito, proceder con la inscripción
       this.loginService.applyToOfferService(offerId).subscribe({
         next: (response) => {
           this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
+            duration: 5000,
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
           
           // Actualizar el caché agregando la nueva aplicación
@@ -256,7 +289,8 @@ export class DisplayOffersComponent implements OnInit {
 
           this.snackBar.open(errorMessage, 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-error']
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });
@@ -342,5 +376,187 @@ export class DisplayOffersComponent implements OnInit {
         this.appliedOffersCache.set(offer.id, isApplied);
       });
     }
+  }
+
+  // === MÉTODOS PARA OFERTAS RECOMENDADAS ===
+
+  /**
+   * Carga las 5 ofertas más recomendadas para el candidato
+   */
+  private loadRecommendedOffers(): void {
+    if (!this.loginService.isLoggedAsCandidate()) {
+      return;
+    }
+
+    this.loadingRecommended = true;
+    
+    const token = sessionStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+    
+    // Solicitar solo las 5 mejores ofertas (página 0, tamaño 4)
+    const url = `http://localhost:30030/offers/recommended?page=0&size=4`;
+
+    fetch(url, { headers })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('🎯 Top 5 ofertas recomendadas recibidas:', data);
+        
+        this.recommendedOffers = data.offers || [];
+        
+        // Filtrar ofertas que realmente tengan coincidencias con el candidato
+        // Solo mostrar la sección si hay ofertas con al menos 1 coincidencia
+        const offersWithMatches = this.recommendedOffers.filter(offer => 
+          this.getSharedTechLabelsCount(offer) > 0
+        );
+        
+        // Si el candidato no tiene tech labels, no mostrar recomendaciones
+        if (this.candidateTechLabelIds.length === 0) {
+          console.log('ℹ️ Candidato sin tech labels - no se muestran recomendaciones');
+          this.showRecommendedSection = false;
+        } else if (offersWithMatches.length > 0) {
+          this.showRecommendedSection = true;
+          console.log(`✅ ${offersWithMatches.length} ofertas con coincidencias encontradas`);
+        } else {
+          this.showRecommendedSection = false;
+          console.log('ℹ️ No hay ofertas con coincidencias de tech labels');
+        }
+        
+        this.loadingRecommended = false;
+        
+        // Inicializar estado del scroll después de que el DOM se actualice
+        setTimeout(() => {
+          this.updateScrollButtons();
+        }, 100);
+        
+        if (this.recommendedOffers.length === 0) {
+          console.log('ℹ️ No hay ofertas recomendadas para este candidato');
+        }
+      })
+      .catch(error => {
+        console.error('❌ Error cargando ofertas recomendadas:', error);
+        this.loadingRecommended = false;
+        this.showRecommendedSection = false;
+      });
+  }
+
+  /**
+   * Navegar hacia la izquierda en el carrusel de ofertas recomendadas
+   */
+  scrollRecommendedLeft(): void {
+    const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+    if (container) {
+      const cardWidth = 310; // Ancho de cada card (280px) + gap (1.5rem = 24px) + padding
+      container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+      setTimeout(() => this.updateScrollButtons(), 300);
+    }
+  }
+
+  /**
+   * Navegar hacia la derecha en el carrusel de ofertas recomendadas
+   */
+  scrollRecommendedRight(): void {
+    const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+    if (container) {
+      const cardWidth = 310; // Ancho de cada card (280px) + gap (1.5rem = 24px) + padding
+      container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      setTimeout(() => this.updateScrollButtons(), 300);
+    }
+  }
+
+  /**
+   * Actualizar el estado de los botones de navegación del carrusel
+   */
+  private updateScrollButtons(): void {
+    setTimeout(() => {
+      const container = document.querySelector('.recommended-carousel-container') as HTMLElement;
+      if (container) {
+        // Verificar si hay contenido que requiera scroll
+        const hasOverflow = container.scrollWidth > container.clientWidth;
+        
+        // Actualizar atributo data para CSS condicional
+        container.setAttribute('data-has-overflow', hasOverflow.toString());
+        
+        if (!hasOverflow) {
+          // Si no hay overflow, ocultar ambos botones
+          this.canScrollLeft = false;
+          this.canScrollRight = false;
+        } else {
+          // Si hay overflow, evaluar posición actual
+          this.canScrollLeft = container.scrollLeft > 5; // Pequeño margen para evitar flickering
+          this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 5);
+        }
+      } else {
+        // Si no se encuentra el contenedor, ocultar botones
+        this.canScrollLeft = false;
+        this.canScrollRight = false;
+      }
+    }, 100);
+  }
+
+  /**
+   * Obtener el número de tech labels compartidas entre candidato y oferta
+   */
+  getSharedTechLabelsCount(offer: Offer): number {
+    if (!offer.techLabels || !Array.isArray(offer.techLabels) || !this.candidateTechLabelIds.length) {
+      return 0;
+    }
+    
+    // Contar cuántas tech labels de la oferta coinciden con las del candidato
+    return offer.techLabels.filter(label => 
+      this.candidateTechLabelIds.includes(label.id)
+    ).length;
+  }
+
+  /**
+   * Manejar scroll del carrusel para actualizar botones
+   */
+  onRecommendedScroll(): void {
+    this.updateScrollButtons();
+  }
+
+  /**
+   * Navegar a la vista completa de ofertas recomendadas
+   */
+  viewAllRecommendedOffers(): void {
+    this.router.navigate(['/main/ofertas-recomendadas']);
+  }
+
+  /**
+   * Alternar la visibilidad de la sección de ofertas recomendadas
+   */
+  toggleRecommendedSection(): void {
+    this.isRecommendedSectionCollapsed = !this.isRecommendedSectionCollapsed;
+    
+    // Actualizar botones después de la animación
+    setTimeout(() => {
+      this.updateScrollButtons();
+    }, 800); // Tiempo de la animación CSS
+  }
+
+  /**
+   * Listener para redimensionar ventana y actualizar botones
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any) {
+    this.updateScrollButtons();
+  }
+
+  /**
+   * Verificar si el usuario logueado es candidato (método público para el template)
+   */
+  isLoggedAsCandidate(): boolean {
+    return this.loginService.isLoggedAsCandidate();
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar cualquier suscripción o recurso si es necesario
   }
 }

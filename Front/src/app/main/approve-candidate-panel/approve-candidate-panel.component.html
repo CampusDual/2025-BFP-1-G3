@@ -1,13 +1,16 @@
-<div class="container" >
-  <div class="candidate-profile-container" [ngClass]="getStateClass(applicationState)">
+<div class="container">
+  <div class="back-container">
     <button mat-icon-button class="back-button" (click)="goBack()">
       <mat-icon>arrow_back</mat-icon>
     </button>
+  </div>
+  
+  <div class="candidate-profile-container" [ngClass]="getStateClass(applicationState)">
     <div class="candidate-header-card">
       <div class="avatar-section">
-        <div class="avatar">
-          <mat-icon class="avatar-icon">person</mat-icon>
-        </div>
+        <app-editable-avatar class="readonly" [candidateId]="userData?.candidate?.id ?? null"
+          [profilePhotoUrl]="userData?.candidate?.profilePhotoUrl" size="large" [editable]="false">
+        </app-editable-avatar>
         <div class="candidate-info">
           <h2>{{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}
           </h2>
@@ -21,14 +24,172 @@
           </a>
         </div>
       </div>
-      <!-- Select para estado de la aplicación -->
-      <mat-form-field class="application-state-select">
-        <mat-label>Estado de la aplicación</mat-label>
-        <mat-select [(value)]="applicationState" (selectionChange)="updateState($event.value)">
-          <mat-option [value]="0">Pendiente</mat-option>
-          <mat-option [value]="1">Aceptar</mat-option>
-          <mat-option [value]="2">Rechazar</mat-option>
-        </mat-select>
-      </mat-form-field>     
+      <div class="application-state-container">
+        <mat-form-field class="application-state-select">
+          <mat-label>Estado de la aplicación</mat-label>
+          <mat-select [(value)]="applicationState" (selectionChange)="updateState($event.value)">
+            <mat-option [value]="0">Pendiente</mat-option>
+            <mat-option [value]="1">Aceptar</mat-option>
+            <mat-option [value]="2">Rechazar</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
   </div>
+
+
+  <div class="tab-content">
+    <div class="profile-view">
+      <div class="profile-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">person</mat-icon>
+          <h3>Información Personal</h3>
+        </div>
+        <div class="modern-info-grid">
+          <div class="info-card">
+            <div class="info-icon">
+              <mat-icon>badge</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Nombre completo</span>
+              <span class="info-value">{{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{
+                userData?.candidate?.surname2 }}</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <mat-icon>email</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ userData?.candidate?.email }}</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <mat-icon>phone</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Teléfono</span>
+              <span class="info-value">{{ userData?.candidate?.phone }}</span>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="userData?.candidate?.linkedin">
+            <div class="info-icon">
+              <i class="fa-brands fa-linkedin linkedin-brand-icon"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">LinkedIn</span>
+              <span class="info-value">
+                <a [href]="userData?.candidate?.linkedin" target="_blank" class="social-link">
+                  Ver perfil <mat-icon class="external-link">open_in_new</mat-icon>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-section"
+        *ngIf="userData?.candidate?.professionalTitle || userData?.candidate?.yearsExperience || userData?.candidate?.employmentStatus || userData?.candidate?.availability || userData?.candidate?.preferredModality || userData?.candidate?.presentation">
+        <div class="section-header">
+          <mat-icon class="section-icon">work</mat-icon>
+          <h3>Perfil Profesional</h3>
+        </div>
+        <div class="modern-info-grid">
+          <div class="info-card" *ngIf="userData?.candidate?.professionalTitle">
+            <div class="info-icon">
+              <mat-icon>work_outline</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Título Profesional</span>
+              <span class="info-value">{{ userData?.candidate?.professionalTitle }}</span>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="userData?.candidate?.yearsExperience">
+            <div class="info-icon">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Experiencia</span>
+              <span class="info-value">{{ userData?.candidate?.yearsExperience }} años</span>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="userData?.candidate?.employmentStatus">
+            <div class="info-icon">
+              <mat-icon>business_center</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Situación Laboral</span>
+              <span class="info-value">{{ getEmploymentStatusText(userData?.candidate?.employmentStatus) }}</span>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="userData?.candidate?.availability">
+            <div class="info-icon">
+              <mat-icon>access_time</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Disponibilidad</span>
+              <span class="info-value">{{ getAvailabilityText(userData?.candidate?.availability) }}</span>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="userData?.candidate?.preferredModality">
+            <div class="info-icon">
+              <mat-icon>location_on</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Modalidad Preferida</span>
+              <span class="info-value">{{ getModalityText(userData?.candidate?.preferredModality) }}</span>
+            </div>
+          </div>
+          <div class="info-card" *ngIf="userData?.candidate?.githubProfile">
+            <div class="info-icon">
+              <i class="fa-brands fa-github github-brand-icon"></i>
+            </div>
+            <div class="info-content">
+              <span class="info-label">GitHub</span>
+              <span class="info-value">
+                <a [href]="userData?.candidate?.githubProfile" target="_blank" class="social-link">
+                  Ver repositorios <mat-icon class="external-link">open_in_new</mat-icon>
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <div class="info-card full-width" *ngIf="userData?.candidate?.presentation">
+            <div class="info-icon">
+              <mat-icon>description</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Presentación Personal</span>
+              <span class="info-value presentation-text">{{ userData?.candidate?.presentation }}</span>
+            </div>
+          </div>
+
+          <div class="info-card full-width" *ngIf="selectedTechLabels.length > 0">
+            <div class="info-icon">
+              <mat-icon>code</mat-icon>
+            </div>
+            <div class="info-content">
+              <span class="info-label">Tecnologías</span>
+              <div class="tech-labels-display">
+                <span *ngFor="let label of selectedTechLabels" class="tech-chip-modern">
+                  {{ label.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

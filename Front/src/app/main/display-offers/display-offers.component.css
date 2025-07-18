@@ -1,16 +1,16 @@
 /* === CONTENEDOR PRINCIPAL === */
 .offers-container {
   padding: 2%;
-  background-color: #f2f2f2;
+  background-color: #e7e7e7;
 }
 
 /* == FILTRO DE OFERTAS == */
 .search-bar {
   display: flex;
   width: 50%;
-
+  margin: 0 auto 2% auto;
+  /* Centrar horizontalmente */
   align-items: center;
-  margin-bottom: 2%;
   border: 3px solid #1f1f1f;
   border-radius: 15px;
 }
@@ -29,7 +29,7 @@
   padding-left: 1%;
   border: none;
   border-radius: 15px;
-  background-color: #f2f2f2;
+  background-color: transparent;
   font-size: medium;
 }
 
@@ -259,23 +259,31 @@ mat-card-subtitle {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 4%;
+  margin-top: 5%;
   font-size: large;
   font-weight: bolder;
-  color: #6d6d6d;
+  color: #5d5d5d;
 }
 
 /* === MENSAJE SIN OFERTAS === */
 #errorMessage {
   text-align: center;
-  margin-top: 4%;
+  margin-top: 5%;
   font-size: large;
   font-weight: bolder;
-  color: #6d6d6d;
+  color: #5d5d5d;
 }
 
-/* Para elementos mat-card específicos */
-::ng-deep .mat-mdc-card-content {
+#notFoundMessage {
+  text-align: center;
+  margin-top: 5%;
+  font-size: large;
+  font-weight: bolder;
+  color: #5d5d5d;
+}
+
+/* Para elementos mat-card específicos - ENCAPSULADO */
+:host ::ng-deep .mat-mdc-card-content {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
   word-break: break-word !important;
@@ -285,8 +293,8 @@ mat-card-subtitle {
   flex-direction: column !important;
 }
 
-/* Forzar estilos para la descripción de ofertas */
-::ng-deep .offer-description {
+/* Forzar estilos para la descripción de ofertas - ENCAPSULADO */
+:host ::ng-deep .offer-description {
   display: -webkit-box !important;
   -webkit-line-clamp: 3 !important;
   line-clamp: 3 !important;
@@ -326,22 +334,22 @@ mat-card-content {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  background-color: #e61b15;
+  background-color: #1f1f1f;
   color: #f2f2f2;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #ef5c57;
+  /* border: 1px solid #ef5c57; */
   transition: all 0.2s ease;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
-.labels-container .tech-chip:hover {
+/* .labels-container .tech-chip:hover {
   background-color: #1f1f1f;
   border: #1f1f1f;
   transform: scale(1.05);
   cursor: pointer;
-}
+} */
 
 /* === PAGINATION STYLES === */
 .pagination-container {
@@ -436,6 +444,11 @@ mat-card-content {
     flex-direction: column;
     align-items: center;
   }
+
+  .recommended-carousel-container {
+    gap: 1rem;
+    padding: 8px 2px 16px 2px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -449,12 +462,13 @@ mat-card-content {
   }
 
   .search-bar {
-    margin-bottom: 1rem;
-    width: max-content;
+    margin: 0 auto 1rem auto;
+    /* Mantener centrado en móviles */
+    width: 90%;
+    /* Usar 90% del ancho en lugar de max-content para mejor usabilidad */
   }
 
   .search-bar input {
-    width: max-content;
     font-size: small;
   }
 
@@ -480,6 +494,10 @@ mat-card-content {
   #apply {
     font-size: 2rem;
   }
+
+  .recommended-carousel-container {
+    gap: 0.8rem;
+  }
 }
 
 /* === ETIQUETAS TÉCNICAS === */
@@ -495,7 +513,7 @@ mat-card-content {
   gap: 6px;
 }
 
-.tech-chip {
+/* .tech-chip {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
@@ -506,9 +524,591 @@ mat-card-content {
   font-weight: 500;
   border: 1px solid #bbdefb;
   transition: all 0.2s ease;
-}
+} */
 
-.tech-chip:hover {
+/* .tech-chip:hover {
   background-color: #bbdefb;
   transform: scale(1.05);
+} */
+
+/* === SECCIÓN DE OFERTAS RECOMENDADAS === */
+.recommended-section {
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e0e0e0;
+  position: relative;
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: visible;
+}
+
+/* Estado colapsado de la sección recomendada */
+.recommended-section.collapsed {
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  max-height: 80px;
+}
+
+.recommended-section.collapsed .recommended-header h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+}
+
+.recommended-section.collapsed .recommended-top-controls {
+  top: 12px;
+  right: 16px;
+  left: auto;
+}
+
+/* Animaciones para el contenido del carousel */
+.recommended-carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+  transform: translateY(0);
+  /* transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); */
+  max-height: 1000px;
+  overflow: visible;
+}
+
+.recommended-section.collapsed .recommended-carousel {
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Animación para el párrafo de descripción */
+.recommended-header p {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-height: 50px;
+  overflow: hidden;
+}
+
+.recommended-section.collapsed .recommended-header p {
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* === BOTONES DE CONTROL MINIMALISTAS EN LA PARTE SUPERIOR === */
+.recommended-top-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.minimal-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 20px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  border: 1px solid #e0e0e0;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.minimal-control-btn mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.minimal-control-btn span {
+  font-size: 0.8rem;
+  transition: all 0.5s ease;
+}
+
+.view-all-btn:hover {
+  background: rgba(230, 27, 21, 0.1);
+  color: #e61b15;
+  border-color: #e61b15;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 27, 21, 0.2);
+}
+
+.hide-btn:hover {
+  background: rgba(102, 102, 102, 0.1);
+  color: #333;
+  border-color: #999;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.recommended-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.recommended-header h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #1f1f1f;
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+  font-weight: bold;
+}
+
+.recommended-header h3 mat-icon {
+  color: #e61b15;
+  /* font-size: 1.8rem; */
+}
+
+.recommended-header p {
+  color: #666;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Carrusel de ofertas recomendadas */
+.recommended-carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recommended-carousel-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 16px 20px 20px 20px;
+  scrollbar-width: thin;
+  /* Firefox - mostrar scrollbar delgada */
+  scrollbar-color: #e61b15 #f0f0f0;
+  /* Firefox - colores del scrollbar */
+  /* Asegurar que las tarjetas no se salgan del contenedor */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 8px;
+  /* Margen lateral para separar de los bordes */
+  /* Centrar contenido cuando no hay scroll */
+  justify-content: center;
+}
+
+/* Centrar tarjetas cuando no requieren scroll */
+.recommended-carousel-container:not([data-has-overflow="true"]) {
+  justify-content: center;
+  padding-left: 40px;
+  /* Más espacio cuando están centradas */
+  padding-right: 40px;
+}
+
+/* Cuando hay overflow, remover el centrado y mantener scroll normal */
+.recommended-carousel-container[data-has-overflow="true"] {
+  justify-content: flex-start;
+}
+
+/* Asegurar que las tarjetas centradas se vean bien espaciadas */
+.recommended-carousel-container:not([data-has-overflow="true"]) .recommended-offer-card {
+  margin: 0 0.5rem;
+  /* Espacio adicional entre tarjetas centradas */
+}
+
+.recommended-carousel-container::-webkit-scrollbar {
+  height: 8px;
+  /* Altura del scrollbar horizontal */
+}
+
+.recommended-carousel-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.recommended-carousel-container::-webkit-scrollbar-thumb {
+  background: #e61b15;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.recommended-carousel-container::-webkit-scrollbar-thumb:hover {
+  background: #c5160f;
+}
+
+/* Botones de navegación del carrusel */
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e0e0e0;
+  width: 48px;
+  height: 48px;
+  color: #1f1f1f;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.carousel-nav-btn:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #e61b15;
+  color: #e61b15;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-btn:disabled {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.8);
+}
+
+.left-btn {
+  left: -20px;
+}
+
+.right-btn {
+  right: -20px;
+}
+
+/* Cards de ofertas recomendadas - Versión compacta y clickeable */
+.recommended-offer-card {
+  /* Dimensiones más compactas */
+  min-width: 280px;
+  max-width: 280px;
+  min-height: 200px;
+  /* Reducido desde 280px */
+  flex-shrink: 0;
+  /* Evita que las tarjetas se compriman en el scroll horizontal */
+
+  /* Estilos base heredados */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  /* Reducido desde 16px */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  position: relative;
+  overflow: visible;
+  background: white;
+
+  /* Borde especial para recomendaciones */
+  border: 2px solid #e0e0e0;
+  border-left: 4px solid #e61b15;
+  /* Más sutil */
+
+  /* Transición suave para interacciones */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* margin-left: 1rem;
+  margin-right: 1rem; */
+}
+
+/* Efecto hover para tarjetas clickeables */
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(230, 27, 21, 0.2);
+  border-color: #e61b15;
+  border-left-color: #e61b15;
+}
+
+/* Efecto de clic más pronunciado */
+.clickable-card:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow: 0 8px 16px rgba(230, 27, 21, 0.15);
+}
+
+/* Badge de recomendación - optimizado para tarjetas compactas */
+.recommendation-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(135deg, #e61b15 0%, #d50000 100%);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 14px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(230, 27, 21, 0.3);
+  border: 1px solid white;
+  /* Borde más sutil */
+}
+
+.recommendation-badge mat-icon {
+  font-size: 12px;
+  height: 12px;
+  width: 12px;
+}
+
+/* Header del card recomendado - ajuste para el badge más pequeño */
+.recommended-offer-card .header-content {
+  margin-right: 60px;
+  /* Menos espacio para el badge más pequeño */
+}
+
+/* Estilos para tarjetas compactas */
+.recommended-offer-card mat-card-header {
+  padding-bottom: 8px;
+  /* Menos espacio */
+}
+
+.recommended-offer-card mat-card-content {
+  padding-top: 0;
+  flex-grow: 1;
+}
+
+.recommended-offer-card .offer-description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: #555;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* Máximo 2 líneas */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tech labels compactas para recomendaciones */
+.tech-labels-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.tech-chip-mini {
+  background: linear-gradient(135deg, #1f1f1f 0%, #333 100%);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.more-labels-mini {
+  background: #e0e0e0;
+  color: #666;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+/* Indicador de estado de aplicación */
+.application-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  /* Empuja hacia abajo */
+  padding-top: 8px;
+  font-size: 0.75rem;
+}
+
+.applied-indicator {
+  color: #4caf50;
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+.apply-indicator {
+  color: #666;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.applied-text {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+/* Eliminar estilos duplicados - las tarjetas recomendadas heredan de .offer-card */
+
+/* Responsive para botones de control */
+@media (max-width: 768px) {
+  .recommended-top-controls {
+    position: relative;
+    top: auto;
+    left: auto;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .minimal-control-btn {
+    min-width: 120px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  .recommended-carousel-container {
+    gap: 1rem;
+    padding: 8px 2px 16px 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recommended-top-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .minimal-control-btn {
+    min-width: 140px;
+    max-width: 200px;
+  }
+
+  .recommended-carousel-container {
+    gap: 0.8rem;
+  }
+}
+
+/* Animación para el icono del botón de colapso */
+.hide-btn mat-icon {
+  transform: rotate(0deg);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommended-section.collapsed .hide-btn mat-icon {
+  transform: rotate(180deg);
+}
+
+/* Animación suave para la posición de los controles */
+.recommended-top-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animación para el botón "Ver todas" cuando se colapsa */
+.view-all-btn {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommended-section.collapsed .view-all-btn {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+/* Efecto de desvanecimiento para elementos que aparecen/desaparecen */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Mejora del hover en el botón de toggle */
+.hide-btn:hover mat-icon {
+  transform: rotate(180deg) scale(1.1);
+}
+
+.recommended-section:not(.collapsed) .hide-btn:hover mat-icon {
+  transform: rotate(0deg) scale(1.1);
+}
+
+/* Suavizar la transición del tamaño de la sección */
+.recommended-section {
+  will-change: transform, height, padding;
+}
+
+.recommended-section.collapsed {
+  will-change: auto;
+}
+
+/* Mejorar la usabilidad del scroll en dispositivos táctiles */
+.recommended-carousel-container {
+  -webkit-overflow-scrolling: touch;
+  /* iOS smooth scrolling */
+  scroll-snap-type: x mandatory;
+  /* Snap scrolling */
+}
+
+.recommended-offer-card {
+  scroll-snap-align: start;
+  /* Snap cada tarjeta al inicio */
+}
+
+/* Estilos para mostrar que hay más contenido */
+.recommended-carousel-container:not(:hover)::-webkit-scrollbar-thumb {
+  background: rgba(230, 27, 21, 0.6);
+}
+
+/* Indicador de coincidencias de tech labels */
+.tech-match-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background-color: rgba(230, 27, 21, 0.1);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: #e61b15;
+  font-weight: 500;
+}
+
+.tech-match-indicator mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #e61b15;
 }

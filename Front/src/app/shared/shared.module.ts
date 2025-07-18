@@ -20,6 +20,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatRippleModule } from '@angular/material/core';
 
 // Componentes
 import { EditableAvatarComponent } from './editable-avatar/editable-avatar.component';
@@ -48,7 +49,8 @@ import { EditableAvatarComponent } from './editable-avatar/editable-avatar.compo
     MatSidenavModule,
     MatListModule,
     MatToolbarModule,
-    MatMenuModule
+    MatMenuModule,
+    MatRippleModule
   ],
   exports: [
     CommonModule,
@@ -71,6 +73,7 @@ import { EditableAvatarComponent } from './editable-avatar/editable-avatar.compo
     MatListModule,
     MatToolbarModule,
     MatMenuModule,
+    MatRippleModule,
     EditableAvatarComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

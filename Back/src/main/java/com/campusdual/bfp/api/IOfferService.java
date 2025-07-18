@@ -23,4 +23,7 @@ public interface IOfferService {
     boolean removeLabelFromOffer(Long offerId, Long labelId);
     List<TechLabelsDTO> getOfferLabels(Long offerId);
     boolean updateOfferLabels(Long offerId, List<Long> labelIds);
+    
+    // Método para obtener ofertas recomendadas basadas en tech labels del candidato
+    Object getRecommendedOffersPaginated(String username, int page, int size);
 }

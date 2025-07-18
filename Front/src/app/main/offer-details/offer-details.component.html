@@ -56,7 +56,7 @@
       <!-- Botón para usuarios no logueados -->
       <div *ngIf="!isLoggedIn() && shouldShowApplyButton()">
         <button mat-raised-button color="primary" (click)="redirectToLogin()">
-          <mat-icon>login</mat-icon>
+          <!-- <mat-icon>login</mat-icon> -->
           Iniciar sesión para inscribirse
         </button>
       </div>
@@ -216,13 +216,13 @@
           <span class="candidates-count">{{ candidates.length }} candidatos</span>
         </div>
 
-        <!-- Filtro para candidatos -->
-        <div class="filter-section" *ngIf="!loadingCandidates && candidates.length > 0">
-          <mat-form-field appearance="outline">
-            <mat-label>Filtrar candidatos</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por nombre o email" #input>
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
+        <!-- Barra de búsqueda para candidatos -->
+        <div class="search-bar" *ngIf="!loadingCandidates && candidates.length > 0">
+          <input type="text" placeholder="Buscar candidato por correo o nombre" [(ngModel)]="searchTerm"
+            (input)="updateDisplayCandidates()"/>
+          <span id="iconSearch">
+            <mat-icon>search</mat-icon>
+          </span>
         </div>
 
         <div class="loading-candidates" *ngIf="loadingCandidates">

@@ -77,6 +77,11 @@ export class OfferDetailsComponent implements OnInit {
   // Propiedades para la tabla de candidatos
   candidatesDisplayedColumns: string[] = ['name', 'email', 'phone', 'linkedin', 'state'];
   candidatesDataSource!: MatTableDataSource<Application>;
+  
+  // Propiedades para búsqueda de candidatos
+  searchTerm = '';
+  isSearchActive = false;
+  filteredCandidates: Application[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -307,6 +312,7 @@ Promise.all([cachePromise, contentPromise]).then(
       (candidates: Application[]) => {
         console.log('Candidatos cargados exitosamente:', candidates);
         this.candidates = candidates;
+        this.filteredCandidates = [...candidates]; // Inicializar candidatos filtrados
 
         // Inicializar la tabla de candidatos
         this.candidatesDataSource = new MatTableDataSource(candidates);
@@ -344,7 +350,29 @@ Promise.all([cachePromise, contentPromise]).then(
       }
     );
   }
-
+  
+  // Método para filtrar candidatos basado en el término de búsqueda
+  updateDisplayCandidates(): void {
+    if (this.searchTerm) {
+      this.isSearchActive = true;
+      this.filteredCandidates = this.candidates.filter(application => {
+        const fullName = this.getCandidateFullName(application.candidate).toLowerCase();
+        const email = application.candidate?.email?.toLowerCase() || '';
+        const searchTermLower = this.searchTerm.toLowerCase();
+        
+        return fullName.includes(searchTermLower) || email.includes(searchTermLower);
+      });
+      
+      // Actualizar el dataSource de la tabla con los resultados filtrados
+      this.candidatesDataSource.data = this.filteredCandidates;
+    } else {
+      this.isSearchActive = false;
+      this.filteredCandidates = [...this.candidates];
+      // Restaurar todos los candidatos en la tabla
+      this.candidatesDataSource.data = this.candidates;
+    }
+  }
+  
   goBack(): void {
     this.location.back();
   }
@@ -361,7 +389,7 @@ Promise.all([cachePromise, contentPromise]).then(
       // Implementar descarga de CV
       window.open(application.candidate.cvUrl, '_blank');
     } else {
-      this.snackBar.open('CV no disponible', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('CV no disponible', 'Cerrar', { duration: 5000 });
     }
   }
 
@@ -403,8 +431,9 @@ Promise.all([cachePromise, contentPromise]).then(
     if (!this.editedOffer.title || !this.editedOffer.offerDescription || 
         !this.editedOffer.location || !this.editedOffer.requirements) {
       this.snackBar.open('Por favor, completa todos los campos requeridos', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
@@ -412,48 +441,54 @@ Promise.all([cachePromise, contentPromise]).then(
     // Validar límites de caracteres
     if (this.editedOffer.title.length > 100) {
       this.snackBar.open('El título no puede superar los 100 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (this.editedOffer.offerDescription.length > 2500) {
       this.snackBar.open('La descripción no puede superar los 2500 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (this.editedOffer.location.length > 255) {
       this.snackBar.open('La ubicación no puede superar los 255 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (this.editedOffer.requirements.length > 5000) {
       this.snackBar.open('Los requisitos no pueden superar los 5000 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (this.editedOffer.desirable && this.editedOffer.desirable.length > 5000) {
       this.snackBar.open('Los conocimientos deseables no pueden superar los 5000 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (this.editedOffer.benefits && this.editedOffer.benefits.length > 5000) {
       this.snackBar.open('Los beneficios no pueden superar los 5000 caracteres', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
@@ -469,8 +504,9 @@ Promise.all([cachePromise, contentPromise]).then(
     this.loginService.updateOffer(offerToUpdate).subscribe({
       next: (response) => {
         this.snackBar.open('Oferta actualizada exitosamente', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-success']
+          duration: 5000,
+          panelClass: ['snackbar-success'],
+          verticalPosition: 'top'
         });
 
         // Actualizar la oferta mostrada
@@ -494,8 +530,9 @@ Promise.all([cachePromise, contentPromise]).then(
       error: (error) => {
         console.error('Error al actualizar la oferta:', error);
         this.snackBar.open('Error al actualizar la oferta. Inténtalo de nuevo.', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         this.isSubmitting = false;
       }
@@ -533,7 +570,7 @@ Promise.all([cachePromise, contentPromise]).then(
   }
 
 
-  // == NO USADO ACUTLAMENTE ==
+  // == NO USADO ACUTLMENTE ==
 
   // Método: Recibe un string email
   // Abrir un email en la aplicación predeterminada
@@ -554,16 +591,18 @@ Promise.all([cachePromise, contentPromise]).then(
         this.offer!.active = newState;
 
         this.snackBar.open('Estado de la oferta actualizado correctamente', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-success']
+          duration: 5000,
+          panelClass: ['snackbar-success'],
+          verticalPosition: 'top'
         });
         this.isSubmitting = false;
       },
       error: (error) => {
         console.error('Error al actualizar estado de la oferta:', error);
         this.snackBar.open('Error al actualizar el estado de la oferta. Inténtalo de nuevo.', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         this.isSubmitting = false;
       }
@@ -616,8 +655,9 @@ Promise.all([cachePromise, contentPromise]).then(
     this.loginService.updateOfferLabels(this.offerId, labelIds).subscribe({
       next: () => {
         this.snackBar.open('Etiquetas actualizadas exitosamente', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-success']
+          duration: 5000,
+          panelClass: ['snackbar-success'],
+          verticalPosition: 'top'
         });
         this.isEditingLabels = false;
         this.originalLabels = [...(this.offer?.techLabels || [])];
@@ -625,8 +665,9 @@ Promise.all([cachePromise, contentPromise]).then(
       error: (error) => {
         console.error('Error actualizando etiquetas:', error);
         this.snackBar.open('Error al actualizar las etiquetas', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
       }
     });
@@ -777,16 +818,18 @@ Promise.all([cachePromise, contentPromise]).then(
 
     if (!this.offer || !this.isCandidate()) {
       this.snackBar.open('No tienes permisos para inscribirte a esta oferta', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
 
     if (!this.offer.active) {
       this.snackBar.open('Esta oferta no está activa', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       return;
     }
@@ -805,15 +848,17 @@ Promise.all([cachePromise, contentPromise]).then(
             this.proceedWithApplication(updatedCandidateId);
           } else {
             this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           }
         },
         error: () => {
           this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
+            duration: 5000,
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });
@@ -833,7 +878,8 @@ Promise.all([cachePromise, contentPromise]).then(
       // Ya está inscrito, mostrar mensaje informativo
       this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
         duration: 5000,
-        panelClass: ['snackbar-info']
+        panelClass: ['snackbar-info'],
+        verticalPosition: 'top'
       });
       this.isAlreadyApplied = true;
     } else {
@@ -848,8 +894,9 @@ Promise.all([cachePromise, contentPromise]).then(
     this.loginService.applyToOfferService(this.offer.id).subscribe({
       next: (response) => {
         this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-success']
+          duration: 5000,
+          panelClass: ['snackbar-success'],
+          verticalPosition: 'top'
         });
         
         // Actualizar el estado local inmediatamente
@@ -881,7 +928,8 @@ Promise.all([cachePromise, contentPromise]).then(
 
         this.snackBar.open(errorMessage, 'Cerrar', {
           duration: 5000,
-          panelClass: ['snackbar-error']
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
       }
     });
@@ -914,8 +962,9 @@ Promise.all([cachePromise, contentPromise]).then(
       error: (error) => {
         console.error('Error actualizando estados:', error);
         this.snackBar.open('Error al actualizar los estados', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
       }
     });

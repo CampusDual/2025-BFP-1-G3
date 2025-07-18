@@ -59,8 +59,8 @@
       <input matInput type="url" name="linkedin" formControlName="linkedin" />
     </mat-form-field>
 
-      <!-- ERROR MESSAGE -->
-      <div *ngIf="signUpError" class="error-message">
+      <!-- MENSAJES DE ERROR -->
+      <div class="error-message" *ngIf="signUpError">
         <mat-icon id="errorIcon">error</mat-icon>
         {{ signUpError }}
       </div>

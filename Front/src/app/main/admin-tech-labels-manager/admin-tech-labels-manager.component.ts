@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TechLabel } from '../../model/tech-label';
 import { LoginService } from '../../services/login.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-tech-labels-manager',
@@ -23,7 +24,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
   editLabelId: number | null = null;
   editLabelName: string = '';
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadLabels();
@@ -52,7 +53,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading labels:', error);
-        this.errorMessage = 'Error loading labels';
+        this.errorMessage = 'Error al cargar las etiquetas';
         this.loading = false;
       }
     });
@@ -85,15 +86,39 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     const trimmedName = this.newLabelName.trim();
     if (!trimmedName) return;
 
+    const normalizedNewName = trimmedName.toLowerCase();
+    const exists = this.allLabels.some(label => label.name.trim().toLowerCase() === normalizedNewName);
+    if (exists) {
+      this.snackBar.open('La etiqueta ya existe.', 'Cerrar', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-failed'],
+      });
+      return;
+    }
+
     this.loading = true;
     this.loginService.insertTechLabel({ name: trimmedName } as TechLabel).subscribe({
       next: () => {
+         this.snackBar.open('Etiqueta creada con éxito.', 'Cerrar', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snackbar-success'],
+          });
         this.newLabelName = '';
         this.loadLabels();
       },
       error: (error) => {
+         this.snackBar.open('Error al crear la etiqueta. Ya existe.', 'Cerrar', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snackbar-failed'],
+          });
         console.error('Error creating label:', error);
-        this.errorMessage = 'Error creating label';
+        // this.errorMessage = 'Error creating label';
         this.loading = false;
       }
     });
@@ -109,6 +134,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     const trimmedName = this.editLabelName.trim();
     if (!trimmedName) return;
 
+    const normalizedNewName = trimmedName.toLowerCase();
+    const exists = this.allLabels.some(label => label.name.trim().toLowerCase() === normalizedNewName && label.id !== this.editLabelId);
+    if (exists) {
+      this.snackBar.open('La etiqueta ya existe.', 'Cerrar', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-failed'],
+      });
+      return;
+    }
+
     this.loading = true;
     this.loginService.updateTechLabel({ id: this.editLabelId, name: trimmedName } as TechLabel).subscribe({
       next: () => {
@@ -117,8 +154,12 @@ export class AdminTechLabelsManagerComponent implements OnInit {
         this.loadLabels();
       },
       error: (error) => {
-        console.error('Error updating label:', error);
-        this.errorMessage = 'Error updating label';
+        this.snackBar.open('Error al actualizar la etiqueta.', 'Cerrar', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-failed'],
+        });
         this.loading = false;
       }
     });
@@ -166,7 +207,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error deleting label:', error);
-        this.errorMessage = 'Error deleting label';
+        this.errorMessage = 'Error al borrar la etiqueta';
         this.loading = false;
       }
     });

@@ -52,6 +52,11 @@
   justify-content: center;
 }
 
+/* Spinner para cuando se está eliminando la foto */
+.deleting-spinner {
+  color: #e61b15 !important;
+}
+
 /* Icono de edición */
 .edit-icon {
   position: absolute;
@@ -66,6 +71,11 @@
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   transition: background-color 0.2s ease;
+}
+
+:host-context(.readonly) .edit-icon,
+:host-context([editable="false"]) .edit-icon {
+  display: none;
 }
 
 .edit-icon:hover {
@@ -267,7 +277,7 @@
   background-color: #f8f9fa;
   padding: 16px;
   border-radius: 8px;
-  border-left: 4px solid #2196f3;
+  border-left: 4px solid #e61b15;
 }
 
 .requirements-title {
