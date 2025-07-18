@@ -236,9 +236,9 @@ export class CandidatePanelComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil actualizado con éxito.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil actualizado exitosamente');
@@ -323,9 +323,9 @@ export class CandidatePanelComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Perfil profesional actualizado con éxito.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Perfil profesional actualizado exitosamente');
@@ -408,7 +408,7 @@ export class CandidatePanelComponent implements OnInit {
             this.snackBar.open('Perfil actualizado exitosamente', 'Cerrar', {
               duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
+              verticalPosition: 'top',
               panelClass: ['snackbar-success'],
             });
             // Recargar datos del candidato
@@ -432,8 +432,8 @@ export class CandidatePanelComponent implements OnInit {
             this.snackBar.open(errorMessage, 'Cerrar', {
               duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
-              panelClass: ['snackbar-error'],
+              verticalPosition: 'top',
+              panelClass: ['snackbar-failed'],
             });
           }
         });

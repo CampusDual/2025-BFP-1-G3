@@ -200,8 +200,9 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
       } else {
         // Está logueado pero no es candidato (probablemente empresa)
         this.snackBar.open('Solo los candidatos pueden inscribirse a ofertas', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -221,15 +222,17 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
             this.proceedWithApplicationCheck(updatedCandidateId, offerId);
           } else {
             this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           }
         },
         error: () => {
           this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
+            duration: 5000,
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });
@@ -246,15 +249,17 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
     if (isAlreadyApplied) {
       this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
         duration: 5000,
-        panelClass: ['snackbar-info']
+        panelClass: ['snackbar-info'],
+        verticalPosition: 'top'
       });
     } else {
       // No está inscrito, proceder con la inscripción
       this.loginService.applyToOfferService(offerId).subscribe({
         next: (response) => {
           this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
+            duration: 5000,
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
           
           // Actualizar el caché agregando la nueva aplicación
@@ -284,7 +289,8 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
 
           this.snackBar.open(errorMessage, 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-error']
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });

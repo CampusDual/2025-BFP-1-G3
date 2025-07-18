@@ -102,7 +102,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     this.loginService.insertTechLabel({ name: trimmedName } as TechLabel).subscribe({
       next: () => {
          this.snackBar.open('Etiqueta creada con éxito.', 'Cerrar', {
-            duration: 10000,
+            duration: 5000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
             panelClass: ['snackbar-success'],
@@ -155,7 +155,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         this.snackBar.open('Error al actualizar la etiqueta.', 'Cerrar', {
-          duration: 10000,
+          duration: 5000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
           panelClass: ['snackbar-failed'],

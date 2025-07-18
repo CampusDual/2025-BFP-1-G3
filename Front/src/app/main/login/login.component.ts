@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
                 this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
                   duration: 5000,
                   horizontalPosition: 'center',
-                  verticalPosition: 'bottom',
+                  verticalPosition: 'top',
                   panelClass: ['snackbar-info'],
                 });
                 // Navegar a ofertas si no estamos ya en detalles de oferta
@@ -111,9 +111,9 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         console.error('Error cargando perfil:', err);
         this.snackBar.open('Error al cargar perfil de usuario.', 'Cerrar', {
-          duration: 3000,
+          duration: 5000,
           horizontalPosition: 'center',
-          verticalPosition: 'bottom',
+          verticalPosition: 'top',
           panelClass: ['snackbar-failed'],
         });
         // Navegar a ofertas incluso en caso de error
@@ -134,9 +134,9 @@ private submitApplication(candidateId: number, offerId: number, headers: HttpHea
       .subscribe({
         next: (response) => {
           this.snackBar.open('Inscripción recibida con éxito.', 'Cerrar', {
-            duration: 3000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           // Navegar después de completar la inscripción a detalles de la oferta para recargar el botón
@@ -145,16 +145,16 @@ private submitApplication(candidateId: number, offerId: number, headers: HttpHea
         error: (error) => {
           if (this.isAlreadyAppliedError(error)) {
             this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
-              duration: 3000,
+              duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
+              verticalPosition: 'top',
               panelClass: ['snackbar-info'],
             });
           } else {
             this.snackBar.open('Error al inscribirse a la oferta.', 'Cerrar', {
-              duration: 3000,
+              duration: 5000,
               horizontalPosition: 'center',
-              verticalPosition: 'bottom',
+              verticalPosition: 'top',
               panelClass: ['snackbar-failed'],
             });
           }

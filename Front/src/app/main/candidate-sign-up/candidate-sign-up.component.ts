@@ -88,9 +88,9 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           this.snackBar.open('Oferta publicada con éxito.', 'Cerrar', {
-            duration: 1000,
+            duration: 5000,
             horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+            verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
           console.log('Registro exitoso, navegando a login...');

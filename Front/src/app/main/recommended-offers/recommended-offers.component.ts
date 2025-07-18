@@ -46,8 +46,9 @@ export class RecommendedOffersComponent implements OnInit {
     // Verificar que el usuario sea candidato
     if (!this.loginService.isLoggedAsCandidate()) {
       this.snackBar.open('Solo los candidatos pueden ver ofertas recomendadas', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 5000,
+        panelClass: ['snackbar-failed'],
+        verticalPosition: 'top'
       });
       this.router.navigate(['/main/ofertas']);
       return;
@@ -93,8 +94,9 @@ export class RecommendedOffersComponent implements OnInit {
         this.loading = false;
         this.isLoading = false;
         this.snackBar.open('Error cargando datos del candidato', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['snackbar-error']
+          duration: 5000,
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top',
         });
       }
     });
@@ -237,15 +239,17 @@ export class RecommendedOffersComponent implements OnInit {
             this.proceedWithApplicationCheck(updatedCandidateId, offerId);
           } else {
             this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
+              duration: 5000,
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
           }
         },
         error: () => {
           this.snackBar.open('Error al obtener información del candidato', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-error']
+            duration: 5000,
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });
@@ -262,15 +266,17 @@ export class RecommendedOffersComponent implements OnInit {
     if (isAlreadyApplied) {
       this.snackBar.open('Ya estás inscrito a esta oferta', 'Cerrar', {
         duration: 5000,
-        panelClass: ['snackbar-info']
+        panelClass: ['snackbar-info'],
+        verticalPosition: 'top'
       });
     } else {
       // No está inscrito, proceder con la inscripción
       this.loginService.applyToOfferService(offerId).subscribe({
         next: (response) => {
           this.snackBar.open('Inscripción recibida con éxito', 'Cerrar', {
-            duration: 3000,
-            panelClass: ['snackbar-success']
+            duration: 5000,
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
           
           // Actualizar el caché agregando la nueva aplicación
@@ -300,7 +306,8 @@ export class RecommendedOffersComponent implements OnInit {
 
           this.snackBar.open(errorMessage, 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-error']
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
         }
       });

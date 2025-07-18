@@ -65,7 +65,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
       if (!file.type.startsWith('image/')) {
         this.snackBar.open('Por favor seleccione un archivo de imagen válido.', 'Cerrar', {
           duration: 5000,
-          panelClass: ['snackbar-error']
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -74,7 +75,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
       if (file.size > 5 * 1024 * 1024) {
         this.snackBar.open('El archivo es demasiado grande. Máximo 5MB.', 'Cerrar', {
           duration: 5000,
-          panelClass: ['snackbar-error']
+          panelClass: ['snackbar-failed'],
+          verticalPosition: 'top'
         });
         return;
       }
@@ -104,7 +106,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
           
           this.snackBar.open('Foto de perfil actualizada con éxito.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-success']
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
           
           // Actualizar la URL localmente para mostrar inmediatamente
@@ -123,7 +126,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
           console.error('Error subiendo foto:', error);
           this.snackBar.open('Error al subir la foto de perfil.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-error']
+            panelClass: ['snackbar-failed'],
+            verticalPosition: 'top'
           });
           this.uploadingPhoto = false;
         }
@@ -144,7 +148,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
           
           this.snackBar.open('Foto de perfil eliminada con éxito.', 'Cerrar', {
             duration: 5000,
-            panelClass: ['snackbar-success']
+            panelClass: ['snackbar-success'],
+            verticalPosition: 'top'
           });
           
           // Limpiar inmediatamente el estado local para evitar parpadeo
@@ -169,7 +174,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
             
             this.snackBar.open('Foto de perfil eliminada con éxito.', 'Cerrar', {
               duration: 5000,
-              panelClass: ['snackbar-success']
+              panelClass: ['snackbar-success'],
+              verticalPosition: 'top'
             });
             
             // Limpiar inmediatamente el estado local
@@ -186,7 +192,8 @@ export class EditableAvatarComponent implements OnInit, OnChanges {
           } else {
             this.snackBar.open('Error al eliminar la foto de perfil.', 'Cerrar', {
               duration: 5000,
-              panelClass: ['snackbar-error']
+              panelClass: ['snackbar-failed'],
+              verticalPosition: 'top'
             });
             this.deletingPhoto = false;
           }

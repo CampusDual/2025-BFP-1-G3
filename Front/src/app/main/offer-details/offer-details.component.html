@@ -56,7 +56,7 @@
       <!-- Botón para usuarios no logueados -->
       <div *ngIf="!isLoggedIn() && shouldShowApplyButton()">
         <button mat-raised-button color="primary" (click)="redirectToLogin()">
-          <mat-icon>login</mat-icon>
+          <!-- <mat-icon>login</mat-icon> -->
           Iniciar sesión para inscribirse
         </button>
       </div>
