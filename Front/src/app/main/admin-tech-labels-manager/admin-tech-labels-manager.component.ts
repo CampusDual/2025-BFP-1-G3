@@ -86,6 +86,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     const trimmedName = this.newLabelName.trim();
     if (!trimmedName) return;
 
+    const normalizedNewName = trimmedName.toLowerCase();
+    const exists = this.allLabels.some(label => label.name.trim().toLowerCase() === normalizedNewName);
+    if (exists) {
+      this.snackBar.open('La etiqueta ya existe.', 'Cerrar', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-failed'],
+      });
+      return;
+    }
+
     this.loading = true;
     this.loginService.insertTechLabel({ name: trimmedName } as TechLabel).subscribe({
       next: () => {
@@ -116,6 +128,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     const trimmedName = this.editLabelName.trim();
     if (!trimmedName) return;
 
+    const normalizedNewName = trimmedName.toLowerCase();
+    const exists = this.allLabels.some(label => label.name.trim().toLowerCase() === normalizedNewName && label.id !== this.editLabelId);
+    if (exists) {
+      this.snackBar.open('La etiqueta ya existe.', 'Cerrar', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-failed'],
+      });
+      return;
+    }
+
     this.loading = true;
     this.loginService.updateTechLabel({ id: this.editLabelId, name: trimmedName } as TechLabel).subscribe({
       next: () => {
@@ -124,8 +148,12 @@ export class AdminTechLabelsManagerComponent implements OnInit {
         this.loadLabels();
       },
       error: (error) => {
-        console.error('Error updating label:', error);
-        this.errorMessage = 'Error al actualizar la etiqueta';
+        this.snackBar.open('Error al actualizar la etiqueta.', 'Cerrar', {
+          duration: 10000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-failed'],
+        });
         this.loading = false;
       }
     });
