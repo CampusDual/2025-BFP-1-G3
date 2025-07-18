@@ -151,6 +151,12 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       next: () => {
         this.editLabelId = null;
         this.editLabelName = '';
+        this.snackBar.open('Etiqueta actualizada con éxito.', 'Cerrar', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-success'],
+        });
         this.loadLabels();
       },
       error: (error) => {
