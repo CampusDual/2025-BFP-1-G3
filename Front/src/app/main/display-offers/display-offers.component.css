@@ -543,7 +543,7 @@ mat-card-content {
 .recommended-section.collapsed .recommended-header h3 {
   font-size: 1.1rem;
   margin-bottom: 0;
-  transition: all 0.6s ease;
+  transition: all 0.3s ease;
 }
 
 .recommended-section.collapsed .recommended-top-controls {
@@ -560,7 +560,7 @@ mat-card-content {
   align-items: center;
   opacity: 1;
   transform: translateY(0);
-  transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); */
   max-height: 1000px;
   overflow: visible;
 }
@@ -594,7 +594,7 @@ mat-card-content {
 .recommended-top-controls {
   position: absolute;
   top: 16px;
-  left: 16px;
+  right: 16px;
   display: flex;
   gap: 8px;
   z-index: 10;
@@ -664,7 +664,7 @@ mat-card-content {
 
 .recommended-header h3 mat-icon {
   color: #e61b15;
-  font-size: 1.8rem;
+  /* font-size: 1.8rem; */
 }
 
 .recommended-header p {
@@ -985,7 +985,7 @@ mat-card-content {
 .recommended-top-controls {
   position: absolute;
   top: 16px;
-  left: 16px;
+  right: 16px;
   display: flex;
   gap: 8px;
   z-index: 10;
