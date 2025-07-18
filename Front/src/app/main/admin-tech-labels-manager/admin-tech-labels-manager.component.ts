@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TechLabel } from '../../model/tech-label';
 import { LoginService } from '../../services/login.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-tech-labels-manager',
@@ -23,7 +24,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
   editLabelId: number | null = null;
   editLabelName: string = '';
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadLabels();
@@ -52,7 +53,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading labels:', error);
-        this.errorMessage = 'Error loading labels';
+        this.errorMessage = 'Error al cargar las etiquetas';
         this.loading = false;
       }
     });
@@ -92,8 +93,14 @@ export class AdminTechLabelsManagerComponent implements OnInit {
         this.loadLabels();
       },
       error: (error) => {
+         this.snackBar.open('Error al crear la etiqueta. Ya existe.', 'Cerrar', {
+            duration: 10000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snackbar-failed'],
+          });
         console.error('Error creating label:', error);
-        this.errorMessage = 'Error creating label';
+        // this.errorMessage = 'Error creating label';
         this.loading = false;
       }
     });
@@ -118,7 +125,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error updating label:', error);
-        this.errorMessage = 'Error updating label';
+        this.errorMessage = 'Error al actualizar la etiqueta';
         this.loading = false;
       }
     });
@@ -166,7 +173,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error deleting label:', error);
-        this.errorMessage = 'Error deleting label';
+        this.errorMessage = 'Error al borrar la etiqueta';
         this.loading = false;
       }
     });
