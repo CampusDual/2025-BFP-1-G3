@@ -325,22 +325,22 @@ mat-card-content {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  background-color: #e61b15;
+  background-color: #1f1f1f;
   color: #f2f2f2;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #ef5c57;
+  /* border: 1px solid #ef5c57; */
   transition: all 0.2s ease;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
-.labels-container .tech-chip:hover {
+/* .labels-container .tech-chip:hover {
   background-color: #1f1f1f;
   border: #1f1f1f;
   transform: scale(1.05);
   cursor: pointer;
-}
+} */
 
 /* === PAGINATION STYLES === */
 .pagination-container {
@@ -502,7 +502,7 @@ mat-card-content {
   gap: 6px;
 }
 
-.tech-chip {
+/* .tech-chip {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
@@ -513,12 +513,12 @@ mat-card-content {
   font-weight: 500;
   border: 1px solid #bbdefb;
   transition: all 0.2s ease;
-}
+} */
 
-.tech-chip:hover {
+/* .tech-chip:hover {
   background-color: #bbdefb;
   transform: scale(1.05);
-}
+} */
 
 /* === SECCIÓN DE OFERTAS RECOMENDADAS === */
 .recommended-section {
@@ -1059,4 +1059,25 @@ mat-card-content {
 /* Estilos para mostrar que hay más contenido */
 .recommended-carousel-container:not(:hover)::-webkit-scrollbar-thumb {
   background: rgba(230, 27, 21, 0.6);
+}
+
+/* Indicador de coincidencias de tech labels */
+.tech-match-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background-color: rgba(230, 27, 21, 0.1);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: #e61b15;
+  font-weight: 500;
+}
+
+.tech-match-indicator mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #e61b15;
 }

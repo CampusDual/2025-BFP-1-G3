@@ -26,6 +26,9 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
   // Cache para evitar llamadas repetitivas en el template
   private appliedOffersCache = new Map<number, boolean>();
   
+  // Tech labels del candidato para calcular coincidencias
+  candidateTechLabelIds: number[] = [];
+  
   // Recommended offers properties
   recommendedOffers: Offer[] = [];
   showRecommendedSection = false;
@@ -69,8 +72,22 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
           this.applicationsCacheReady = true;
           // Actualizar el caché de ofertas aplicadas para evitar verificaciones repetitivas
           this.updateAppliedOffersCache();
-          // Cargar ofertas recomendadas después de cargar las ofertas normales
-          this.loadRecommendedOffers();
+          
+          // Si es candidato, cargar tech labels primero y luego ofertas recomendadas
+          if (this.loginService.isLoggedAsCandidate()) {
+            this.loginService.getCandidateData().subscribe({
+              next: (candidateData) => {
+                this.candidateTechLabelIds = candidateData.techLabelIds || [];
+                this.loadRecommendedOffers();
+              },
+              error: (error) => {
+                console.error('Error cargando datos del candidato:', error);
+                // Intentar cargar ofertas recomendadas de todos modos
+                this.loadRecommendedOffers();
+              }
+            });
+          }
+          
           // Ahora SÍ terminamos el loading para mostrar las ofertas con el estado correcto
           this.loading = false;
           this.isLoading = false;
@@ -387,7 +404,25 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
         console.log('🎯 Top 5 ofertas recomendadas recibidas:', data);
         
         this.recommendedOffers = data.offers || [];
-        this.showRecommendedSection = this.recommendedOffers.length > 0;
+        
+        // Filtrar ofertas que realmente tengan coincidencias con el candidato
+        // Solo mostrar la sección si hay ofertas con al menos 1 coincidencia
+        const offersWithMatches = this.recommendedOffers.filter(offer => 
+          this.getSharedTechLabelsCount(offer) > 0
+        );
+        
+        // Si el candidato no tiene tech labels, no mostrar recomendaciones
+        if (this.candidateTechLabelIds.length === 0) {
+          console.log('ℹ️ Candidato sin tech labels - no se muestran recomendaciones');
+          this.showRecommendedSection = false;
+        } else if (offersWithMatches.length > 0) {
+          this.showRecommendedSection = true;
+          console.log(`✅ ${offersWithMatches.length} ofertas con coincidencias encontradas`);
+        } else {
+          this.showRecommendedSection = false;
+          console.log('ℹ️ No hay ofertas con coincidencias de tech labels');
+        }
+        
         this.loadingRecommended = false;
         
         // Inicializar estado del scroll después de que el DOM se actualice
@@ -464,9 +499,14 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
    * Obtener el número de tech labels compartidas entre candidato y oferta
    */
   getSharedTechLabelsCount(offer: Offer): number {
-    // Esta es una aproximación - el backend ya ordenó por afinidad
-    // pero podríamos calcular esto para mostrar en la UI
-    return offer.techLabels?.length || 0;
+    if (!offer.techLabels || !Array.isArray(offer.techLabels) || !this.candidateTechLabelIds.length) {
+      return 0;
+    }
+    
+    // Contar cuántas tech labels de la oferta coinciden con las del candidato
+    return offer.techLabels.filter(label => 
+      this.candidateTechLabelIds.includes(label.id)
+    ).length;
   }
 
   /**
@@ -501,6 +541,13 @@ export class DisplayOffersComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: any) {
     this.updateScrollButtons();
+  }
+
+  /**
+   * Verificar si el usuario logueado es candidato (método público para el template)
+   */
+  isLoggedAsCandidate(): boolean {
+    return this.loginService.isLoggedAsCandidate();
   }
 
   ngOnDestroy(): void {

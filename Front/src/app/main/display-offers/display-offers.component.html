@@ -82,6 +82,12 @@
               </span>
             </div>
 
+            <!-- Indicador de coincidencias de tech labels -->
+            <!-- <div class="tech-match-indicator" *ngIf="isLoggedAsCandidate() && candidateTechLabelIds.length > 0">
+              <mat-icon>stars</mat-icon>
+              <span>{{ getSharedTechLabelsCount(offer) }} {{ getSharedTechLabelsCount(offer) === 1 ? 'tecnología coincidente' : 'tecnologías coincidentes' }} con tu perfil</span>
+            </div> -->
+
             <!-- Indicador de estado de aplicación -->
             <div *ngIf="shouldShowApplicationStatus()" class="application-indicator">
               <mat-icon *ngIf="isAppliedToOffer(offer.id)" class="applied-indicator">

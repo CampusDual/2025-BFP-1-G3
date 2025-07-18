@@ -349,22 +349,22 @@ mat-card-subtitle {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  background-color: #e61b15;
+  background-color: #1f1f1f;
   color: #f2f2f2;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #ef5c57;
+  /* border: 1px solid #ef5c57; */
   transition: all 0.2s ease;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
-.labels-container .tech-chip:hover {
+/* .labels-container .tech-chip:hover {
   background-color: #1f1f1f;
   border: #1f1f1f;
   transform: scale(1.05);
   cursor: pointer;
-}
+} */
 
 /* === ESTILOS ENCAPSULADOS PARA ANGULAR MATERIAL === */
 /* Usar :host para encapsular al componente actual */
