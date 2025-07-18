@@ -2,6 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
 }
 
 /* Copiado estilos para etiquetas de tecnologías de candidate-panel.component.css */
@@ -65,14 +66,17 @@
 }
 
 .back-container {
- background-color: #ffffff;
+  position: absolute;
+  left: 20px;
+  top: 50px;
+  z-index: 100;
 }
 
 .back-button {
   color: #e61b15;
-  margin-left: 2%;
-  margin-top: 2%;
-  background-color: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .back-button mat-icon {
@@ -208,7 +212,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 2rem 1.2rem 2rem;
+  padding: 2rem 2rem 1.2rem 2rem;
   background: white;
   border-bottom: 1px solid var(--gray-lightest, #C6C0C1);
   margin: 0;
@@ -222,7 +226,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 2rem; /* Añadir espacio entre avatar y información */
+  gap: 2rem;
 }
 
 .avatar {
@@ -276,7 +280,8 @@
 
 .candidate-info {
   flex: 1;
-  margin-left: 1rem; /* Añadir margen izquierdo adicional */
+  min-width: 0;
+  width: 100%;
 }
 
 .candidate-info h2 {

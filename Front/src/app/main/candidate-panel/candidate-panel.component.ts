@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { LoginService } from 'src/app/services/login.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ApplicationSummaryDTO } from 'src/app/model/application-summary';
@@ -55,7 +56,8 @@ export class CandidatePanelComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private loginService: LoginService,
-    private fileUploadService: FileUploadService) {
+    private fileUploadService: FileUploadService,
+    private location: Location) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       surname1: ['', Validators.required],
@@ -545,5 +547,9 @@ export class CandidatePanelComponent implements OnInit {
       'HYBRID': 'modality-hybrid'
     };
     return classMap[modality] || '';
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
