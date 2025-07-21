@@ -232,7 +232,9 @@ export class CandidatePanelComponent implements OnInit {
       this.signUpError = 'Por favor, complete todos los campos requeridos.';
       return;
     }
-    const registerData = {
+
+    // Recoger datos personales
+    const personalData = {
       name: String(this.profileForm.value.name).trim(),
       surname1: String(this.profileForm.value.surname1).trim(),
       surname2: String(this.profileForm.value.surname2).trim(),
@@ -241,6 +243,20 @@ export class CandidatePanelComponent implements OnInit {
       linkedin: (String(this.profileForm.value.linkedin).trim() !== '') ?
         String(this.profileForm.value.linkedin).trim() : null
     };
+
+    // Recoger datos profesionales (aunque estén vacíos o null)
+    const professionalData = {
+      professionalTitle: this.professionalForm?.value?.professionalTitle || '',
+      yearsExperience: this.professionalForm?.value?.yearsExperience ?? null,
+      employmentStatus: this.professionalForm?.value?.employmentStatus || '',
+      availability: this.professionalForm?.value?.availability || '',
+      preferredModality: this.professionalForm?.value?.preferredModality || '',
+      presentation: this.professionalForm?.value?.presentation || '',
+      githubProfile: this.professionalForm?.value?.githubProfile || null
+    };
+
+    // Combinar ambos objetos
+    const registerData = { ...personalData, ...professionalData };
 
     this.submitting = true;
     const headers = new HttpHeaders({
