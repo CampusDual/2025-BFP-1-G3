@@ -374,7 +374,7 @@ Promise.all([cachePromise, contentPromise]).then(
   }
   
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/main/empresa']);
   }
 
   // Método para navegar a la página de perfil del candidato
