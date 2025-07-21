@@ -19,8 +19,10 @@ export class ApproveCandidatePanelComponent {
   errorMessage: string = '';
   userData: UserData | null = null;
   candidateId!: number;
+  offerId: number = 0; // ID de la oferta
   applicationState: number = 0; // Estado actual de la aplicación
   applicationId: number = 0; // ID de la aplicación
+  loadingApplicationState: boolean = false; // Indicador de carga del estado
 
   availableTechLabels: TechLabel[] = [];
   selectedTechLabels: TechLabel[] = [];
@@ -40,16 +42,58 @@ export class ApproveCandidatePanelComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.candidateId = Number(params['id']);
+      
+      // Debug: Verificar URL actual
+      console.log('URL actual:', window.location.href);
+      console.log('Query params en la URL:', window.location.search);
+      
       const navigation = this.router.getCurrentNavigation();
-      if (navigation?.extras.state?.['applicationId']) {
-        this.applicationId = navigation.extras.state['applicationId'];
-        if (navigation.extras.state?.['applicationState'] !== undefined) {
-          this.applicationState = navigation.extras.state['applicationState'];
-          console.log('Estado de la aplicación recibido en estado de navegación:', this.applicationState);
+      console.log('Navigation state:', navigation?.extras?.state);
+      
+      // Primero verificar si hay query parameters (recarga o navegación con query params)
+      this.route.queryParams.subscribe(queryParams => {
+        console.log('Query params de Angular:', queryParams);
+        
+        if (queryParams['applicationId']) {
+          // Tenemos applicationId en la URL - obtener estado actual desde BD
+          this.applicationId = Number(queryParams['applicationId']);
+          console.log('ApplicationId obtenido de query params:', this.applicationId);
+          
+          // También obtener offerId si está disponible
+          if (queryParams['offerId']) {
+            this.offerId = Number(queryParams['offerId']);
+            console.log('OfferId obtenido de query params:', this.offerId);
+          }
+          
+          // MEJORA: Usar el estado del navigation como valor inicial para evitar parpadeo
+          if (navigation?.extras.state?.['applicationState'] !== undefined) {
+            this.applicationState = navigation.extras.state['applicationState'];
+            console.log('Estado inicial desde navigation state (evita parpadeo):', this.applicationState);
+          }
+          
+          console.log('Obteniendo estado ACTUAL desde BD (puede haber cambiado)');
+          this.loadCurrentApplicationState();
+        } else if (navigation?.extras.state?.['applicationId']) {
+          // Fallback: usar navigation state solo si no hay query params
+          this.applicationId = navigation.extras.state['applicationId'];
+          
+          // También obtener offerId del state si está disponible
+          if (navigation.extras.state?.['offerId']) {
+            this.offerId = navigation.extras.state['offerId'];
+            console.log('OfferId obtenido del navigation state:', this.offerId);
+          }
+          
+          if (navigation.extras.state?.['applicationState'] !== undefined) {
+            this.applicationState = navigation.extras.state['applicationState'];
+            console.log('Estado de la aplicación recibido en estado de navegación (fallback):', this.applicationState);
+          }
+        } else {
+          console.log('No hay applicationId disponible - estado por defecto');
         }
-      }
+      });
+      
       this.loadTechLabels();
-      this.retrieveCandidateData(this.candidateId); // Guarda el parámetro 'id' en la variable offerId
+      this.retrieveCandidateData(this.candidateId);
     });
   }
 
@@ -65,6 +109,62 @@ export class ApproveCandidatePanelComponent {
         console.error('Error cargando tech labels:', error);
         this.loadingTechLabels = false;
         this.setSelectedTechLabels();
+      }
+    });
+  }
+
+  // Método para cargar el estado actual de la aplicación desde la BD
+  loadCurrentApplicationState(): void {
+    if (this.applicationId && this.offerId) {
+      console.log('Cargando estado actual desde BD para applicationId:', this.applicationId, 'en offerId:', this.offerId);
+      
+      this.loadingApplicationState = true;
+      // Usar método directo: obtener aplicaciones por oferta y filtrar
+      this.loadCurrentApplicationStateAlternative();
+    } else {
+      console.log('No hay applicationId o offerId disponible para cargar estado');
+    }
+  }
+
+  // Método para obtener el estado actual desde las aplicaciones de la oferta
+  loadCurrentApplicationStateAlternative(): void {
+    console.log('Obteniendo candidatos de la oferta', this.offerId);
+    
+    if (!this.offerId) {
+      console.error('No hay offerId disponible para buscar candidatos');
+      this.applicationState = 0;
+      return;
+    }
+    
+    this.loginService.getCandidatesByOfferId(this.offerId).subscribe({
+      next: (applications) => {
+        console.log('Aplicaciones encontradas para la oferta', this.offerId, ':', applications);
+        
+        // Buscar la aplicación específica por applicationId
+        const currentApplication = applications.find(app => app.id === this.applicationId);
+        
+        if (currentApplication) {
+          this.applicationState = currentApplication.state;
+          console.log('Estado actual cargado exitosamente:', this.applicationState);
+          console.log('Aplicación encontrada:', currentApplication);
+        } else {
+          console.error('No se encontró la aplicación', this.applicationId, 'en la oferta', this.offerId);
+          console.log('Detalles de búsqueda:');
+          console.log('- applicationId buscado:', this.applicationId);
+          console.log('- offerId buscado:', this.offerId);
+          console.log('- Aplicaciones disponibles:', applications.map(app => ({
+            id: app.id,
+            candidateId: app.id_candidate,
+            state: app.state
+          })));
+          this.applicationState = 0; // Valor por defecto
+        }
+        this.loadingApplicationState = false;
+      },
+      error: (error) => {
+        console.error('Error obteniendo candidatos de la oferta:', error);
+        this.applicationState = 0; // Valor por defecto
+        this.loadingApplicationState = false;
       }
     });
   }
@@ -123,6 +223,8 @@ export class ApproveCandidatePanelComponent {
     this.loginService.updateApplicationState(this.applicationId, newState).subscribe({
       next: () => {
         this.applicationState = newState;
+        console.log('Estado actualizado en BD:', newState);
+        
         this.snackBar.open('Estado actualizado correctamente', 'Cerrar', {
           duration: 5000,
           horizontalPosition: 'center',

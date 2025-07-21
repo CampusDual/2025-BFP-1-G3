@@ -380,7 +380,24 @@ Promise.all([cachePromise, contentPromise]).then(
   // Método para navegar a la página de perfil del candidato
   viewCandidateProfile(application: Application): void {
     if (application.candidate) {
-      this.router.navigate(['/main/detallesCandidato', application.candidate.id], { state: { applicationId: application.id, applicationState: application.state } });
+      console.log('Navegando a candidato:', application.candidate.id);
+      console.log('ApplicationId:', application.id);
+      console.log('Estado actual:', application.state);
+      console.log('OfferId:', this.offerId);
+      
+      this.router.navigate(['/main/detallesCandidato', application.candidate.id], { 
+        queryParams: { 
+          applicationId: application.id,
+          offerId: this.offerId 
+        },
+        state: { 
+          applicationId: application.id, 
+          applicationState: application.state,
+          offerId: this.offerId 
+        } 
+      }).then(() => {
+        console.log('Navegación completada');
+      });
     }
   }
 
