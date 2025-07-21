@@ -131,7 +131,7 @@ export class PublishOfferComponent implements OnInit {
             const labelIds = this.selectedTechLabels.map(label => label.id);
             this.loginService.updateOfferLabels(response, labelIds).subscribe({
               next: () => {
-                this.showSuccessAndRedirect();
+                this.showSuccessAndRedirect(response);
               },
               error: (error) => {
                 console.error('Error guardando etiquetas:', error);
@@ -141,12 +141,12 @@ export class PublishOfferComponent implements OnInit {
                   panelClass: ['snackbar-warning'],
                   verticalPosition: 'top'
                 });
-                this.router.navigate(['/main/empresa']);
+                this.router.navigate(['/main/detalles-de-la-oferta', response]);
                 this.submitting = false;
               }
             });
           } else {
-            this.showSuccessAndRedirect();
+            this.showSuccessAndRedirect(response);
           }
         },
         error: (error) => {
@@ -189,13 +189,21 @@ export class PublishOfferComponent implements OnInit {
     this.selectedTechLabels = labels;
   }
 
-  private showSuccessAndRedirect(): void {
+  private showSuccessAndRedirect(offerId?: number): void {
     this.snackBar.open('¡Oferta publicada exitosamente!', 'Cerrar', {
       duration: 5000,
       panelClass: ['snackbar-success'],
       verticalPosition: 'top'
     });
-    this.router.navigate(['/main/empresa']);
+    
+    // Si tenemos el ID de la oferta, redirigir a sus detalles
+    if (offerId && typeof offerId === 'number') {
+      this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
+    } else {
+      // Si no tenemos ID, redirigir al panel de empresa como fallback
+      this.router.navigate(['/main/empresa']);
+    }
+    
     this.submitting = false;
   }
 }
