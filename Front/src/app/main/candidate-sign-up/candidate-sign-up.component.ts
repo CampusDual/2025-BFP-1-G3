@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
@@ -33,9 +33,19 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       surname2: ['', Validators.required],
       phone: ['', Validators.required],
       email: ['', Validators.required],
-      linkedin: null
+      linkedin: [null, this.linkedinValidator],
     });
   }
+
+  linkedinValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // No es obligatorio
+    }
+    const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/i;
+    return linkedinRegex.test(control.value) ? null : { invalidLinkedin: true };
+  }
+
+
 
   ngOnInit(): void {
     // Inicialización del componente
@@ -64,7 +74,11 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
 
   onSubmit(): void {
     if (this.signUpForm.invalid) {
-      this.signUpError = 'Por favor, complete todos los campos requeridos.';
+      if (this.signUpForm.controls['linkedin']?.errors?.['invalidLinkedin']) {
+        this.signUpError = 'El enlace de LinkedIn no es válido.';
+      } else {
+        this.signUpError = 'Por favor, complete todos los campos requeridos correctamente.';
+      }
       return;
     }
     const registerData = {
@@ -76,7 +90,9 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       phone: String(this.signUpForm.value.phone).trim(),
       email: String(this.signUpForm.value.email).trim(),
       linkedin: (String(this.signUpForm.value.linkedin).trim() !== '')
-        ? String(this.signUpForm.value.linkedin).trim() : null
+        ? String(this.signUpForm.value.linkedin).trim() : null,
+      github: (String(this.signUpForm.value.github).trim() !== '')
+        ? String(this.signUpForm.value.github).trim() : null
     };
 
     this.submitting = true;

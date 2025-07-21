@@ -1,7 +1,7 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -64,7 +64,7 @@ export class CandidatePanelComponent implements OnInit {
       surname2: ['', Validators.required],
       phone: ['', Validators.required],
       email: ['', Validators.required],
-      linkedin: null
+      linkedin: [null, this.linkedinValidator]
     });
 
     this.professionalForm = this.fb.group({
@@ -74,8 +74,24 @@ export class CandidatePanelComponent implements OnInit {
       availability: [''],
       preferredModality: [''],
       presentation: [''],
-      githubProfile: ['']
+      githubProfile: [null, this.githubValidator]
     });
+  }
+
+  linkedinValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // No es obligatorio
+    }
+    const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/i;
+    return linkedinRegex.test(control.value) ? null : { invalidLinkedin: true };
+  }
+
+  githubValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // No es obligatorio
+    }
+    const githubRegex = /^https?:\/\/(www\.)?github\.com\/.*$/i;
+    return githubRegex.test(control.value) ? null : { invalidGithub: true };
   }
 
   retrieveCandidateData() {

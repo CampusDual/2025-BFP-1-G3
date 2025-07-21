@@ -264,6 +264,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>LinkedIn (opcional)</mat-label>
                   <input matInput formControlName="linkedin">
+                  <mat-error *ngIf="profileForm.controls['linkedin']?.errors?.['invalidLinkedin']">
+                    Por favor, introduce un enlace válido de LinkedIn.
+                  </mat-error>
                 </mat-form-field>
               </div>
             </div>
@@ -317,6 +320,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Perfil GitHub (opcional)</mat-label>
                   <input matInput formControlName="githubProfile" placeholder="https://github.com/usuario">
+                  <mat-error *ngIf="professionalForm.controls['githubProfile']?.errors?.['invalidGithub']">
+                    Por favor, introduce un enlace válido de GitHub.
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width-field">
