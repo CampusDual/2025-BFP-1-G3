@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output, ChangeDetectorRef } from '@ang
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from 'src/app/services/login.service';
+import { TokenWatcherService } from 'src/app/services/token-watcher.service';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private loginService: LoginService, 
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private tokenWatcher: TokenWatcherService
   ) { }
 
   ngOnInit(): void {
@@ -55,6 +57,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
+    this.tokenWatcher.stopWatching(); // Detener la vigilancia antes del logout
     this.loginService.logout();
     // Modificación aquí: siempre redirigir a /main/ofertas independientemente del rol
     this.router.navigate(['/main/ofertas']);

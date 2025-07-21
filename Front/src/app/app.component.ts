@@ -28,9 +28,12 @@ export class AppComponent implements OnInit {
     ).subscribe(() => {
       this.updateAdminSection();
       
-      // Iniciar vigilancia del token si el usuario está autenticado
-      if (this.loginService.isAuthenticated()) {
+      // Solo iniciar vigilancia si no está ya vigilando y el usuario está autenticado
+      if (this.loginService.isAuthenticated() && !this.tokenWatcher.isWatching) {
         this.tokenWatcher.startWatching();
+      } else if (!this.loginService.isAuthenticated()) {
+        // Detener vigilancia si no hay sesión activa
+        this.tokenWatcher.stopWatching();
       }
       
       // Forzar detección de cambios para actualizar la vista
@@ -40,7 +43,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // Verificar estado de autenticación al inicializar
-    if (this.loginService.isAuthenticated()) {
+    if (this.loginService.isAuthenticated() && !this.tokenWatcher.isWatching) {
       this.tokenWatcher.startWatching();
     }
     

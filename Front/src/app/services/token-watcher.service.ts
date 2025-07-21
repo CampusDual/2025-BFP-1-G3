@@ -9,10 +9,12 @@ import { LoginService } from './login.service';
   providedIn: 'root'
 })
 export class TokenWatcherService {
-  private checkInterval = 3000; // Verificar cada 3 segundos (más frecuente para detectar cambios manuales)
-  private isWatching = false;
+  private checkInterval = 5000; // Reducido de 3 a 5 segundos para ser menos agresivo
+  public isWatching = false; // Cambiado a público para poder verificar desde el AppComponent
   private tokenValid = new BehaviorSubject<boolean>(true);
   private originalToken: string | null = null;
+  private lastTokenChangeTime = 0;
+  private tokenChangeGracePeriod = 10000; // Aumentado a 10 segundos de gracia
 
   constructor(
     private loginService: LoginService,
@@ -45,6 +47,14 @@ export class TokenWatcherService {
     console.log("Vigilancia del token detenida");
   }
 
+  // Método para notificar un cambio de token legítimo (ej: cambio de usuario)
+  notifyLegitimateTokenChange(): void {
+    const currentToken = sessionStorage.getItem('token');
+    this.originalToken = currentToken;
+    this.lastTokenChangeTime = Date.now();
+    console.log("Cambio legítimo de token notificado:", currentToken?.substring(0, 10) + "...");
+  }
+
   // Verificar la validez del token
   private checkToken(): void {
     const currentToken = sessionStorage.getItem('token');
@@ -62,6 +72,15 @@ export class TokenWatcherService {
     
     // Detectar si el token ha cambiado manualmente
     if (this.originalToken && currentToken !== this.originalToken) {
+      // Verificar si estamos dentro del período de gracia después de un cambio legítimo
+      const timeSinceLastChange = Date.now() - this.lastTokenChangeTime;
+      
+      if (timeSinceLastChange < this.tokenChangeGracePeriod) {
+        console.log("Cambio de token detectado dentro del período de gracia, actualizando token original");
+        this.originalToken = currentToken;
+        return;
+      }
+      
       console.log("¡Cambio detectado en el token! Original vs Actual:", 
                  this.originalToken?.substring(0, 10) + "... vs " + 
                  currentToken?.substring(0, 10) + "...");
