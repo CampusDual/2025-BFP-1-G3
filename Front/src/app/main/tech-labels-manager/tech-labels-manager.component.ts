@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { TechLabel } from '../../model/tech-label';
 import { LoginService } from '../../services/login.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tech-labels-manager',
@@ -18,7 +19,8 @@ export class TechLabelsManagerComponent implements OnInit {
   loading: boolean = false;
 
   constructor(
-    private loginService: LoginService
+    private loginService: LoginService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +36,10 @@ export class TechLabelsManagerComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error cargando etiquetas:', error);
-        alert('Error al cargar las etiquetas disponibles');
+        this.snackBar.open('Error al cargar las etiquetas disponibles', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-info'],
+        });
         this.loading = false;
       }
     });
@@ -55,7 +60,10 @@ export class TechLabelsManagerComponent implements OnInit {
     } else {
       // Agregar etiqueta (verificar límite)
       if (this.selectedLabels.length >= this.maxLabels) {
-        alert(`Máximo ${this.maxLabels} etiquetas permitidas`);
+        this.snackBar.open(`Máximo ${this.maxLabels} etiquetas permitidas`, 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-info'],
+        });
         return;
       }
       this.selectedLabels = [...this.selectedLabels, label];
@@ -79,12 +87,18 @@ export class TechLabelsManagerComponent implements OnInit {
 
     this.loginService.updateOfferLabels(this.offerId, labelIds).subscribe({
       next: () => {
-        alert('Etiquetas actualizadas exitosamente');
+        this.snackBar.open('Etiquetas actualizadas exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-info'],
+        });
         this.loading = false;
       },
       error: (error) => {
         console.error('Error actualizando etiquetas:', error);
-        alert('Error al actualizar las etiquetas');
+        this.snackBar.open('Error al actualizar las etiquetas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-info'],
+        });
         this.loading = false;
       }
     });
