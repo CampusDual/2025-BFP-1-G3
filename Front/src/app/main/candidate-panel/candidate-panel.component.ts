@@ -405,21 +405,53 @@ export class CandidatePanelComponent implements OnInit {
         surname2: this.profileForm.get('surname2')?.value,
         email: this.profileForm.get('email')?.value,
         phone: this.profileForm.get('phone')?.value,
-        linkedin: this.profileForm.get('linkedin')?.value
+        linkedin: this.profileForm.get('linkedin')?.value || null
       };
 
-      const professionalData = {
-        professionalTitle: this.professionalForm.get('professionalTitle')?.value,
-        yearsExperience: this.professionalForm.get('yearsExperience')?.value,
-        employmentStatus: this.professionalForm.get('employmentStatus')?.value,
-        availability: this.professionalForm.get('availability')?.value,
-        preferredModality: this.professionalForm.get('preferredModality')?.value,
-        presentation: this.professionalForm.get('presentation')?.value,
-        githubProfile: this.professionalForm.get('githubProfile')?.value,
-        techLabelIds: this.selectedTechLabels.map(label => Number(label.id)) // Asegurar que sean números
-      };
+      // Solo incluir datos profesionales si existen y no están vacíos
+      const professionalData: any = {};
+      
+      const professionalTitle = this.professionalForm.get('professionalTitle')?.value;
+      if (professionalTitle && professionalTitle.trim() !== '') {
+        professionalData.professionalTitle = professionalTitle.trim();
+      }
 
-      // Combinar los datos
+      const yearsExperience = this.professionalForm.get('yearsExperience')?.value;
+      if (yearsExperience !== null && yearsExperience !== undefined && yearsExperience !== '') {
+        professionalData.yearsExperience = yearsExperience;
+      }
+
+      const employmentStatus = this.professionalForm.get('employmentStatus')?.value;
+      if (employmentStatus && employmentStatus.trim() !== '') {
+        professionalData.employmentStatus = employmentStatus.trim();
+      }
+
+      const availability = this.professionalForm.get('availability')?.value;
+      if (availability && availability.trim() !== '') {
+        professionalData.availability = availability.trim();
+      }
+
+      const preferredModality = this.professionalForm.get('preferredModality')?.value;
+      if (preferredModality && preferredModality.trim() !== '') {
+        professionalData.preferredModality = preferredModality.trim();
+      }
+
+      const presentation = this.professionalForm.get('presentation')?.value;
+      if (presentation && presentation.trim() !== '') {
+        professionalData.presentation = presentation.trim();
+      }
+
+      const githubProfile = this.professionalForm.get('githubProfile')?.value;
+      if (githubProfile && githubProfile.trim() !== '') {
+        professionalData.githubProfile = githubProfile.trim();
+      }
+
+      // Solo incluir techLabelIds si hay etiquetas seleccionadas
+      if (this.selectedTechLabels && this.selectedTechLabels.length > 0) {
+        professionalData.techLabelIds = this.selectedTechLabels.map(label => Number(label.id));
+      }
+
+      // Combinar los datos - solo incluir campos profesionales si existen
       const combinedData = { ...basicData, ...professionalData };
 
       console.log('Datos básicos:', basicData); // Debug
