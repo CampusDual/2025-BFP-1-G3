@@ -16,7 +16,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
 
   // Pagination
   currentPage: number = 1;
-  pageSize: number = 20;
+  pageSize: number = 5;
   totalPages: number = 1;
 
   // For create and edit

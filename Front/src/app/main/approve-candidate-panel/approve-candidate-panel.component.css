@@ -1,8 +1,7 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  position: relative;
+ max-width: 100%;
+  margin: 0 5% 0 5%;
+  padding: 2%;
 }
 
 /* Copiado estilos para etiquetas de tecnologías de candidate-panel.component.css */

@@ -1,8 +1,8 @@
 .main-content {
-  display: flex;
-  flex-direction: column;
-  margin: 2% 1% 2% 2%;
   color: #3d3d3d;
+  max-width: 100%;
+  margin: 0 5% 0 5%;
+  padding: 2%;
 }
 
 /* Estilos para la barra de búsqueda - alineada a la izquierda y más pequeña */
