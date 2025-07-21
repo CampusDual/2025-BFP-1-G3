@@ -6,6 +6,7 @@ import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TechLabel } from 'src/app/model/tech-label';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { Location } from '@angular/common';
 
 /** Error state matcher que muestra errores cuando el campo está sucio e inválido */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -43,7 +44,8 @@ export class PublishOfferComponent implements OnInit {
     private http: HttpClient,
     private loginService: LoginService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private location: Location
   ) {
     this.offerForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
@@ -185,6 +187,9 @@ export class PublishOfferComponent implements OnInit {
       });
   }
 
+   goBack(): void {
+    this.location.back();
+  }
   onLabelsChanged(labels: TechLabel[]): void {
     this.selectedTechLabels = labels;
   }

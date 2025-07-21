@@ -1,5 +1,8 @@
 <div class="form-container">
   <form [formGroup]="offerForm" (ngSubmit)="onSubmit()">
+     <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
     <h2>Publicar Oferta</h2>
 
     <!-- Primera fila: Título del puesto (ancho completo) -->
