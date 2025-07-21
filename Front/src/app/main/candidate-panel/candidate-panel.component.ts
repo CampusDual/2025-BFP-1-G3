@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { LoginService } from 'src/app/services/login.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
@@ -55,16 +55,17 @@ export class CandidatePanelComponent implements OnInit {
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private loginService: LoginService,
     private fileUploadService: FileUploadService,
     private location: Location) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       surname1: ['', Validators.required],
-      surname2: ['', Validators.required],
+      surname2: [''],
       phone: ['', Validators.required],
       email: ['', Validators.required],
-      linkedin: [null, this.linkedinValidator]
+      linkedin: ['', this.linkedinValidator]
     });
 
     this.professionalForm = this.fb.group({
@@ -74,24 +75,24 @@ export class CandidatePanelComponent implements OnInit {
       availability: [''],
       preferredModality: [''],
       presentation: [''],
-      githubProfile: [null, this.githubValidator]
+      githubProfile: ['', this.githubValidator]
     });
   }
 
-  linkedinValidator(control: AbstractControl): ValidationErrors | null {
+  linkedinValidator(control: AbstractControl): ValidationErrors | String {
     if (!control.value) {
-      return null; // No es obligatorio
+      return ''; // No es obligatorio
     }
     const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/i;
-    return linkedinRegex.test(control.value) ? null : { invalidLinkedin: true };
+    return linkedinRegex.test(control.value) ? '' : { invalidLinkedin: true };
   }
 
-  githubValidator(control: AbstractControl): ValidationErrors | null {
+  githubValidator(control: AbstractControl): ValidationErrors | '' {
     if (!control.value) {
-      return null; // No es obligatorio
+      return ''; // No es obligatorio
     }
     const githubRegex = /^https?:\/\/(www\.)?github\.com\/.*$/i;
-    return githubRegex.test(control.value) ? null : { invalidGithub: true };
+    return githubRegex.test(control.value) ? '' : { invalidGithub: true };
   }
 
   retrieveCandidateData() {
@@ -222,6 +223,12 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Verificar si hay un parámetro de query para la pestaña
+    const tabParam = this.route.snapshot.queryParams['tab'];
+    if (tabParam) {
+      this.selectedTabIndex = parseInt(tabParam, 10) || 0;
+    }
+    
     // Cargar tech labels primero, luego los datos del candidato
     this.loadTechLabels();
     this.loadMyApplications();
@@ -232,7 +239,9 @@ export class CandidatePanelComponent implements OnInit {
       this.signUpError = 'Por favor, complete todos los campos requeridos.';
       return;
     }
-    const registerData = {
+
+    // Recoger datos personales
+    const personalData = {
       name: String(this.profileForm.value.name).trim(),
       surname1: String(this.profileForm.value.surname1).trim(),
       surname2: String(this.profileForm.value.surname2).trim(),
@@ -241,6 +250,20 @@ export class CandidatePanelComponent implements OnInit {
       linkedin: (String(this.profileForm.value.linkedin).trim() !== '') ?
         String(this.profileForm.value.linkedin).trim() : null
     };
+
+    // Recoger datos profesionales (aunque estén vacíos o null)
+    const professionalData = {
+      professionalTitle: this.professionalForm?.value?.professionalTitle || '',
+      yearsExperience: this.professionalForm?.value?.yearsExperience ?? null,
+      employmentStatus: this.professionalForm?.value?.employmentStatus || '',
+      availability: this.professionalForm?.value?.availability || '',
+      preferredModality: this.professionalForm?.value?.preferredModality || '',
+      presentation: this.professionalForm?.value?.presentation || '',
+      githubProfile: this.professionalForm?.value?.githubProfile || null
+    };
+
+    // Combinar ambos objetos
+    const registerData = { ...personalData, ...professionalData };
 
     this.submitting = true;
     const headers = new HttpHeaders({
@@ -275,7 +298,9 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   goToOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId], {
+      queryParams: { from: 'candidate-panel' }
+    });
   }
 
   // Nuevo método para cargar tech labels
@@ -389,21 +414,53 @@ export class CandidatePanelComponent implements OnInit {
         surname2: this.profileForm.get('surname2')?.value,
         email: this.profileForm.get('email')?.value,
         phone: this.profileForm.get('phone')?.value,
-        linkedin: this.profileForm.get('linkedin')?.value
+        linkedin: this.profileForm.get('linkedin')?.value || null
       };
 
-      const professionalData = {
-        professionalTitle: this.professionalForm.get('professionalTitle')?.value,
-        yearsExperience: this.professionalForm.get('yearsExperience')?.value,
-        employmentStatus: this.professionalForm.get('employmentStatus')?.value,
-        availability: this.professionalForm.get('availability')?.value,
-        preferredModality: this.professionalForm.get('preferredModality')?.value,
-        presentation: this.professionalForm.get('presentation')?.value,
-        githubProfile: this.professionalForm.get('githubProfile')?.value,
-        techLabelIds: this.selectedTechLabels.map(label => Number(label.id)) // Asegurar que sean números
-      };
+      // Solo incluir datos profesionales si existen y no están vacíos
+      const professionalData: any = {};
+      
+      const professionalTitle = this.professionalForm.get('professionalTitle')?.value;
+      if (professionalTitle && professionalTitle.trim() !== '') {
+        professionalData.professionalTitle = professionalTitle.trim();
+      }
 
-      // Combinar los datos
+      const yearsExperience = this.professionalForm.get('yearsExperience')?.value;
+      if (yearsExperience !== null && yearsExperience !== undefined && yearsExperience !== '') {
+        professionalData.yearsExperience = yearsExperience;
+      }
+
+      const employmentStatus = this.professionalForm.get('employmentStatus')?.value;
+      if (employmentStatus && employmentStatus.trim() !== '') {
+        professionalData.employmentStatus = employmentStatus.trim();
+      }
+
+      const availability = this.professionalForm.get('availability')?.value;
+      if (availability && availability.trim() !== '') {
+        professionalData.availability = availability.trim();
+      }
+
+      const preferredModality = this.professionalForm.get('preferredModality')?.value;
+      if (preferredModality && preferredModality.trim() !== '') {
+        professionalData.preferredModality = preferredModality.trim();
+      }
+
+      const presentation = this.professionalForm.get('presentation')?.value;
+      if (presentation && presentation.trim() !== '') {
+        professionalData.presentation = presentation.trim();
+      }
+
+      const githubProfile = this.professionalForm.get('githubProfile')?.value;
+      if (githubProfile && githubProfile.trim() !== '') {
+        professionalData.githubProfile = githubProfile.trim();
+      }
+
+      // Solo incluir techLabelIds si hay etiquetas seleccionadas
+      if (this.selectedTechLabels && this.selectedTechLabels.length > 0) {
+        professionalData.techLabelIds = this.selectedTechLabels.map(label => Number(label.id));
+      }
+
+      // Combinar los datos - solo incluir campos profesionales si existen
       const combinedData = { ...basicData, ...professionalData };
 
       console.log('Datos básicos:', basicData); // Debug

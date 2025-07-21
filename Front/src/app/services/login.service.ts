@@ -44,10 +44,14 @@ export class LoginService {
   getApplicationById(applicationId: number): Observable<ApplicationSummaryDTO> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
-    return this.http.get<ApplicationSummaryDTO>(`${this.urlEndPoint}/applications/${applicationId}`, { headers }).pipe(
+    // Usar POST con el ID en el body, similar a otros endpoints
+    return this.http.post<ApplicationSummaryDTO>(`${this.urlEndPoint}/applications/getById`, 
+      { id: applicationId }, 
+      { headers }).pipe(
       map(response => {
         console.log('Aplicación obtenida por ID:', response);
         return response;
