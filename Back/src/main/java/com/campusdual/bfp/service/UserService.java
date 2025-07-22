@@ -182,6 +182,14 @@ public class UserService implements UserDetailsService {
         userRoleDao.saveAndFlush(userRole);
     }
 
+    // Añadir usuario solo con login y password
+    public void addUserWithLoginAndPassword(String login, String password) {
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(this.passwordEncoder().encode(password));
+        userDao.saveAndFlush(user);
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
