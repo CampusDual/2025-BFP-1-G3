@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { LoginService } from 'src/app/services/login.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
@@ -55,6 +55,7 @@ export class CandidatePanelComponent implements OnInit {
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private loginService: LoginService,
     private fileUploadService: FileUploadService,
     private location: Location) {
@@ -222,6 +223,12 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Verificar si hay un parámetro de query para la pestaña
+    const tabParam = this.route.snapshot.queryParams['tab'];
+    if (tabParam) {
+      this.selectedTabIndex = parseInt(tabParam, 10) || 0;
+    }
+    
     // Cargar tech labels primero, luego los datos del candidato
     this.loadTechLabels();
     this.loadMyApplications();
@@ -291,7 +298,9 @@ export class CandidatePanelComponent implements OnInit {
   }
 
   goToOfferDetails(offerId: number): void {
-    this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
+    this.router.navigate(['/main/detalles-de-la-oferta', offerId], {
+      queryParams: { from: 'candidate-panel' }
+    });
   }
 
   // Nuevo método para cargar tech labels
