@@ -30,19 +30,19 @@ export class CandidateSignUpComponent implements OnInit, AfterViewInit {
       password: ['', Validators.required],
       name: ['', Validators.required],
       surname1: ['', Validators.required],
-      surname2: ['', Validators.required],
+      surname2: [''],
       phone: ['', Validators.required],
       email: ['', Validators.required],
-      linkedin: [null, this.linkedinValidator],
+      linkedin: ['', this.linkedinValidator],
     });
   }
 
-  linkedinValidator(control: AbstractControl): ValidationErrors | null {
+  linkedinValidator(control: AbstractControl): ValidationErrors | string {
     if (!control.value) {
-      return null; // No es obligatorio
+      return ''; // No es obligatorio
     }
     const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/i;
-    return linkedinRegex.test(control.value) ? null : { invalidLinkedin: true };
+    return linkedinRegex.test(control.value) ? '' : { invalidLinkedin: true };
   }
 
 
