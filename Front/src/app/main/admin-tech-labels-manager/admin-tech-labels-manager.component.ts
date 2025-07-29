@@ -34,20 +34,18 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     this.loading = true;
     this.loginService.getAllTechLabels().subscribe({
       next: (labels) => {
-        this.allLabels = labels;
+        // Ordenar por id ascendente
+        this.allLabels = labels.sort((a, b) => a.id - b.id);
         this.totalPages = Math.ceil(this.allLabels.length / this.pageSize);
-        
         // Si la página actual es mayor que el total de páginas, ir a la última página válida
         if (this.currentPage > this.totalPages && this.totalPages > 0) {
           this.currentPage = this.totalPages;
         }
-        
         // Si no hay etiquetas, resetear a la página 1
         if (this.allLabels.length === 0) {
           this.currentPage = 1;
           this.totalPages = 1;
         }
-        
         this.setPage(this.currentPage);
         this.loading = false;
       },
@@ -223,9 +221,9 @@ export class AdminTechLabelsManagerComponent implements OnInit {
     this.loading = true;
     this.loginService.getAllTechLabels().subscribe({
       next: (labels) => {
-        this.allLabels = labels;
+        // Ordenar por id ascendente
+        this.allLabels = labels.sort((a, b) => a.id - b.id);
         this.totalPages = Math.ceil(this.allLabels.length / this.pageSize);
-        
         // Si no hay etiquetas, resetear a la página 1
         if (this.allLabels.length === 0) {
           this.currentPage = 1;
@@ -234,7 +232,6 @@ export class AdminTechLabelsManagerComponent implements OnInit {
           // Ir a la última página donde está la nueva etiqueta
           this.currentPage = this.totalPages;
         }
-        
         this.setPage(this.currentPage);
         this.loading = false;
       },
