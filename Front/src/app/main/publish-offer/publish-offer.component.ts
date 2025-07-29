@@ -6,6 +6,7 @@ import { LoginService } from 'src/app/services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TechLabel } from 'src/app/model/tech-label';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { Location } from '@angular/common';
 
 /** Error state matcher que muestra errores cuando el campo está sucio e inválido */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -43,7 +44,8 @@ export class PublishOfferComponent implements OnInit {
     private http: HttpClient,
     private loginService: LoginService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private location: Location
   ) {
     this.offerForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
@@ -131,7 +133,7 @@ export class PublishOfferComponent implements OnInit {
             const labelIds = this.selectedTechLabels.map(label => label.id);
             this.loginService.updateOfferLabels(response, labelIds).subscribe({
               next: () => {
-                this.showSuccessAndRedirect();
+                this.showSuccessAndRedirect(response);
               },
               error: (error) => {
                 console.error('Error guardando etiquetas:', error);
@@ -141,12 +143,12 @@ export class PublishOfferComponent implements OnInit {
                   panelClass: ['snackbar-warning'],
                   verticalPosition: 'top'
                 });
-                this.router.navigate(['/main/empresa']);
+                this.router.navigate(['/main/detalles-de-la-oferta', response]);
                 this.submitting = false;
               }
             });
           } else {
-            this.showSuccessAndRedirect();
+            this.showSuccessAndRedirect(response);
           }
         },
         error: (error) => {
@@ -185,17 +187,28 @@ export class PublishOfferComponent implements OnInit {
       });
   }
 
+   goBack(): void {
+    this.location.back();
+  }
   onLabelsChanged(labels: TechLabel[]): void {
     this.selectedTechLabels = labels;
   }
 
-  private showSuccessAndRedirect(): void {
+  private showSuccessAndRedirect(offerId?: number): void {
     this.snackBar.open('¡Oferta publicada exitosamente!', 'Cerrar', {
       duration: 5000,
       panelClass: ['snackbar-success'],
       verticalPosition: 'top'
     });
-    this.router.navigate(['/main/empresa']);
+    
+    // Si tenemos el ID de la oferta, redirigir a sus detalles
+    if (offerId && typeof offerId === 'number') {
+      this.router.navigate(['/main/detalles-de-la-oferta', offerId]);
+    } else {
+      // Si no tenemos ID, redirigir al panel de empresa como fallback
+      this.router.navigate(['/main/empresa']);
+    }
+    
     this.submitting = false;
   }
 }

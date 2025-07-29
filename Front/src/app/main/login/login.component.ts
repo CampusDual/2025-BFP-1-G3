@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
+import { TokenWatcherService } from 'src/app/services/token-watcher.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,13 @@ export class LoginComponent implements OnInit {
   password: string = '';
   loginError: string = '';
 
-  constructor(private loginService: LoginService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(
+    private loginService: LoginService, 
+    private router: Router, 
+    private http: HttpClient, 
+    private snackBar: MatSnackBar,
+    private tokenWatcher: TokenWatcherService
+  ) { }
 
   ngOnInit() {
     this.loginService.loadUserProfile();
@@ -27,6 +34,9 @@ export class LoginComponent implements OnInit {
 
     this.loginService.login(user, password).subscribe(
       response => {
+        // Notificar al token watcher que este es un cambio legítimo
+        this.tokenWatcher.notifyLegitimateTokenChange();
+        
         // Comprobar primero si es admin - esto tiene prioridad sobre todo lo demás
         if (response.roles === 'role_admin') {
           // Si es admin, cancelar cualquier intento de aplicación pendiente

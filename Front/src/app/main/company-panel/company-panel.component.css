@@ -1,3 +1,8 @@
+.offers-container {
+  max-width: 100%;
+  margin: 0 5% 0 5%;
+  padding: 2%;
+}
 .main-content {
   display: flex;
   justify-content: space-between;
@@ -493,8 +498,8 @@ mat-card-header {
   align-items: center;
   padding: 2%;
   margin: 0.2% 0%;
-  background-color: #e61b15;
-  color: #ffe1e0;
+  background-color: #1f1f1f;
+  color: #ffffff;
   border-radius: 15px;
   font-size: 0.75rem;
   white-space: nowrap;

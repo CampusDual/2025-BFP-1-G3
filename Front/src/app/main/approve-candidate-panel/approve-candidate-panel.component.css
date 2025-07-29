@@ -1,8 +1,18 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  position: relative;
+ max-width: 100%;
+  margin: 0 5% 0 5%;
+  padding: 2%;
+}
+
+/* Estilo para centrar el tooltip de LinkedIn debajo del texto */
+.linkedin-tooltip .mat-tooltip {
+  margin-top: 8px !important;
+  transform-origin: center top !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  white-space: normal !important;
+  max-width: 200px !important;
+  text-align: center;
 }
 
 /* Copiado estilos para etiquetas de tecnologías de candidate-panel.component.css */
@@ -338,6 +348,12 @@ mat-icon {
 #linkedin-link {
   font-size: 16px;
   margin-left: 0.3rem;
+}
+
+.linkedin-tooltip .mat-tooltip {
+  transform-origin: center top !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
 }
 
 .linkedin-icon span:hover {

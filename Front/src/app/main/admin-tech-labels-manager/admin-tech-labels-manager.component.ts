@@ -16,7 +16,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
 
   // Pagination
   currentPage: number = 1;
-  pageSize: number = 20;
+  pageSize: number = 15;
   totalPages: number = 1;
 
   // For create and edit
@@ -108,7 +108,7 @@ export class AdminTechLabelsManagerComponent implements OnInit {
             panelClass: ['snackbar-success'],
           });
         this.newLabelName = '';
-        this.loadLabels();
+        this.loadLabelsAndGoToLastPage();
       },
       error: (error) => {
          this.snackBar.open('Error al crear la etiqueta. Ya existe.', 'Cerrar', {
@@ -151,6 +151,12 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       next: () => {
         this.editLabelId = null;
         this.editLabelName = '';
+        this.snackBar.open('Etiqueta actualizada con éxito.', 'Cerrar', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-success'],
+        });
         this.loadLabels();
       },
       error: (error) => {
@@ -208,6 +214,33 @@ export class AdminTechLabelsManagerComponent implements OnInit {
       error: (error) => {
         console.error('Error deleting label:', error);
         this.errorMessage = 'Error al borrar la etiqueta';
+        this.loading = false;
+      }
+    });
+  }
+
+  loadLabelsAndGoToLastPage(): void {
+    this.loading = true;
+    this.loginService.getAllTechLabels().subscribe({
+      next: (labels) => {
+        this.allLabels = labels;
+        this.totalPages = Math.ceil(this.allLabels.length / this.pageSize);
+        
+        // Si no hay etiquetas, resetear a la página 1
+        if (this.allLabels.length === 0) {
+          this.currentPage = 1;
+          this.totalPages = 1;
+        } else {
+          // Ir a la última página donde está la nueva etiqueta
+          this.currentPage = this.totalPages;
+        }
+        
+        this.setPage(this.currentPage);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading labels:', error);
+        this.errorMessage = 'Error al cargar las etiquetas';
         this.loading = false;
       }
     });

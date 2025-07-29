@@ -374,13 +374,41 @@ Promise.all([cachePromise, contentPromise]).then(
   }
   
   goBack(): void {
-    this.location.back();
+    // Verificar si viene del panel de candidato
+    const fromCandidatePanel = this.route.snapshot.queryParams['from'] === 'candidate-panel';
+    
+    if (fromCandidatePanel) {
+      // Si viene del panel de candidato, volver allí con la pestaña de candidaturas seleccionada
+      this.router.navigate(['/main/candidato'], {
+        queryParams: { tab: 2 } // tab 2 es la pestaña de "Mis Candidaturas"
+      });
+    } else {
+      // Si no, mantener el comportamiento original (panel de empresa)
+      this.router.navigate(['/main/empresa']);
+    }
   }
 
   // Método para navegar a la página de perfil del candidato
   viewCandidateProfile(application: Application): void {
     if (application.candidate) {
-      this.router.navigate(['/main/detallesCandidato', application.candidate.id], { state: { applicationId: application.id, applicationState: application.state } });
+      console.log('Navegando a candidato:', application.candidate.id);
+      console.log('ApplicationId:', application.id);
+      console.log('Estado actual:', application.state);
+      console.log('OfferId:', this.offerId);
+      
+      this.router.navigate(['/main/detallesCandidato', application.candidate.id], { 
+        queryParams: { 
+          applicationId: application.id,
+          offerId: this.offerId 
+        },
+        state: { 
+          applicationId: application.id, 
+          applicationState: application.state,
+          offerId: this.offerId 
+        } 
+      }).then(() => {
+        console.log('Navegación completada');
+      });
     }
   }
 

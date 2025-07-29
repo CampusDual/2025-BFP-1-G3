@@ -22,8 +22,8 @@
             <mat-icon>phone</mat-icon> {{ userData?.candidate?.phone }}
           </p>
           <a id="linkedin-container" *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin" target="_blank"
-            class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
-            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
+            class="linkedin-icon">
+            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link" matTooltip="Ver perfil de LinkedIn" matTooltipPosition="below" matTooltipClass="linkedin-tooltip"> LinkedIn | {{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}</span>
           </a>
         </div>
       </div>
@@ -239,7 +239,7 @@
 
                 <mat-form-field appearance="outline">
                   <mat-label>Segundo Apellido</mat-label>
-                  <input matInput formControlName="surname2" required>
+                  <input matInput formControlName="surname2">
                   <mat-error *ngIf="profileForm.get('surname2')?.hasError('required')">
                     El segundo apellido es requerido
                   </mat-error>
@@ -264,6 +264,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>LinkedIn (opcional)</mat-label>
                   <input matInput formControlName="linkedin">
+                  <mat-error *ngIf="profileForm.controls['linkedin']?.errors?.['invalidLinkedin']">
+                    Por favor, introduce un enlace válido de LinkedIn.
+                  </mat-error>
                 </mat-form-field>
               </div>
             </div>
@@ -317,6 +320,9 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Perfil GitHub (opcional)</mat-label>
                   <input matInput formControlName="githubProfile" placeholder="https://github.com/usuario">
+                  <mat-error *ngIf="professionalForm.controls['githubProfile']?.errors?.['invalidGithub']">
+                    Por favor, introduce un enlace válido de GitHub.
+                  </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width-field">
@@ -381,9 +387,9 @@
         </div>
 
         <div *ngIf="!loadingApplications && myApplications.length > 0" class="applications-list">
-          <mat-card *ngFor="let application of myApplications" class="application-card">
+          <mat-card *ngFor="let application of myApplications" class="application-card" (click)="goToOfferDetails(application.offer.id)">
             <mat-card-header>
-            <mat-card-title  (click)="goToOfferDetails(application.offer.id)" id="offer-name">{{ application.offer.title || 'Sin título' }}</mat-card-title>
+            <mat-card-title>{{ application.offer.title || 'Sin título' }}</mat-card-title>
               <mat-card-subtitle>{{ application.offer.company?.name || application.offer.companyName || 'Sin empresa'
                 }}</mat-card-subtitle>
               <div class="state-badge" [ngClass]="getStateClass(application.state)">

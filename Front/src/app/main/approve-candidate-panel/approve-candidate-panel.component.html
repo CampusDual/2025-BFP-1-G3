@@ -19,8 +19,8 @@
             <mat-icon>phone</mat-icon> {{ userData?.candidate?.phone }}
           </p>
           <a id="linkedin-container" *ngIf="userData?.candidate?.linkedin" [href]="userData?.candidate?.linkedin"
-            target="_blank" class="linkedin-icon" matTooltip="Ver perfil de LinkedIn">
-            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link">{{userData?.candidate?.linkedin}}</span>
+            class="linkedin-icon">
+            <i class="fa-brands fa-linkedin"></i> <span id="linkedin-link" matTooltip="Ver perfil de LinkedIn" matTooltipPosition="below" matTooltipClass="linkedin-tooltip"> LinkedIn | {{ userData?.candidate?.name }} {{ userData?.candidate?.surname1 }} {{ userData?.candidate?.surname2 }}</span>
           </a>
         </div>
       </div>

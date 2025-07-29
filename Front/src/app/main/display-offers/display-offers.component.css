@@ -1,5 +1,7 @@
 /* === CONTENEDOR PRINCIPAL === */
 .offers-container {
+  max-width: 100%;
+  margin: 0 5% 0 5%;
   padding: 2%;
   background-color: #e7e7e7;
 }
