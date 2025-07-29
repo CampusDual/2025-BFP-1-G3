@@ -64,8 +64,9 @@ La aplicación consta de dos partes principales:
 
 - La autenticación se realiza mediante un formulario que recoge el nombre de usuario con su contraseña correspondiente
 - Los roles de usuario son:
-  - **Empresa:** Puede publicar ofertas y gestionar sus publicaciones.
+  - **Empresa:** Puede publicar ofertas y gestionar sus publicaciones y a los candidatos que se incriben.
   - **Candidato:** Puede ver ofertas y postularse a ellas.
+  - **Admin:** Puede gestionar etiquetas y tener una vista de las empresas que están registradas.
 
 ---
 
@@ -73,19 +74,19 @@ La aplicación consta de dos partes principales:
 
 ### Usuario de una empresa
 
-- **Nombre de usuario:** martin
-- **Contraseña:** qwerty
+- **Nombre de usuario:** innovatech
+- **Contraseña:** 1234
 - **Rol:** Empresa
 
 ### Usuario Candidato
 
-- **Nombre de usuario:** brandonsanderson
+- **Nombre de usuario:** jorge
 - **Contraseña:** 1234
 - **Rol:** Candidato
 
 ### Usuario Admin
 
-- **Nombre de usuario:** demo
+- **Nombre de usuario:** admin
 - **Contraseña:** demo
 - **Rol:** Admin
 
@@ -100,4 +101,4 @@ La aplicación consta de dos partes principales:
 
 ---
 
-Este README proporciona una guía básica para comenzar a usar y desarrollar la aplicación Bolsa de Empleo TIC.
+Este README proporciona una guía básica para comenzar a usar la aplicación Bolsa de Empleo TIC.
